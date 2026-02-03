@@ -1,0 +1,40 @@
+/* status-styles.css */
+.status-bar {
+    -fx-padding: 8 12;
+    -fx-background-color: #f8f9fa;
+    -fx-border-color: #dee2e6;
+    -fx-border-width: 0 0 1 0;
+    -fx-alignment: center-left;
+}
+
+.status-label {
+    -fx-font-size: 12px;
+    -fx-text-fill: #6c757d;
+    -fx-font-weight: bold;
+}
+
+.refresh-button {
+    -fx-background-color: #0d6efd;
+    -fx-text-fill: white;
+    -fx-font-size: 12px;
+    -fx-padding: 4 12;
+    -fx-background-radius: 4;
+}
+
+.refresh-button:hover {
+    -fx-background-color: #0b5ed7;
+}
+
+.refresh-button:pressed {
+    -fx-background-color: #0a58ca;
+}
+
+.toast-notification {
+    -fx-background-color: rgba(0, 0, 0, 0.8);
+    -fx-text-fill: white;
+    -fx-padding: 8 16;
+    -fx-background-radius: 20;
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.3), 10, 0, 0, 3);
+}

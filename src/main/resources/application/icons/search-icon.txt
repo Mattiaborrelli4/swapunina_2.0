@@ -1,0 +1,4 @@
+L'SVG è stato salvato come search-icon.svg.
+Per convertirlo in PNG sono necessari strumenti esterni.
+
+Per ora, uso una soluzione alternativa: creo il percorso SVG come stringa JavaFX.
