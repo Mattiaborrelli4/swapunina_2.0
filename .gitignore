@@ -8,7 +8,7 @@ release.properties
 dependency-reduced-pom.xml
 buildNumber.properties
 .mvn/timing.properties
-.mvn/wrapper/maven-wrapper.jar
+# NOTA: maven-wrapper.jar è NECESSARIO e deve essere commitato!
 
 # Eclipse m2e generated files
 # Eclipse Core
