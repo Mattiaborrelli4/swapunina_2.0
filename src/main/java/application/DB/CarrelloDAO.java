@@ -295,22 +295,48 @@ public class CarrelloDAO {
      */
     public boolean aggiornaQuantitaBatch(List<int[]> updates) {
         String sql = "UPDATE " + TABLE_NAME + " SET quantita = ? WHERE id = ? AND utente_id = ?";
-        
+
         try (Connection conn = ConnessioneDB.getConnessione();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
-            
+
             for (int[] update : updates) {
                 stmt.setInt(1, update[1]); // quantità
                 stmt.setInt(2, update[0]); // carrello_id
                 stmt.setInt(3, update[2]); // utente_id
                 stmt.addBatch();
             }
-            
+
             int[] results = stmt.executeBatch();
             return results.length > 0;
-            
+
         } catch (SQLException e) {
             System.err.println("Errore nell'aggiornamento batch quantità: " + e.getMessage());
+            return false;
+        }
+    }
+
+    /**
+     * Verifica se un annuncio è stato acquistato ma non ancora ritirato dall'utente
+     * Un annuncio è considerato "acquistato ma non ritirato" se è presente nel carrello dell'utente
+     *
+     * @param annuncioId ID dell'annuncio da verificare
+     * @param utenteId ID dell'utente che ha acquistato
+     * @return true se l'annuncio è nel carrello dell'utente, false altrimenti
+     */
+    public boolean isAnnuncioAcquistatoMaNonRitirato(int annuncioId, int utenteId) {
+        String sql = "SELECT 1 FROM " + TABLE_NAME + " WHERE utente_id = ? AND annuncio_id = ? LIMIT 1";
+
+        try (Connection conn = ConnessioneDB.getConnessione();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, utenteId);
+            stmt.setInt(2, annuncioId);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                return rs.next();
+            }
+        } catch (SQLException e) {
+            System.err.println("Errore nella verifica annuncio acquistato ma non ritirato: " + e.getMessage());
             return false;
         }
     }

@@ -671,8 +671,10 @@ public class AnnuncioDAO {
 
     /**
      * Recupera l'URL dell'immagine di un annuncio
+     * @param annuncioId ID dell'annuncio
+     * @return URL dell'immagine o null se non trovata
      */
-    private String getImageUrlAnnuncio(int annuncioId) {
+    public String getImageUrlAnnuncio(int annuncioId) {
         String sql = "SELECT o.image_url FROM annuncio a JOIN oggetto o ON a.oggetto_id = o.id WHERE a.id = ?";
         
         try (Connection conn = ConnessioneDB.getConnessione();
