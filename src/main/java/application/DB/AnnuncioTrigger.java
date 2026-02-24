@@ -4,6 +4,7 @@ import application.Classe.Annuncio;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.LongAdder;
 import java.util.logging.Logger;
 import java.util.logging.Level;
 
@@ -46,9 +47,13 @@ public class AnnuncioTrigger {
     
     /** Soglia per log performance (operazioni lente in ms) */
     private static final int SOGLIA_PERFORMANCE_LENTA = 100;
-    
-    // Cache per statistiche e metriche di performance
-    private static final ConcurrentHashMap<String, AtomicInteger> STATISTICHE_GLOBALI = new ConcurrentHashMap<>();
+
+    /**
+     * Cache per statistiche e metriche di performance
+     * Usa LongAdder invece di AtomicInteger per migliori performance in scenari con alto contenuto
+     * LongAdder riduce la contensione ed è più efficiente per contatori frequentemente aggiornati
+     */
+    private static final ConcurrentHashMap<String, LongAdder> STATISTICHE_GLOBALI = new ConcurrentHashMap<>();
     
     // ========== TRIGGER DI LOGGING AVANZATO ==========
     
@@ -611,27 +616,31 @@ public class AnnuncioTrigger {
     }
     
     // ========== METODI DI UTILITÀ E GESTIONE GLOBALE ==========
-    
+
     /**
-     * Aggiorna una statistica globale in modo thread-safe
-     * 
+     * Aggiorna una statistica globale in modo thread-safe usando LongAdder
+     * LongAdder è più efficiente di AtomicInteger per contatori con alto contenuto
+     *
      * @param chiave La chiave della statistica
      * @param valore Il valore da aggiungere
      */
     private static void aggiornaStatisticaGlobale(String chiave, int valore) {
-        STATISTICHE_GLOBALI.computeIfAbsent(chiave, k -> new AtomicInteger())
-                          .addAndGet(valore);
+        STATISTICHE_GLOBALI.computeIfAbsent(chiave, k -> new LongAdder())
+                          .add(valore);
     }
-    
+
     /**
      * Restituisce una copia delle statistiche globali raccolte
-     * 
-     * @return Mappa con tutte le statistiche
+     * Converte LongAdder in valori long per facile lettura
+     *
+     * @return Mappa con tutte le statistiche come valori long
      */
-    public static ConcurrentHashMap<String, AtomicInteger> getStatisticheGlobali() {
-        return new ConcurrentHashMap<>(STATISTICHE_GLOBALI);
+    public static ConcurrentHashMap<String, Long> getStatisticheGlobali() {
+        ConcurrentHashMap<String, Long> copia = new ConcurrentHashMap<>();
+        STATISTICHE_GLOBALI.forEach((chiave, adder) -> copia.put(chiave, adder.sum()));
+        return copia;
     }
-    
+
     /**
      * Resetta completamente tutte le statistiche e metriche
      */
@@ -682,24 +691,22 @@ public class AnnuncioTrigger {
     
     /**
      * Ottiene il numero totale di annunci processati dal sistema
-     * 
+     *
      * @return Il conteggio totale degli annunci processati
      */
-    public static int getTotaleAnnunciProcessati() {
-        return STATISTICHE_GLOBALI
-            .getOrDefault("annunci_processati_totali", new AtomicInteger(0))
-            .get();
+    public static long getTotaleAnnunciProcessati() {
+        LongAdder adder = STATISTICHE_GLOBALI.get("annunci_processati_totali");
+        return adder != null ? adder.sum() : 0L;
     }
-    
+
     /**
      * Ottiene il numero totale di annunci filtrati dal sistema
-     * 
+     *
      * @return Il conteggio totale degli annunci filtrati
      */
-    public static int getTotaleAnnunciFiltrati() {
-        return STATISTICHE_GLOBALI
-            .getOrDefault("annunci_filtrati_totali", new AtomicInteger(0))
-            .get();
+    public static long getTotaleAnnunciFiltrati() {
+        LongAdder adder = STATISTICHE_GLOBALI.get("annunci_filtrati_totali");
+        return adder != null ? adder.sum() : 0L;
     }
     
     /**
@@ -714,7 +721,7 @@ public class AnnuncioTrigger {
     
     /**
      * Genera un report dettagliato delle statistiche e metriche
-     * 
+     *
      * @return Stringa formattata con il report completo
      */
     public static String generaReportStatistiche() {
@@ -722,19 +729,22 @@ public class AnnuncioTrigger {
         report.append("📈 === REPORT DETTAGLIATO TRIGGER ANNUNCI ===\n");
         report.append(String.format("   Annunci totali processati: %,d\n", getTotaleAnnunciProcessati()));
         report.append(String.format("   Annunci totali filtrati: %,d\n", getTotaleAnnunciFiltrati()));
-        report.append(String.format("   Operazioni di filtro completate: %,d\n", 
-            STATISTICHE_GLOBALI.getOrDefault("operazioni_filtro_completate", new AtomicInteger(0)).get()));
+
+        LongAdder opsAdder = STATISTICHE_GLOBALI.get("operazioni_filtro_completate");
+        long operazioni = opsAdder != null ? opsAdder.sum() : 0L;
+        report.append(String.format("   Operazioni di filtro completate: %,d\n", operazioni));
+
         report.append(String.format("   Sistema trigger attivo: %s\n", sonoTriggerAttivi() ? "✅ SÌ" : "❌ NO"));
         report.append(String.format("   Livello logging: %s\n", LOGGER.getLevel()));
         report.append("============================================\n");
-        
+
         // Statistiche aggiuntive
-        STATISTICHE_GLOBALI.forEach((chiave, valore) -> {
+        STATISTICHE_GLOBALI.forEach((chiave, adder) -> {
             if (!chiave.startsWith("annunci_") && !chiave.equals("operazioni_filtro_completate")) {
-                report.append(String.format("   %s: %,d\n", chiave, valore.get()));
+                report.append(String.format("   %s: %,d\n", chiave, adder.sum()));
             }
         });
-        
+
         return report.toString();
     }
     

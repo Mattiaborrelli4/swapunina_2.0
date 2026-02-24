@@ -203,30 +203,84 @@ public class AnnuncioDAO {
         return caratteristiche;
     }
 
-    // Recupera gli annunci attivi
+    /**
+     * Recupera gli annunci attivi con JOIN ottimizzati (evita query N+1)
+     * Carica tutti i dati in una singola query con JOIN multipli
+     */
     public List<Annuncio> getAnnunciAttivi() {
         List<Annuncio> annunci = new ArrayList<>();
-        
-        String sql = "SELECT a.id AS annuncio_id, a.titolo, u.nome AS nome_venditore " +
+
+        // Query ottimizzata con JOIN per evitare N+1
+        String sql = "SELECT " +
+                     "a.id, a.stato, a.prezzo, a.venditore_id, a.data_pubblicazione, " +
+                     "o.nome AS oggetto_nome, o.categoria, " +
+                     "u.nome, u.email " +
                      "FROM annuncio a " +
+                     "JOIN oggetto o ON a.oggetto_id = o.id " +
                      "JOIN utente u ON a.venditore_id = u.id " +
-                     "WHERE a.stato = 'ATTIVO'";
+                     "WHERE a.stato = 'ATTIVO' " +
+                     "ORDER BY a.data_pubblicazione DESC";
 
         try (Connection conn = ConnessioneDB.getConnessione();
              PreparedStatement stmt = conn.prepareStatement(sql);
              ResultSet rs = stmt.executeQuery()) {
 
             while (rs.next()) {
-                int annuncioId = rs.getInt("annuncio_id");
-                Annuncio annuncio = getAnnuncioById(annuncioId);
-                if (annuncio != null) {
+                try {
+                    Annuncio annuncio = mapResultSetToAnnuncioLite(rs);
                     annunci.add(annuncio);
+                } catch (Exception e) {
+                    System.err.println("⚠️  Errore mapping annuncio: " + e.getMessage());
                 }
             }
+
+            System.out.println("✅ Recuperati " + annunci.size() + " annunci attivi (query ottimizzata, nessuna N+1)");
+
         } catch (SQLException e) {
-            System.err.println("Errore nel recupero degli annunci attivi: " + e.getMessage());
+            System.err.println("❌ Errore nel recupero degli annunci attivi: " + e.getMessage());
+            e.printStackTrace();
         }
         return annunci;
+    }
+
+    /**
+     * Mappa un ResultSet semplificato a un oggetto Annuncio (versione ottimizzata)
+     * Usato da getAnnunciAttivi() per evitare query N+1
+     */
+    private Annuncio mapResultSetToAnnuncioLite(ResultSet rs) throws SQLException {
+        Annuncio annuncio = new Annuncio();
+        annuncio.setId(rs.getInt("id"));
+        annuncio.setStato(rs.getString("stato"));
+        annuncio.setPrezzo(rs.getDouble("prezzo"));
+        annuncio.setVenditoreId(rs.getInt("venditore_id"));
+
+        Timestamp dataPubb = rs.getTimestamp("data_pubblicazione");
+        if (dataPubb != null) {
+            annuncio.setDataPubblicazione(dataPubb.toLocalDateTime());
+        }
+
+        // Nota: Annuncio non ha tutti i campi direttamente, usa Oggetto
+        // Creiamo l'Oggetto con i dati disponibili
+        try {
+            String titolo = rs.getString("titolo");
+            String descrizione = rs.getString("descrizione");
+
+            // Crea oggetto Oggetto con i dati dal DB
+            String oggettoNome = rs.getString("oggetto_nome");
+            String categoriaStr = rs.getString("categoria");
+
+            Oggetto oggetto = new Oggetto(
+                oggettoNome != null ? oggettoNome : (titolo != null ? titolo : ""),
+                descrizione != null ? descrizione : "",
+                application.Enum.Categoria.valueOf(categoriaStr.toUpperCase())
+            );
+
+            annuncio.setOggetto(oggetto);
+        } catch (Exception e) {
+            System.err.println("⚠️ Errore creazione oggetto: " + e.getMessage());
+        }
+
+        return annuncio;
     }
 
     // Aggiorna lo stato di un annuncio

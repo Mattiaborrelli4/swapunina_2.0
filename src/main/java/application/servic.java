@@ -16,7 +16,7 @@ public class servic {
     private final Cloudinary cloudinary;
 
     public servic() {
-        this.cloudinary = config.getCloudinary();
+        this.cloudinary = CloudinaryConfig.getCloudinary();
     }
 
     /**
@@ -57,7 +57,7 @@ public class servic {
      * Carica un'immagine generica su Cloudinary
      */
     public String upload(InputStream is, String originalFilename, String folder, String publicIdSuffix) throws Exception {
-        if (!config.isAvailable()) {
+        if (!CloudinaryConfig.isAvailable()) {
             throw new IllegalStateException("Cloudinary non è configurato");
         }
 
@@ -88,7 +88,7 @@ public class servic {
      * Elimina un'immagine da Cloudinary
      */
     public boolean eliminaImmagine(String imageUrl) throws Exception {
-        if (!config.isAvailable() || imageUrl == null || imageUrl.isEmpty()) {
+        if (!CloudinaryConfig.isAvailable() || imageUrl == null || imageUrl.isEmpty()) {
             return false;
         }
 
@@ -130,7 +130,7 @@ public class servic {
      * Verifica se Cloudinary è configurato e disponibile
      */
     public boolean isAvailable() {
-        return config.isAvailable();
+        return CloudinaryConfig.isAvailable();
     }
 
     /**

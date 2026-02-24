@@ -4,6 +4,7 @@ import application.Classe.Codice;
 import org.mindrot.jbcrypt.BCrypt;
 
 import java.sql.*;
+import java.security.SecureRandom;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -14,18 +15,20 @@ import java.util.Random;
 
 public class CodiceDAO {
 
-    
+
     public String generaCodiceConferma(int utenteId, int annuncioId) {
         // Prima elimina eventuali codici esistenti per questa combinazione
         eliminaCodiciEsistenti(utenteId, annuncioId);
 
         // Genera codice casuale a 6 caratteri alfanumerici
         String codicePlain = generaCodiceAlfanumerico();
-        
+
         // Cripta il codice usando jBCrypt
         String codiceHash = BCrypt.hashpw(codicePlain, BCrypt.gensalt());
 
-        String sql = "INSERT INTO codice_conferma (utente_id, annuncio_id, codice_hash, codice_plain, data_creazione, tentativi_errati) VALUES (?, ?, ?, ?, ?, ?)";
+        // ⚠️ SICUREZZA: NON salviamo più il codice in chiaro nel database!
+        // Salviamo solo l'hash BCrypt per verifica
+        String sql = "INSERT INTO codice_conferma (utente_id, annuncio_id, codice_hash, data_creazione, tentativi_errati) VALUES (?, ?, ?, ?, ?)";
 
         try (Connection conn = ConnessioneDB.getConnessione();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -33,18 +36,19 @@ public class CodiceDAO {
             stmt.setInt(1, utenteId);
             stmt.setInt(2, annuncioId);
             stmt.setString(3, codiceHash);
-            stmt.setString(4, codicePlain);
-            stmt.setTimestamp(5, Timestamp.valueOf(LocalDateTime.now()));
-            stmt.setInt(6, 0);
+            stmt.setTimestamp(4, Timestamp.valueOf(LocalDateTime.now()));
+            stmt.setInt(5, 0);
 
             int affectedRows = stmt.executeUpdate();
-            
+
             if (affectedRows > 0) {
-                return codicePlain; // Restituisce il codice in chiaro solo per la visualizzazione
+                // Restituisce il codice in chiaro SOLO per mostrarlo all'utente
+                // Non sarà possibile recuperarlo in seguito (security feature)
+                return codicePlain;
             }
         } catch (SQLException e) {
-            System.err.println("Errore nella generazione del codice di conferma: " + e.getMessage());
-            e.printStackTrace();
+            System.err.println("❌ Errore nella generazione del codice di conferma: " + e.getMessage());
+            // Non usare printStackTrace() in produzione!
         }
         return null;
     }
@@ -199,13 +203,14 @@ public class CodiceDAO {
         }
     }
 
-    
+
     private Codice mappaCodice(ResultSet rs) throws SQLException {
         int id = rs.getInt("id");
         int utenteId = rs.getInt("utente_id");
         int annuncioId = rs.getInt("annuncio_id");
         String codiceHash = rs.getString("codice_hash");
-        String codicePlain = rs.getString("codice_plain");
+        // ⚠️ NON recuperiamo più il codice in chiaro dal DB (security fix)
+        String codicePlain = null; // Non più disponibile dopo la generazione
         Timestamp dataCreazione = rs.getTimestamp("data_creazione");
         int tentativiErrati = rs.getInt("tentativi_errati");
 
@@ -216,16 +221,17 @@ public class CodiceDAO {
 
     /**
      * Genera un codice casuale a 6 caratteri alfanumerici
+     * Usa SecureRandom per crittograficamente sicuro
      */
     private String generaCodiceAlfanumerico() {
         String caratteri = "ABCDEFGHIJKLMNOPQRSTUVWXYZ123456789";
-        Random random = new Random();
+        SecureRandom secureRandom = new SecureRandom();
         StringBuilder codice = new StringBuilder();
-        
+
         for (int i = 0; i < 6; i++) {
-            codice.append(caratteri.charAt(random.nextInt(caratteri.length())));
+            codice.append(caratteri.charAt(secureRandom.nextInt(caratteri.length())));
         }
-        
+
         return codice.toString();
     }
 
@@ -236,7 +242,7 @@ public class CodiceDAO {
         List<Map<String, String>> codici = new ArrayList<>();
         
         
-        String sql = "SELECT cc.id, cc.codice_plain, cc.data_creazione, a.titolo, a.id as annuncio_id " +
+        String sql = "SELECT cc.id, cc.data_creazione, a.titolo, a.id as annuncio_id " +
                  "FROM codice_conferma cc " +
                  "JOIN annuncio a ON cc.annuncio_id = a.id " +
                  "WHERE cc.utente_id = ? AND cc.data_creazione > CURRENT_TIMESTAMP - INTERVAL '14 days' " +
@@ -251,7 +257,9 @@ public class CodiceDAO {
             while (rs.next()) {
                 Map<String, String> codiceInfo = new HashMap<>();
                 codiceInfo.put("id", String.valueOf(rs.getInt("id")));
-                codiceInfo.put("codice", rs.getString("codice_plain"));
+                // ⚠️ Sicurezza: NON recuperiamo più il codice in chiaro
+                // Una volta usato, il codice non è più recuperabile (security feature)
+                codiceInfo.put("codice", "******");
                 codiceInfo.put("titolo", rs.getString("titolo"));
                 codiceInfo.put("annuncio_id", String.valueOf(rs.getInt("annuncio_id")));
                 codiceInfo.put("data_creazione", rs.getTimestamp("data_creazione").toString());
@@ -334,14 +342,13 @@ public boolean verificaCodicePerAnnuncio(int annuncioId, String codiceInserito, 
 
         if (rs.next()) {
             String codiceHash = rs.getString("codice_hash");
-            String codicePlain = rs.getString("codice_plain");
+            // ⚠️ NON recuperiamo più il codice in chiaro (security fix)
+            // String codicePlain = rs.getString("codice_plain");
             int tentativi = rs.getInt("tentativi_errati");
             int codiceId = rs.getInt("id");
 
-            System.out.println("🔍 DATI CODICE DAL DB:");
-            System.out.println("   - Codice plain: " + codicePlain);
+            System.out.println("🔍 Verifica codice ID: " + codiceId);
             System.out.println("   - Tentativi errati: " + tentativi);
-            System.out.println("   - Codice ID: " + codiceId);
 
             if (tentativi >= 3) {
                 System.err.println("❌ CODICE BLOCCATO: Troppi tentativi errati");
@@ -349,11 +356,8 @@ public boolean verificaCodicePerAnnuncio(int annuncioId, String codiceInserito, 
             }
 
             // VERIFICA BCrypt
-            System.out.println("🔍 VERIFICA CRITTOGRAFICA:");
-            System.out.println("   - Codice inserito: " + codiceInserito);
-            System.out.println("   - Codice atteso: " + codicePlain);
-            System.out.println("   - Hash nel DB: " + codiceHash.substring(0, 20) + "...");
-            
+            boolean verifica = BCrypt.checkpw(codiceInserito, codiceHash);
+
             boolean codiceCorretto = BCrypt.checkpw(codiceInserito, codiceHash);
             System.out.println("   - Risultato BCrypt: " + codiceCorretto);
 

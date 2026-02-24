@@ -4,7 +4,7 @@ import com.cloudinary.Cloudinary;
 import java.util.Map;
 import java.util.HashMap;
 
-public class config {
+public class CloudinaryConfig {
     private static Cloudinary cloudinary;
     private static boolean available = false;
 

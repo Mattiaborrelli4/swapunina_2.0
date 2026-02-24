@@ -2,81 +2,144 @@ package application.DB;
 
 import application.Classe.Messaggio;
 import application.Classe.utente;
+import application.messagistica.MessageEncryptionService;
+import application.messagistica.MessageEncryptionService.EncryptedMessageContainer;
+
 import java.nio.charset.StandardCharsets;
-import java.security.SecureRandom;
 import java.sql.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Data Access Object per la gestione dei messaggi con crittografia AES-GCM completa
+ *
+ * <p><b>Caratteristiche:</b>
+ * <ul>
+ *   <li>Crittografia AES-256 GCM per tutti i messaggi</li>
+ *   <li>IV univoco per ogni messaggio</li>
+ *   <li>Backup plaintext rimosso (migliore sicurezza)</li>
+ *   <li>Supporto conversazioni per annuncio</li>
+ *   <li>Decifratura automatica alla lettura</li>
+ * </ul>
+ * </p>
+ *
+ * <p><b>Flusso di salvataggio messaggio:</b>
+ * <pre>
+ * Messaggio in chiaro
+ *    ↓
+ * MessageEncryptionService.encryptMessage()
+ *    ↓
+ * AES-256 GCM con IV random
+ *    ↓
+ * Salvataggio nel DB (testo_encrypted + iv)
+ * </pre>
+ * </p>
+ *
+ * <p><b>Flusso di lettura messaggio:</b>
+ * <pre>
+ * Lettura dal DB (testo_encrypted + iv)
+ *    ↓
+ * MessageEncryptionService.decryptMessage()
+ *    ↓
+ * AES-256 GCM decrypt
+ *    ↓
+ * Messaggio in chiaro
+ * </pre>
+ * </p>
+ */
 public class MessaggioDAO {
     private static final String TABLE_NAME = "messaggio";
+    private final MessageEncryptionService encryptionService;
 
     public MessaggioDAO() {
+        this.encryptionService = MessageEncryptionService.getInstance();
         creaTabellaSeMancante();
     }
 
+    /**
+     * Crea la tabella messaggi se non esiste
+     * NOTA: Rimuoviamo testo_plaintext_backup per maggiore sicurezza
+     */
     private void creaTabellaSeMancante() {
         String sql = "CREATE TABLE IF NOT EXISTS " + TABLE_NAME + " (" +
                 "id SERIAL PRIMARY KEY, " +
                 "mittente_id INTEGER NOT NULL REFERENCES utente(id) ON DELETE CASCADE, " +
                 "destinatario_id INTEGER NOT NULL REFERENCES utente(id) ON DELETE CASCADE, " +
-                "testo_plaintext_backup TEXT NOT NULL, " +
                 "testo_encrypted BYTEA NOT NULL, " +
                 "iv BYTEA NOT NULL, " +
                 "data_invio TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, " +
                 "annuncio_id INTEGER REFERENCES annuncio(id) ON DELETE SET NULL, " +
-                "algoritmo_encryption VARCHAR(20) DEFAULT 'AES/GCM/NoPadding', " +
+                "algoritmo_encryption VARCHAR(30) NOT NULL DEFAULT 'AES/GCM/NoPadding', " +
                 "key_id INTEGER REFERENCES encryption_keys(id) ON DELETE SET NULL" +
                 ")";
+
         try (Connection conn = ConnessioneDB.getConnessione();
              Statement stmt = conn.createStatement()) {
             stmt.execute(sql);
+            System.out.println("✅ Tabella messaggi verificata/creata con AES-GCM encryption");
         } catch (SQLException e) {
-            System.err.println("Errore creazione tabella messaggio");
+            System.err.println("❌ Errore creazione tabella messaggio: " + e.getMessage());
             e.printStackTrace();
         }
     }
 
+    /**
+     * Invia un messaggio con crittografia AES-256 GCM
+     *
+     * @param msg Il messaggio da inviare
+     * @return true se l'inserimento ha successo
+     */
     public boolean inviaMessaggio(Messaggio msg) {
-        String sql = "INSERT INTO " + TABLE_NAME + " (mittente_id, destinatario_id, testo_plaintext_backup, testo_encrypted, iv, data_invio, annuncio_id, algoritmo_encryption) " +
-                     "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
-        
+        String sql = "INSERT INTO " + TABLE_NAME +
+                     " (mittente_id, destinatario_id, testo_encrypted, iv, data_invio, annuncio_id, algoritmo_encryption) " +
+                     "VALUES (?, ?, ?, ?, ?, ?, ?)";
+
         try (Connection conn = ConnessioneDB.getConnessione();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
-            
+
             stmt.setInt(1, msg.getMittenteId());
             stmt.setInt(2, msg.getDestinatarioId());
-            
-            // Salva il testo in chiaro come backup
-            stmt.setString(3, msg.getTesto());
-            
-            // Converti il testo in byte array (UTF-8 encoding)
-            stmt.setBytes(4, msg.getTesto().getBytes(StandardCharsets.UTF_8));
-            
-            // Genera un IV random (12 bytes per AES-GCM)
-            byte[] iv = new byte[12];
-            new SecureRandom().nextBytes(iv);
-            stmt.setBytes(5, iv);
-            
-            stmt.setTimestamp(6, Timestamp.valueOf(msg.getDataInvio()));
-            
+
+            // Crittografa il messaggio con AES-GCM
+            String plaintext = msg.getTesto();
+            EncryptedMessageContainer encrypted = encryptionService.encryptMessage(plaintext);
+
+            // Salva i dati crittografati
+            stmt.setBytes(3, encrypted.getEncryptedData());
+            stmt.setBytes(4, encrypted.getIv());
+            stmt.setTimestamp(5, Timestamp.valueOf(msg.getDataInvio()));
+
             if (msg.getAnnuncioId() != null) {
-                stmt.setInt(7, msg.getAnnuncioId());
+                stmt.setInt(6, msg.getAnnuncioId());
             } else {
-                stmt.setNull(7, Types.INTEGER);
+                stmt.setNull(6, Types.INTEGER);
             }
-            
-            stmt.setString(8, "UTF-8_ENCODING"); // Usiamo encoding semplice per ora
-            
-            return stmt.executeUpdate() > 0;
-        } catch (SQLException e) {
-            System.err.println("Errore durante l'invio del messaggio");
+
+            stmt.setString(7, encrypted.getAlgorithm());
+
+            int rowsAffected = stmt.executeUpdate();
+
+            if (rowsAffected > 0) {
+                System.out.println("✅ Messaggio crittografato e salvato con AES-GCM");
+                return true;
+            }
+
+            return false;
+
+        } catch (Exception e) {
+            System.err.println("❌ Errore durante l'invio del messaggio: " + e.getMessage());
             e.printStackTrace();
             return false;
         }
     }
-    
+
+    /**
+     * Recupera gli ID degli interlocutori di un utente
+     *
+     * @param mioId ID dell'utente corrente
+     * @return Lista di ID degli interlocutori
+     */
     public List<Integer> getInterlocutori(int mioId) {
         List<Integer> interlocutori = new ArrayList<>();
         String query = "SELECT DISTINCT CASE " +
@@ -100,18 +163,26 @@ public class MessaggioDAO {
             }
 
         } catch (SQLException e) {
+            System.err.println("❌ Errore recupero interlocutori: " + e.getMessage());
             e.printStackTrace();
         }
 
         return interlocutori;
     }
 
+    /**
+     * Recupera una conversazione completa tra due utenti con decifratura automatica
+     *
+     * @param utente1 ID del primo utente
+     * @param utente2 ID del secondo utente
+     * @return Lista di messaggi decifrati
+     */
     public List<Messaggio> getConversazione(int utente1, int utente2) {
         List<Messaggio> messaggi = new ArrayList<>();
         String sql = "SELECT * FROM " + TABLE_NAME + " WHERE " +
                 "(mittente_id = ? AND destinatario_id = ?) OR " +
                 "(mittente_id = ? AND destinatario_id = ?) " +
-                "ORDER BY data_invio";
+                "ORDER BY data_invio ASC";
 
         try (Connection conn = ConnessioneDB.getConnessione();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -123,53 +194,31 @@ public class MessaggioDAO {
 
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
-                String testo = null;
-                
-                try {
-                    // Prima prova a leggere il testo encrypted
-                    byte[] encryptedData = rs.getBytes("testo_encrypted");
-                    if (encryptedData != null) {
-                        testo = new String(encryptedData, StandardCharsets.UTF_8);
-                    }
-                } catch (Exception e) {
-                    System.err.println("Errore decodifica messaggio encrypted ID: " + rs.getInt("id"));
-                    e.printStackTrace();
+                Messaggio m = decrittografaMessaggioDaResultSet(rs);
+                if (m != null) {
+                    messaggi.add(m);
                 }
-                
-                // Se non riesci a decodificare l'encrypted, usa il backup
-                if (testo == null || testo.isEmpty()) {
-                    try {
-                        testo = rs.getString("testo_plaintext_backup");
-                        if (testo == null) {
-                            testo = "[Messaggio non decodificabile]";
-                        }
-                    } catch (Exception ex) {
-                        System.err.println("Errore lettura backup messaggio ID: " + rs.getInt("id"));
-                        testo = "[Messaggio illeggibile]";
-                    }
-                }
-                
-                Messaggio m = new Messaggio(
-                    rs.getInt("id"),
-                    rs.getInt("mittente_id"),
-                    rs.getInt("destinatario_id"),
-                    testo,
-                    rs.getTimestamp("data_invio").toLocalDateTime(),
-                    rs.getObject("annuncio_id") != null ? rs.getInt("annuncio_id") : null
-                );
-                messaggi.add(m);
             }
+
+            System.out.println("✅ Recuperati " + messaggi.size() + " messaggi decifrati");
+
         } catch (SQLException e) {
-            System.err.println("Errore recupero conversazione");
+            System.err.println("❌ Errore recupero conversazione: " + e.getMessage());
             e.printStackTrace();
         }
 
         return messaggi;
     }
-    
+
+    /**
+     * Recupera gli utenti interlocutori con i dettagli completi
+     *
+     * @param mioId ID dell'utente corrente
+     * @return Lista di utenti interlocutori
+     */
     public List<utente> getInterlocutoriUtenti(int mioId) {
         List<utente> utenti = new ArrayList<>();
-        
+
         String query = """
             SELECT DISTINCT u.*
             FROM utente u
@@ -202,39 +251,28 @@ public class MessaggioDAO {
                 }
             }
         } catch (SQLException e) {
+            System.err.println("❌ Errore recupero interlocutori utenti: " + e.getMessage());
             e.printStackTrace();
         }
         return utenti;
     }
 
-    // Metodo per migrare i messaggi esistenti
-    public boolean migraMessaggiEsistenti() {
-        String sql = "UPDATE " + TABLE_NAME + " SET " +
-                     "testo_encrypted = convert_to(testo_plaintext_backup, 'UTF8'), " +
-                     "iv = E'\\\\x000000000000000000000000', " +
-                     "algoritmo_encryption = 'UTF-8_ENCODING' " +
-                     "WHERE testo_encrypted IS NULL";
-        
-        try (Connection conn = ConnessioneDB.getConnessione();
-             Statement stmt = conn.createStatement()) {
-            int rowsAffected = stmt.executeUpdate(sql);
-            System.out.println("Messaggi migrati: " + rowsAffected);
-            return rowsAffected > 0;
-        } catch (SQLException e) {
-            System.err.println("Errore migrazione messaggi");
-            e.printStackTrace();
-            return false;
-        }
-    }
-
+    /**
+     * Recupera una conversazione filtrata per annuncio con decifratura automatica
+     *
+     * @param currentUserId ID dell'utente corrente
+     * @param interlocutoreId ID dell'interlocutore
+     * @param annuncioId ID dell'annuncio
+     * @return Lista di messaggi decifrati per quell'annuncio
+     */
     public List<Messaggio> getConversazionePerAnnuncio(int currentUserId, int interlocutoreId, int annuncioId) {
         List<Messaggio> messaggi = new ArrayList<>();
-        
+
         System.out.println("🔍 Ricerca messaggi per annuncio:");
         System.out.println("   Utente corrente: " + currentUserId);
         System.out.println("   Interlocutore: " + interlocutoreId);
         System.out.println("   Annuncio ID: " + annuncioId);
-        
+
         String sql = "SELECT * FROM " + TABLE_NAME + " WHERE " +
                 "((mittente_id = ? AND destinatario_id = ?) OR " +
                 "(mittente_id = ? AND destinatario_id = ?)) " +
@@ -250,60 +288,187 @@ public class MessaggioDAO {
             stmt.setInt(4, currentUserId);
             stmt.setInt(5, annuncioId);
 
-            System.out.println("📊 Esecuzione query: " + stmt.toString());
-            
+            System.out.println("📊 Esecuzione query...");
+
             ResultSet rs = stmt.executeQuery();
-            int count = 0;
-            
+
             while (rs.next()) {
-                count++;
-                String testo = null;
-                
-                try {
-                    // Prima prova a leggere il testo encrypted
-                    byte[] encryptedData = rs.getBytes("testo_encrypted");
-                    if (encryptedData != null) {
-                        testo = new String(encryptedData, StandardCharsets.UTF_8);
-                    }
-                } catch (Exception e) {
-                    System.err.println("Errore decodifica messaggio encrypted ID: " + rs.getInt("id"));
-                    e.printStackTrace();
+                Messaggio m = decrittografaMessaggioDaResultSet(rs);
+                if (m != null) {
+                    messaggi.add(m);
+
+                    System.out.println("   📨 Messaggio: " + m.getTesto() +
+                                     " (da: " + m.getMittenteId() + ")");
                 }
-                
-                // Se non riesci a decodificare l'encrypted, usa il backup
-                if (testo == null || testo.isEmpty()) {
-                    try {
-                        testo = rs.getString("testo_plaintext_backup");
-                        if (testo == null) {
-                            testo = "[Messaggio non decodificabile]";
-                        }
-                    } catch (Exception ex) {
-                        System.err.println("Errore lettura backup messaggio ID: " + rs.getInt("id"));
-                        testo = "[Messaggio illeggibile]";
-                    }
-                }
-                
-                Messaggio m = new Messaggio(
-                    rs.getInt("id"),
-                    rs.getInt("mittente_id"),
-                    rs.getInt("destinatario_id"),
-                    testo,
-                    rs.getTimestamp("data_invio").toLocalDateTime(),
-                    rs.getObject("annuncio_id") != null ? rs.getInt("annuncio_id") : null
-                );
-                messaggi.add(m);
-                
-                System.out.println("   📨 Messaggio " + count + ": " + m.getTesto() + 
-                                 " (da: " + m.getMittenteId() + ")");
             }
-            
-            System.out.println("✅ Trovati " + messaggi.size() + " messaggi per annuncio " + annuncioId);
-            
+
+            System.out.println("✅ Trovati " + messaggi.size() + " messaggi decifrati per annuncio " + annuncioId);
+
         } catch (SQLException e) {
-            System.err.println("❌ Errore recupero conversazione per annuncio");
+            System.err.println("❌ Errore recupero conversazione per annuncio: " + e.getMessage());
             e.printStackTrace();
         }
 
         return messaggi;
+    }
+
+    /**
+     * Decrittografa un messaggio dal ResultSet
+     *
+     * @param rs Il ResultSet posizionato sul messaggio
+     * @return Il messaggio decifrato o null se fallisce
+     */
+    private Messaggio decrittografaMessaggioDaResultSet(ResultSet rs) {
+        try {
+            int id = rs.getInt("id");
+            int mittenteId = rs.getInt("mittente_id");
+            int destinatarioId = rs.getInt("destinatario_id");
+            Timestamp dataInvioTimestamp = rs.getTimestamp("data_invio");
+            Integer annuncioId = rs.getObject("annuncio_id") != null ? rs.getInt("annuncio_id") : null;
+
+            // Leggi i dati crittografati
+            byte[] encryptedData = rs.getBytes("testo_encrypted");
+            byte[] iv = rs.getBytes("iv");
+            String algorithm = rs.getString("algoritmo_encryption");
+
+            if (encryptedData == null || iv == null) {
+                System.err.println("⚠️  Messaggio ID " + id + ": dati crittografati mancanti");
+                return creaMessaggioErrore(id, mittenteId, destinatarioId, dataInvioTimestamp, annuncioId);
+            }
+
+            // Decrittografa il messaggio
+            try {
+                EncryptedMessageContainer container = EncryptedMessageContainer.fromBase64(
+                    java.util.Base64.getEncoder().encodeToString(encryptedData),
+                    java.util.Base64.getEncoder().encodeToString(iv),
+                    algorithm != null ? algorithm : "AES/GCM/NoPadding",
+                    128
+                );
+
+                String plaintext = encryptionService.decryptMessage(container);
+
+                return new Messaggio(id, mittenteId, destinatarioId, plaintext,
+                                    dataInvioTimestamp.toLocalDateTime(), annuncioId);
+
+            } catch (Exception decryptError) {
+                System.err.println("❌ Errore decifratura messaggio ID " + id + ": " + decryptError.getMessage());
+                return creaMessaggioErrore(id, mittenteId, destinatarioId, dataInvioTimestamp, annuncioId);
+            }
+
+        } catch (SQLException e) {
+            System.err.println("❌ Errore lettura messaggio dal ResultSet: " + e.getMessage());
+            return null;
+        }
+    }
+
+    /**
+     * Crea un messaggio di errore quando la decifratura fallisce
+     */
+    private Messaggio creaMessaggioErrore(int id, int mittenteId, int destinatarioId,
+                                          Timestamp dataInvio, Integer annuncioId) {
+        return new Messaggio(
+            id,
+            mittenteId,
+            destinatarioId,
+            "[Messaggio non decifrabile - Errore chiave o corruzione dati]",
+            dataInvio.toLocalDateTime(),
+            annuncioId
+        );
+    }
+
+    /**
+     * Metodo di migrazione per convertire messaggi vecchi (UTF-8) in AES-GCM
+     * Da eseguire una sola volta dopo l'aggiornamento
+     *
+     * @return Numero di messaggi migrati
+     */
+    public int migraMessaggiToAESGCM() {
+        String selectSql = "SELECT id, mittente_id, destinatario_id, testo_encrypted, data_invio, annuncio_id " +
+                          "FROM " + TABLE_NAME + " WHERE algoritmo_encryption = 'UTF-8_ENCODING'";
+
+        String updateSql = "UPDATE " + TABLE_NAME + " SET " +
+                          "testo_encrypted = ?, iv = ?, algoritmo_encryption = 'AES/GCM/NoPadding' " +
+                          "WHERE id = ?";
+
+        int migrati = 0;
+
+        try (Connection conn = ConnessioneDB.getConnessione();
+             PreparedStatement selectStmt = conn.prepareStatement(selectSql);
+             PreparedStatement updateStmt = conn.prepareStatement(updateSql)) {
+
+            conn.setAutoCommit(false);
+
+            ResultSet rs = selectStmt.executeQuery();
+
+            while (rs.next()) {
+                try {
+                    int id = rs.getInt("id");
+                    String vecchioTesto = new String(rs.getBytes("testo_encrypted"), StandardCharsets.UTF_8);
+
+                    // Crittografa con AES-GCM
+                    EncryptedMessageContainer encrypted = encryptionService.encryptMessage(vecchioTesto);
+
+                    updateStmt.setBytes(1, encrypted.getEncryptedData());
+                    updateStmt.setBytes(2, encrypted.getIv());
+                    updateStmt.setInt(3, id);
+
+                    updateStmt.executeUpdate();
+                    migrati++;
+
+                } catch (Exception e) {
+                    System.err.println("⚠️  Errore migrazione messaggio ID " + rs.getInt("id") + ": " + e.getMessage());
+                }
+            }
+
+            conn.commit();
+            System.out.println("✅ Migrazione completata: " + migrati + " messaggi convertiti in AES-GCM");
+
+        } catch (SQLException e) {
+            System.err.println("❌ Errore migrazione messaggi: " + e.getMessage());
+            e.printStackTrace();
+        }
+
+        return migrati;
+    }
+
+    /**
+     * Verifica l'integrità dei messaggi nel database
+     *
+     * @return Numero di messaggi con integrità verificata
+     */
+    public int verificaIntegritaMessaggi() {
+        String sql = "SELECT id, testo_encrypted, iv, algoritmo_encryption FROM " + TABLE_NAME;
+        int verificati = 0;
+        int corrotti = 0;
+
+        try (Connection conn = ConnessioneDB.getConnessione();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                try {
+                    byte[] encryptedData = rs.getBytes("testo_encrypted");
+                    byte[] iv = rs.getBytes("iv");
+                    String algorithm = rs.getString("algoritmo_encryption");
+
+                    if (encryptedData != null && iv != null && "AES/GCM/NoPadding".equals(algorithm)) {
+                        verificati++;
+                    } else {
+                        corrotti++;
+                        System.err.println("⚠️  Messaggio ID " + rs.getInt("id") + " con dati non validi");
+                    }
+                } catch (Exception e) {
+                    corrotti++;
+                }
+            }
+
+            System.out.println("📊 Verifica integrità: " + verificati + " OK, " + corrotti + " corrotti");
+
+        } catch (SQLException e) {
+            System.err.println("❌ Errore verifica integrità: " + e.getMessage());
+        }
+
+        return verificati;
     }
 }

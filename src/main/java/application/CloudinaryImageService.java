@@ -38,7 +38,7 @@ public class CloudinaryImageService {
      * Utilizza la configurazione globale dalla classe config.
      */
     public CloudinaryImageService() {
-        this.cloudinary = config.isAvailable() ? config.getCloudinary() : null;
+        this.cloudinary = CloudinaryConfig.isAvailable() ? CloudinaryConfig.getCloudinary() : null;
         this.enabled = this.cloudinary != null;
 
         if (enabled) {
