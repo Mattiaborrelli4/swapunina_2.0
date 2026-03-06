@@ -58,6 +58,16 @@ public class PropostaScambioDialog extends Dialog<Integer> {
         setTitle("💫 Proponi Scambio");
         setHeaderText("Seleziona un annuncio da offrire in scambio");
 
+        // Carica foglio di stile CSS Royal Purple
+        try {
+            getDialogPane().getStylesheets().add(
+                getClass().getResource("/styles/finestre-utente.css").toExternalForm()
+            );
+        } catch (Exception e) {
+            Logger.getLogger(PropostaScambioDialog.class.getName())
+                   .log(Level.WARNING, "Errore nel caricamento CSS: " + e.getMessage());
+        }
+
         inizializzaUI();
         configuraPulsanti();
     }

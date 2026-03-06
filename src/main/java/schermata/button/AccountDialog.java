@@ -90,6 +90,15 @@ public class AccountDialog extends Dialog<Void> {
     private void inizializzaUI(String nome, String email) {
         setTitle("Il Tuo Account");
 
+        // Carica foglio di stile CSS Royal Purple
+        try {
+            getDialogPane().getStylesheets().add(
+                getClass().getResource("/styles/finestre-utente.css").toExternalForm()
+            );
+        } catch (Exception e) {
+            System.err.println("Errore nel caricamento CSS: " + e.getMessage());
+        }
+
         // Crea il contenuto principale
         VBox mainContent = createMainContent(nome, email);
 

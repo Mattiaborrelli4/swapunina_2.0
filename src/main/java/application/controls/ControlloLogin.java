@@ -93,7 +93,7 @@ public class ControlloLogin extends BorderPane {
 
         // Titolo
         Text title = createTitle();
-        
+
         // Form
         GridPane formGrid = createFormGrid();
         registerLink = createRegisterLink();
@@ -188,11 +188,11 @@ public class ControlloLogin extends BorderPane {
      */
     private void eseguiLoginAsync(String email, String password) {
         disableForm(true);
-        
+
         new Thread(() -> {
             try {
                 UtentiDAO gestore = new UtentiDAO();
-                
+
                 // Verifica esistenza email
                 if (!gestore.emailEsiste(email)) {
                     Platform.runLater(() -> {
@@ -200,7 +200,7 @@ public class ControlloLogin extends BorderPane {
                     });
                     return;
                 }
-                
+
                 // Verifica credenziali
                 if (!gestore.verificaCredenziali(email, password)) {
                     Platform.runLater(() -> {
@@ -208,16 +208,16 @@ public class ControlloLogin extends BorderPane {
                     });
                     return;
                 }
-                
+
                 // Login riuscito - recupera utente
                 Optional<utente> utenteOpt = gestore.getUtenteByEmail(email);
-                
+
                 if (utenteOpt.isPresent()) {
                     utenteAutenticato = utenteOpt.get();
                     SessionManager.setCurrentUser(utenteAutenticato);
-                    System.out.println("[DEBUG] Utente loggato: " + 
+                    System.out.println("[DEBUG] Utente loggato: " +
                                       utenteAutenticato.getEmail() + " (ID: " + utenteAutenticato.getId() + ")");
-                    
+
                     Platform.runLater(() -> {
                         if (onLoginSuccess != null) {
                             onLoginSuccess.run();
@@ -229,7 +229,7 @@ public class ControlloLogin extends BorderPane {
                         mostraErroreGenerico("Errore interno: utente non trovato dopo login riuscito.");
                     });
                 }
-                
+
             } catch (Exception ex) {
                 Platform.runLater(() -> {
                     mostraErroreGenerico("Si è verificato un errore durante l'accesso. Riprova.");

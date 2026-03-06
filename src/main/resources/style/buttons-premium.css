@@ -1,0 +1,264 @@
+/* ==============================================================================
+   ROYAL PURPLE PREMIUM BUTTON SYSTEM
+   Stripe/Vercel level button styling with luxury purple aesthetic
+   ============================================================================== */
+
+/* ========== PRIMARY BUTTONS - Purple Gradient ========== */
+
+.button-primary {
+    -fx-background-color: -fx-color-purple-primary;
+    -fx-text-fill: white;
+    -fx-background-radius: 12px;
+    -fx-padding: 14px 24px;
+    -fx-font-weight: 700;
+    -fx-font-size: 14px;
+    -fx-cursor: hand;
+    -fx-border-color: transparent;
+    -fx-border-width: 0;
+    -fx-border-radius: 12px;
+    -fx-effect: dropshadow(gaussian, rgba(139, 92, 246, 0.5), 20px, 0, 0, 0px);
+}
+
+.button-primary:hover {
+    -fx-background-color: -fx-color-purple-dark;
+    -fx-effect: dropshadow(gaussian, rgba(139, 92, 246, 0.7), 30px, 0, 0, 0px);
+    -fx-translate-y: -2px;
+}
+
+.button-primary:pressed {
+    -fx-scale-x: 0.97;
+    -fx-scale-y: 0.97;
+    -fx-effect: dropshadow(gaussian, rgba(139, 92, 246, 0.4), 10px, 0, 0, 0px);
+}
+
+.button-primary:focused {
+    -fx-border-color: -fx-color-pink-light;
+    -fx-border-width: 2px;
+}
+
+/* ========== SECONDARY BUTTONS - Outlined ========== */
+
+.button-secondary {
+    -fx-background-color: transparent;
+    -fx-text-fill: -fx-color-purple-primary;
+    -fx-background-radius: 12px;
+    -fx-padding: 14px 24px;
+    -fx-font-weight: 600;
+    -fx-font-size: 14px;
+    -fx-cursor: hand;
+    -fx-border-color: -fx-color-purple-primary;
+    -fx-border-width: 2px;
+    -fx-border-radius: 12px;
+}
+
+.button-secondary:hover {
+    -fx-background-color: rgba(139, 92, 246, 0.1);
+    -fx-effect: dropshadow(gaussian, rgba(139, 92, 246, 0.3), 15px, 0, 0, 0px);
+}
+
+.button-secondary:pressed {
+    -fx-scale-x: 0.97;
+    -fx-scale-y: 0.97;
+}
+
+/* ========== GHOST BUTTONS - Minimal ========== */
+
+.button-ghost {
+    -fx-background-color: rgba(37, 37, 50, 0.5);
+    -fx-text-fill: -fx-color-text-primary;
+    -fx-background-radius: 10px;
+    -fx-padding: 12px 20px;
+    -fx-font-weight: 600;
+    -fx-font-size: 14px;
+    -fx-cursor: hand;
+    -fx-border-color: transparent;
+    -fx-border-width: 0;
+    -fx-border-radius: 10px;
+}
+
+.button-ghost:hover {
+    -fx-background-color: rgba(139, 92, 246, 0.2);
+    -fx-border-color: rgba(139, 92, 246, 0.5);
+    -fx-border-width: 1px;
+}
+
+/* ========== ICON BUTTONS - Square/Round ========== */
+
+.action-button {
+    -fx-background-color: rgba(37, 37, 50, 0.6);
+    -fx-background-radius: 12px;
+    -fx-padding: 12px;
+    -fx-min-width: 48px;
+    -fx-min-height: 48px;
+    -fx-max-width: 48px;
+    -fx-max-height: 48px;
+    -fx-cursor: hand;
+    -fx-border-color: rgba(148, 163, 184, 0.3);
+    -fx-border-width: 1px;
+    -fx-border-radius: 12px;
+    -fx-alignment: center;
+    -fx-content-display: center;
+}
+
+.action-button:hover {
+    -fx-background-color: rgba(139, 92, 246, 0.2);
+    -fx-border-color: -fx-color-purple-primary;
+    -fx-effect: dropshadow(gaussian, rgba(139, 92, 246, 0.4), 15px, 0, 0, 0px);
+}
+
+.action-button:pressed {
+    -fx-scale-x: 0.95;
+    -fx-scale-y: 0.95;
+}
+
+/* Icon styling within button */
+.action-button .svg-path {
+    -fx-fill: -fx-color-text-tertiary;
+}
+
+.action-button:hover .svg-path {
+    -fx-fill: -fx-color-purple-primary;
+}
+
+/* ========== ACCOUNT BUTTON - Special Circle Style ========== */
+
+.account-button {
+    -fx-background-color: -fx-gradient-purple-premium;
+    -fx-background-radius: 9999px;
+    -fx-padding: 10px;
+    -fx-min-width: 44px;
+    -fx-min-height: 44px;
+    -fx-max-width: 44px;
+    -fx-max-height: 44px;
+    -fx-border-color: transparent;
+    -fx-border-width: 0;
+    -fx-effect: dropshadow(gaussian, rgba(139, 92, 246, 0.5), 18px, 0, 0, 0px);
+}
+
+.account-button:hover {
+    -fx-effect: dropshadow(gaussian, rgba(236, 72, 153, 0.6), 25px, 0, 0, 0px);
+    -fx-scale-x: 1.08;
+    -fx-scale-y: 1.08;
+}
+
+.account-button .svg-path {
+    -fx-fill: white;
+}
+
+/* ========== SEARCH BUTTON ========== */
+
+.search-button {
+    -fx-background-color: -fx-color-purple-primary;
+    -fx-background-radius: 28px;
+    -fx-padding: 14px;
+    -fx-min-width: 44px;
+    -fx-min-height: 44px;
+    -fx-max-width: 44px;
+    -fx-max-height: 44px;
+    -fx-cursor: hand;
+    -fx-border-color: transparent;
+    -fx-effect: dropshadow(gaussian, rgba(139, 92, 246, 0.5), 15px, 0, 0, 0px);
+}
+
+.search-button:hover {
+    -fx-background-color: -fx-color-purple-dark;
+    -fx-effect: dropshadow(gaussian, rgba(139, 92, 246, 0.7), 25px, 0, 0, 0px);
+}
+
+.search-button:pressed {
+    -fx-scale-x: 0.95;
+    -fx-scale-y: 0.95;
+}
+
+.search-button .svg-path {
+    -fx-fill: white;
+}
+
+/* ========== FAB (Floating Action Button) ========== */
+
+.fab {
+    -fx-background-color: -fx-gradient-purple-premium;
+    -fx-text-fill: white;
+    -fx-background-radius: 9999px;
+    -fx-padding: 16px;
+    -fx-min-width: 56px;
+    -fx-min-height: 56px;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(139, 92, 246, 0.6), 25px, 0, 0, 0px);
+}
+
+.fab:hover {
+    -fx-effect: dropshadow(gaussian, rgba(236, 72, 153, 0.7), 35px, 0, 0, 0px);
+    -fx-scale-x: 1.1;
+    -fx-scale-y: 1.1;
+}
+
+/* ========== BUTTON SIZES ========== */
+
+.button-xs {
+    -fx-padding: 8px 12px;
+    -fx-font-size: 11px;
+    -fx-min-height: 28px;
+}
+
+.button-sm {
+    -fx-padding: 10px 16px;
+    -fx-font-size: 12px;
+    -fx-min-height: 32px;
+}
+
+.button-md {
+    -fx-padding: 12px 20px;
+    -fx-font-size: 14px;
+    -fx-min-height: 40px;
+}
+
+.button-lg {
+    -fx-padding: 16px 28px;
+    -fx-font-size: 16px;
+    -fx-min-height: 48px;
+}
+
+.button-xl {
+    -fx-padding: 20px 32px;
+    -fx-font-size: 18px;
+    -fx-min-height: 56px;
+}
+
+/* ========== BUTTON VARIANTS ========== */
+
+/* Success button */
+.button-success {
+    -fx-background-color: -fx-color-success-text;
+    -fx-text-fill: white;
+}
+
+/* Warning button */
+.button-warning {
+    -fx-background-color: -fx-color-warning-text;
+    -fx-text-fill: -fx-color-bg-primary;
+}
+
+/* Error button */
+.button-error {
+    -fx-background-color: -fx-color-error-text;
+    -fx-text-fill: white;
+}
+
+/* Disabled state */
+.button-primary:disabled,
+.button-secondary:disabled,
+.action-button:disabled {
+    -fx-opacity: 0.5;
+    -fx-cursor: default;
+}
+
+/* Loading state (pseudo-class via JavaFX) */
+.button-loading {
+    -fx-text-fill: transparent;
+}
+
+.button-loading:hover {
+    -fx-translate-y: 0;
+    -fx-effect: none;
+}

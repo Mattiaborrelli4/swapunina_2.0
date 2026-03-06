@@ -39,7 +39,24 @@ public class RecensioneDialog extends Dialog<Boolean> {
     private static final int DIALOG_HEIGHT_NEW = 400;
 
     /**
-     * Costruttore per visualizzare recensioni esistenti di un annuncio specifico
+     * Costruttore per visualizzare recensioni di un VENDITORE (Vinted-style)
+     * @param venditore Venditore di cui visualizzare le recensioni
+     * @param recensioni Lista delle recensioni del venditore
+     * @param punteggioMedio Punteggio medio delle recensioni
+     */
+    public RecensioneDialog(utente venditore, List<Recensioni> recensioni, double punteggioMedio) {
+        this.venditore = venditore;
+        this.recensioni = recensioni;
+        this.punteggioMedio = punteggioMedio;
+        this.annuncio = null;
+        this.currentUserId = -1;
+
+        initializeDialogProperties();
+        initializeReviewViewUI();
+    }
+
+    /**
+     * Costruttore per visualizzare recensioni esistenti di un annuncio specifico (legacy)
      * @param annuncio Annuncio di cui visualizzare le recensioni
      * @param recensioni Lista delle recensioni dell'annuncio
      * @param punteggioMedio Punteggio medio delle recensioni
@@ -50,7 +67,7 @@ public class RecensioneDialog extends Dialog<Boolean> {
         this.punteggioMedio = punteggioMedio;
         this.venditore = null;
         this.currentUserId = -1;
-        
+
         initializeDialogProperties();
         initializeReviewViewUI();
     }
@@ -119,16 +136,24 @@ public class RecensioneDialog extends Dialog<Boolean> {
      * Genera il titolo del dialog in base ai dati disponibili
      */
     private String generateDialogTitle() {
+        // Vinted-style: Recensioni del venditore
+        if (venditore != null) {
+            String nome = venditore.getNome() != null ? venditore.getNome() : "";
+            String cognome = venditore.getCognome() != null ? venditore.getCognome() : "";
+            return "Recensioni di: " + (nome + " " + cognome).trim();
+        }
+
+        // Legacy: recensioni per annuncio
         if (annuncio != null && annuncio.getTitolo() != null) {
             return "Recensioni per: " + annuncio.getTitolo();
         }
-        
+
         if (recensioni != null && !recensioni.isEmpty() && recensioni.get(0).getAnnuncio() != null) {
             String titolo = recensioni.get(0).getAnnuncio().getTitolo();
             return "Recensioni per: " + (titolo != null ? titolo : "Annuncio");
         }
-        
-        return "Recensioni dell'annuncio";
+
+        return "Recensioni";
     }
 
     /**
@@ -160,7 +185,16 @@ public class RecensioneDialog extends Dialog<Boolean> {
      * Aggiunge le informazioni sull'annuncio al contenuto
      */
     private void addAnnuncioInfo(VBox content) {
-        if (annuncio != null && annuncio.getTitolo() != null) {
+        // Vinted-style: Mostra info venditore
+        if (venditore != null) {
+            String nome = venditore.getNome() != null ? venditore.getNome() : "";
+            String cognome = venditore.getCognome() != null ? venditore.getCognome() : "";
+            Label venditoreLabel = new Label("Venditore: " + (nome + " " + cognome).trim());
+            venditoreLabel.setFont(Font.font(FONT_FAMILY, FontWeight.BOLD, 14));
+            content.getChildren().add(venditoreLabel);
+        }
+        // Legacy: Mostra info annuncio
+        else if (annuncio != null && annuncio.getTitolo() != null) {
             Label titoloLabel = new Label("Annuncio: " + annuncio.getTitolo());
             titoloLabel.setFont(Font.font(FONT_FAMILY, FontWeight.BOLD, 14));
             content.getChildren().add(titoloLabel);
@@ -210,7 +244,10 @@ public class RecensioneDialog extends Dialog<Boolean> {
      * Aggiunge il messaggio per nessuna recensione disponibile
      */
     private void addNoReviewsMessage(VBox content) {
-        Label nessunaRecensioneLabel = new Label("Nessuna recensione disponibile per questo annuncio.");
+        String messaggio = venditore != null
+            ? "Nessuna recensione disponibile per questo venditore."
+            : "Nessuna recensione disponibile per questo annuncio.";
+        Label nessunaRecensioneLabel = new Label(messaggio);
         nessunaRecensioneLabel.setStyle("-fx-font-style: italic; -fx-text-fill: #666;");
         content.getChildren().add(nessunaRecensioneLabel);
     }

@@ -2,11 +2,16 @@ package schermata;
 
 import application.Classe.Annuncio;
 import application.Classe.AzioneAnnuncioHandler;
+import application.Classe.Messaggio;
+import application.DB.MessaggioDAO;
+import application.DB.SessionManager;
+import application.Enum.Tipologia;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -15,7 +20,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import application.Enum.Tipologia;
+import schermata.button.MessaggiDialog;
 
 
 public class DettagliProdottoView {
@@ -23,13 +28,13 @@ public class DettagliProdottoView {
     /** Percorso immagine di default per prodotti senza immagine */
     private static final String PERCORSO_IMMAGINE_DEFAULT = "/images/default-product.png";
     
-    /** Dimensioni finestra principale */
-    private static final int LARGHEZZA_FINESTRA = 600;
-    private static final int ALTEZZA_FINESTRA = 500;
-    
-    /** Dimensioni immagine prodotto */
-    private static final int LARGHEZZA_IMMAGINE = 250;
-    private static final int ALTEZZA_IMMAGINE = 200;
+    /** Dimensioni finestra principale - Design premium responsive */
+    private static final int LARGHEZZA_FINESTRA = 700;
+    private static final int ALTEZZA_FINESTRA = 550;
+
+    /** Dimensioni immagine prodotto - Ottimizzata per responsive */
+    private static final int LARGHEZZA_IMMAGINE = 280;
+    private static final int ALTEZZA_IMMAGINE = 220;
     
     /** Dimensioni minime finestra */
     private static final int LARGHEZZA_MINIMA = 400;
@@ -80,30 +85,58 @@ public class DettagliProdottoView {
     /**
      * Inizializza le proprietà della finestra modale
      * Configura il titolo, modalità e dimensioni della stage
+     * Centra la finestra allo schermo
      */
     private void inizializzaStage() {
         stage.initModality(Modality.APPLICATION_MODAL);
         stage.setTitle("Dettagli Prodotto - " + ottieniNomeProdotto());
         stage.setMinWidth(LARGHEZZA_MINIMA);
         stage.setMinHeight(ALTEZZA_MINIMA);
+
+        // Centra la finestra sullo schermo
+        stage.centerOnScreen();
     }
     
     /**
      * Configura l'interfaccia utente principale
-     * Crea il layout root e aggiunge tutte le sezioni componenti
+     * Layout responsive professionale:
+     * - Contenuto allineato a SINISTRA (tranne bottoni centrati)
+     * - Spaziatura MINIMA per spostare tutto a sinistra
      */
     private void configuraInterfacciaUtente() {
-        VBox layoutPrincipale = new VBox(20);
-        layoutPrincipale.setPadding(new Insets(20));
+        // Container principale con contenuto left-aligned
+        VBox layoutPrincipale = new VBox(25);
+        layoutPrincipale.setPadding(new Insets(30, 30, 30, 0)); // Padding sinistro a 0
         layoutPrincipale.getStyleClass().add("product-detail-container");
-        
-        // Creazione e composizione delle sezioni principali
-        HBox sezioneIntestazione = creaSezioneIntestazione();
-        HBox sezioneAzioni = creaSezioneAzioni();
-        
-        layoutPrincipale.getChildren().addAll(sezioneIntestazione, sezioneAzioni);
-        
-        Scene scena = new Scene(layoutPrincipale, LARGHEZZA_FINESTRA, ALTEZZA_FINESTRA);
+        layoutPrincipale.setAlignment(Pos.TOP_LEFT); // Contenuto a sinistra
+        layoutPrincipale.setMaxWidth(Double.MAX_VALUE);
+        layoutPrincipale.setFillWidth(true);
+
+        // Contenitore responsive per immagine + info
+        HBox contenutoResponsive = new HBox(8); // Spazio minimo 8
+        contenutoResponsive.setAlignment(Pos.TOP_LEFT); // Allineato a sinistra
+        contenutoResponsive.getStyleClass().add("responsive-content");
+        contenutoResponsive.setMaxWidth(Double.MAX_VALUE);
+
+        VBox sezioneImmagine = creaSezioneImmagine();
+        VBox sezioneInformazioni = creaSezioneInformazioni();
+
+        contenutoResponsive.getChildren().addAll(sezioneImmagine, sezioneInformazioni);
+
+        HBox sezioneAzioni = creaSezioneAzioni(); // Bottoni restano centrati
+
+        layoutPrincipale.getChildren().addAll(contenutoResponsive, sezioneAzioni);
+
+        // WRAP in ScrollPane per responsive design
+        ScrollPane scrollPane = new ScrollPane(layoutPrincipale);
+        scrollPane.setFitToWidth(true);
+        scrollPane.setFitToHeight(true);
+        scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
+        scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+        scrollPane.getStyleClass().add("detail-scroll-pane");
+        scrollPane.setPannable(true);
+
+        Scene scena = new Scene(scrollPane, LARGHEZZA_FINESTRA, ALTEZZA_FINESTRA);
         applicaStiliScena(scena);
         stage.setScene(scena);
     }
@@ -123,16 +156,18 @@ public class DettagliProdottoView {
     
     /**
      * Crea la sezione intestazione con immagine e informazioni prodotto
-     * 
+     * Design professionale con allineamento perfetto
+     *
      * @return HBox contenente la sezione immagine e informazioni
      */
     private HBox creaSezioneIntestazione() {
-        HBox intestazione = new HBox(20);
-        intestazione.setAlignment(Pos.TOP_LEFT);
-        
+        HBox intestazione = new HBox(30); // Spazio aumentato per呼吸
+        intestazione.setAlignment(Pos.TOP_CENTER); // Allineamento center per entrambi
+        intestazione.setPadding(new Insets(10, 0, 10, 0));
+
         VBox sezioneImmagine = creaSezioneImmagine();
         VBox sezioneInformazioni = creaSezioneInformazioni();
-        
+
         intestazione.getChildren().addAll(sezioneImmagine, sezioneInformazioni);
         return intestazione;
     }
@@ -154,60 +189,75 @@ public class DettagliProdottoView {
     
     /**
      * Crea la sezione informazioni con tutti i dettagli del prodotto
-     * 
+     * Design professionale con contenuto allineato a SINISTRA
+     *
      * @return VBox contenente tutti i dettagli informativi
      */
     private VBox creaSezioneInformazioni() {
-        VBox sezioneInformazioni = new VBox(15);
-        sezioneInformazioni.setAlignment(Pos.TOP_LEFT);
-        
+        VBox sezioneInformazioni = new VBox(18);
+        sezioneInformazioni.setAlignment(Pos.TOP_LEFT); // Allineato a sinistra
+        sezioneInformazioni.setPadding(new Insets(5, 0, 0, 0));
+        sezioneInformazioni.setMaxWidth(400); // Larghezza max per readability
+
         configuraInformazioniProdotto();
         Label badgeTipologia = creaBadgeTipologia();
         VBox informazioniConsegna = creaInformazioniConsegna();
         VBox informazioniVenditore = creaInformazioniVenditore();
-        
+
         sezioneInformazioni.getChildren().addAll(
-            testoNomeProdotto, 
-            testoPrezzoProdotto, 
-            badgeTipologia, 
-            testoDescrizioneProdotto, 
-            informazioniConsegna, 
+            testoNomeProdotto,
+            testoPrezzoProdotto,
+            badgeTipologia,
+            testoDescrizioneProdotto,
+            informazioniConsegna,
             informazioniVenditore
         );
-        
+
         return sezioneInformazioni;
     }
     
     /**
      * Crea la sezione azioni con i pulsanti
-     * 
-     * @return HBox contenente i pulsanti di azione e chiusura
+     * Design professionale con 3 bottoni: Chiudi, Info (chat), Azione
+     * Tutti centrati con dimensioni uniformi
+     *
+     * @return HBox contenente i pulsanti
      */
     private HBox creaSezioneAzioni() {
-        HBox sezioneAzioni = new HBox(15);
-        sezioneAzioni.setAlignment(Pos.CENTER);
+        HBox sezioneAzioni = new HBox(15); // Spazio tra bottoni
+        sezioneAzioni.setAlignment(Pos.CENTER); // Bottoni rimangono centrati
         sezioneAzioni.getStyleClass().add("action-section");
-        
+        sezioneAzioni.setPadding(new Insets(15, 0, 5, 0));
+
         Button pulsanteChiudi = creaPulsanteChiudi();
+        Button pulsanteInfo = creaPulsanteInfo(); // Nuovo bottone Info
         configuraPulsanteAzione();
-        
-        sezioneAzioni.getChildren().addAll(pulsanteChiudi, pulsanteAzione);
+
+        // Dimensioni uniformi per tutti i bottoni
+        pulsanteChiudi.setPrefWidth(140);
+        pulsanteChiudi.setPrefHeight(50);
+        pulsanteInfo.setPrefWidth(140);
+        pulsanteInfo.setPrefHeight(50);
+        pulsanteAzione.setPrefWidth(200);
+        pulsanteAzione.setPrefHeight(50);
+
+        sezioneAzioni.getChildren().addAll(pulsanteChiudi, pulsanteInfo, pulsanteAzione);
         return sezioneAzioni;
     }
     
     /**
      * Configura le informazioni testuali del prodotto
-     * Imposta titolo, prezzo formattato e descrizione
+     * Imposta titolo, prezzo formattato e descrizione con wrapping responsive
      */
     private void configuraInformazioniProdotto() {
         testoNomeProdotto.setText(ottieniNomeProdotto());
         testoNomeProdotto.getStyleClass().add("product-detail-title");
-        
+
         testoPrezzoProdotto.setText(annuncio.getPrezzoFormattato());
         testoPrezzoProdotto.getStyleClass().add("product-detail-price");
-        
+
         testoDescrizioneProdotto.setText(ottieniDescrizioneProdotto());
-        testoDescrizioneProdotto.setWrappingWidth(300);
+        testoDescrizioneProdotto.setWrappingWidth(350); // Aumentato per migliore responsive
         testoDescrizioneProdotto.getStyleClass().add("product-detail-description");
     }
     
@@ -226,20 +276,82 @@ public class DettagliProdottoView {
     
     /**
      * Crea e configura il pulsante di chiusura
-     * 
+     *
      * @return Button configurato per chiudere la finestra
      */
     private Button creaPulsanteChiudi() {
         Button pulsanteChiudi = new Button("Chiudi");
         pulsanteChiudi.getStyleClass().add("close-button");
         pulsanteChiudi.setOnAction(e -> stage.close());
-        
+
         // Tooltip informativo
         Tooltip.install(pulsanteChiudi, new Tooltip("Chiudi questa finestra"));
-        
+
         return pulsanteChiudi;
     }
-    
+
+    /**
+     * Crea e configura il pulsante Info per aprire la chat con il venditore
+     * Permette di chiedere informazioni aggiuntive sul prodotto
+     *
+     * @return Button configurato per aprire la chat
+     */
+    private Button creaPulsanteInfo() {
+        Button pulsanteInfo = new Button("💬 Info");
+        pulsanteInfo.getStyleClass().add("info-button");
+        pulsanteInfo.setOnAction(e -> apriChatPerInfo());
+
+        // Tooltip informativo
+        Tooltip.install(pulsanteInfo, new Tooltip("Contatta il venditore per informazioni"));
+
+        return pulsanteInfo;
+    }
+
+    /**
+     * Apre la chat con il venditore per richiedere informazioni
+     */
+    private void apriChatPerInfo() {
+        try {
+            int currentUserId = SessionManager.getCurrentUserId();
+
+            // Verifica se l'utente è loggato
+            if (currentUserId == -1) {
+                mostraAlert("Devi essere loggato per contattare il venditore");
+                return;
+            }
+
+            // Verifica che non sia il venditore stesso
+            if (currentUserId == annuncio.getVenditoreId()) {
+                mostraAlert("Sei il venditore di questo annuncio");
+                return;
+            }
+
+            // Crea messaggio iniziale per informazioni
+            String messaggioIniziale = "Salve, vorrei delle informazioni in più su: " + annuncio.getTitolo();
+
+            // Apre il dialog chat
+            MessaggiDialog dialog = new MessaggiDialog(annuncio, currentUserId, messaggioIniziale);
+            dialog.showAndWait();
+
+        } catch (Exception e) {
+            System.err.println("Errore nell'apertura della chat: " + e.getMessage());
+            mostraAlert("Errore nell'apertura della chat. Riprova più tardi.");
+        }
+    }
+
+    /**
+     * Mostra un alert all'utente
+     */
+    private void mostraAlert(String messaggio) {
+        javafx.scene.control.Alert alert = new javafx.scene.control.Alert(
+            javafx.scene.control.Alert.AlertType.INFORMATION
+        );
+        alert.setTitle("Informazione");
+        alert.setHeaderText(null);
+        alert.setContentText(messaggio);
+        alert.showAndWait();
+    }
+
     /**
      * Configura il pulsante di azione principale in base alla tipologia annuncio
      * Imposta testo, icona, tooltip e gestore eventi appropriati
@@ -276,33 +388,37 @@ public class DettagliProdottoView {
     
     /**
      * Crea la sezione informazioni di consegna
-     * 
+     * Contenuto allineato a sinistra
+     *
      * @return VBox con dettagli località e metodo consegna
      */
     private VBox creaInformazioniConsegna() {
         VBox informazioniConsegna = new VBox(5);
+        informazioniConsegna.setAlignment(Pos.TOP_LEFT); // Allineato a sinistra
         informazioniConsegna.getStyleClass().add("delivery-info");
-        
+
         Text titolo = creaTitoloSezione("Modalità di consegna:");
         Text localita = new Text("📍 " + ottieniLocalitaConsegna());
         Text metodo = new Text("🚚 " + ottieniMetodoConsegna());
-        
+
         informazioniConsegna.getChildren().addAll(titolo, localita, metodo);
         return informazioniConsegna;
     }
-    
+
     /**
      * Crea la sezione informazioni venditore
-     * 
+     * Contenuto allineato a sinistra
+     *
      * @return VBox con dettagli identificativi venditore
      */
     private VBox creaInformazioniVenditore() {
         VBox informazioniVenditore = new VBox(5);
+        informazioniVenditore.setAlignment(Pos.TOP_LEFT); // Allineato a sinistra
         informazioniVenditore.getStyleClass().add("seller-info");
-        
+
         Text titolo = creaTitoloSezione("Informazioni venditore:");
         Text nome = new Text("👤 " + annuncio.getNomeUtenteVenditore());
-        
+
         informazioniVenditore.getChildren().addAll(titolo, nome);
         return informazioniVenditore;
     }

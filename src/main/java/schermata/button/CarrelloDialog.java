@@ -57,19 +57,22 @@ public class CarrelloDialog extends Dialog<Void> {
      */
     private void setupStyling() {
         try {
-            getDialogPane().getStylesheets().add(getClass().getResource("/carello.css").toExternalForm());
+            // Carica CSS unificato Royal Purple
+            getDialogPane().getStylesheets().add(
+                getClass().getResource("/styles/finestre-utente.css").toExternalForm()
+            );
         } catch (Exception e) {
             System.err.println("Impossibile caricare il file CSS: " + e.getMessage());
         }
-        
+
         setWidth(1000);
         setHeight(700);
-        
+
         ButtonType chiudiButtonType = new ButtonType("Chiudi", ButtonBar.ButtonData.CANCEL_CLOSE);
         getDialogPane().getButtonTypes().addAll(chiudiButtonType);
-        
+
         getDialogPane().getStyleClass().add("container");
-        
+
         setOnHidden(e -> backgroundExecutor.shutdown());
     }
 

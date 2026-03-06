@@ -1,0 +1,275 @@
+/* ============================================
+   DETTAGLI PRODOTTO - ROYAL PURPLE PREMIUM
+   Design professionale RESPONSIVE
+   Desktop + Mobile (telefono)
+   ============================================ */
+
+/* ============================================
+   SCROLLPANE - Container responsive
+   ============================================ */
+
+.detail-scroll-pane {
+    -fx-background-color: #0d1117;
+    -fx-background-insets: 0;
+}
+
+.detail-scroll-pane > .viewport {
+    -fx-background-color: #0d1117;
+}
+
+.detail-scroll-pane .scroll-bar {
+    -fx-background-color: transparent;
+}
+
+.detail-scroll-pane .scroll-bar .thumb {
+    -fx-background-color: rgba(139, 92, 246, 0.5);
+    -fx-background-radius: 6;
+}
+
+.detail-scroll-pane .scroll-bar .thumb:hover {
+    -fx-background-color: rgba(139, 92, 246, 0.7);
+}
+
+.detail-scroll-pane .scroll-bar .track {
+    -fx-background-color: transparent;
+}
+
+/* ============================================
+   CONTAINER PRINCIPALE
+   ============================================ */
+
+.product-detail-container {
+    -fx-background-color: linear-gradient(to bottom right, #0d1117, #161b22);
+    -fx-background-radius: 0;
+    -fx-padding: 30;
+    -fx-spacing: 25;
+    -fx-max-width: Infinity;
+    -fx-alignment: CENTER;
+}
+
+/* ============================================
+   RESPONSIVE CONTENT WRAPPER
+   Desktop: orizzontale, Mobile: verticale
+   ============================================ */
+
+.responsive-content {
+    -fx-alignment: CENTER;
+    -fx-fill-width: true;
+}
+
+/* ============================================
+   SEZIONE IMMAGINE
+   ============================================ */
+
+.product-detail-image {
+    -fx-background-radius: 16;
+    -fx-border-radius: 16;
+    -fx-border-color: rgba(139, 92, 246, 0.3);
+    -fx-border-width: 2;
+    -fx-effect: dropshadow(gaussian, rgba(139, 92, 246, 0.2), 15, 0.1, 0, 5);
+}
+
+/* ============================================
+   TESTI - Typography Premium ALLINEATI A SINISTRA
+   ============================================ */
+
+.product-detail-title {
+    -fx-fill: #ffffff;
+    -fx-font-family: "Segoe UI", "SF Pro Display", -apple-system, sans-serif;
+    -fx-font-size: 24px;
+    -fx-font-weight: 800;
+    -fx-wrap-text: true;
+    -fx-text-alignment: LEFT;
+}
+
+.product-detail-price {
+    -fx-fill: #a855f7;
+    -fx-font-family: "Segoe UI", sans-serif;
+    -fx-font-size: 28px;
+    -fx-font-weight: 700;
+    -fx-text-alignment: LEFT;
+}
+
+.product-detail-description {
+    -fx-fill: #e2e8f0;
+    -fx-font-family: "Segoe UI", sans-serif;
+    -fx-font-size: 14px;
+    -fx-line-spacing: 6;
+    -fx-wrap-text: true;
+    -fx-text-alignment: LEFT;
+}
+
+/* ============================================
+   BADGE - Tipologia Prodotto ALLINEATO A SINISTRA
+   ============================================ */
+
+.badge {
+    -fx-background-color: rgba(139, 92, 246, 0.2);
+    -fx-text-fill: #c4b5fd;
+    -fx-font-family: "Segoe UI", sans-serif;
+    -fx-font-size: 11px;
+    -fx-font-weight: 700;
+    -fx-padding: 6 14;
+    -fx-background-radius: 12;
+    -fx-border-color: rgba(139, 92, 246, 0.4);
+    -fx-border-width: 1;
+    -fx-border-radius: 12;
+    -fx-alignment: TOP_LEFT;
+}
+
+.badge-sale {
+    -fx-background-color: rgba(34, 197, 94, 0.2);
+    -fx-text-fill: #86efac;
+    -fx-border-color: rgba(34, 197, 94, 0.4);
+}
+
+.badge-exchange {
+    -fx-background-color: rgba(251, 146, 60, 0.2);
+    -fx-text-fill: #fdba74;
+    -fx-border-color: rgba(251, 146, 60, 0.4);
+}
+
+.badge-gift {
+    -fx-background-color: rgba(236, 72, 153, 0.2);
+    -fx-text-fill: #f9a8d4;
+    -fx-border-color: rgba(236, 72, 153, 0.4);
+}
+
+.badge-auction {
+    -fx-background-color: rgba(139, 92, 246, 0.2);
+    -fx-text-fill: #c4b5fd;
+    -fx-border-color: rgba(139, 92, 246, 0.4);
+}
+
+/* ============================================
+   SEZIONI INFO - Consegna e Venditore ALLINEATE A SINISTRA
+   ============================================ */
+
+.delivery-info, .seller-info {
+    -fx-background-color: rgba(255, 255, 255, 0.03);
+    -fx-background-radius: 12;
+    -fx-padding: 15;
+    -fx-spacing: 8;
+    -fx-border-color: rgba(139, 92, 246, 0.15);
+    -fx-border-width: 1;
+    -fx-border-radius: 12;
+    -fx-alignment: TOP_LEFT;
+}
+
+.section-title {
+    -fx-fill: #a78bfa;
+    -fx-font-family: "Segoe UI", sans-serif;
+    -fx-font-size: 13px;
+    -fx-font-weight: 700;
+    -fx-text-transform: uppercase;
+    -fx-letter-spacing: 0.5;
+    -fx-text-alignment: LEFT;
+}
+
+.delivery-info > .text,
+.seller-info > .text {
+    -fx-fill: #cbd5e1;
+    -fx-font-family: "Segoe UI", sans-serif;
+    -fx-font-size: 13px;
+    -fx-text-alignment: LEFT;
+}
+
+/* ============================================
+   BOTTONI - Royal Purple Premium CENTRATI
+   ============================================ */
+
+.action-section {
+    -fx-padding: 10 0 0 0;
+    -fx-alignment: CENTER;
+    -fx-fill-width: true;
+}
+
+.action-button {
+    -fx-background-color: linear-gradient(to right, #8b5cf6, #7c3aed);
+    -fx-text-fill: #ffffff;
+    -fx-font-family: "Segoe UI", sans-serif;
+    -fx-font-size: 15px;
+    -fx-font-weight: 700;
+    -fx-padding: 14 32;
+    -fx-background-radius: 12;
+    -fx-cursor: hand;
+    -fx-border-width: 0;
+    -fx-effect: dropshadow(gaussian, rgba(139, 92, 246, 0.4), 12, 0.2, 0, 4);
+    -fx-alignment: CENTER;
+}
+
+.action-button:hover {
+    -fx-background-color: linear-gradient(to right, #a78bfa, #8b5cf6);
+    -fx-scale-x: 1.02;
+    -fx-scale-y: 1.02;
+    -fx-effect: dropshadow(gaussian, rgba(139, 92, 246, 0.6), 16, 0.3, 0, 6);
+}
+
+.action-button:pressed {
+    -fx-scale-x: 0.98;
+    -fx-scale-y: 0.98;
+}
+
+.close-button {
+    -fx-background-color: rgba(255, 255, 255, 0.08);
+    -fx-text-fill: #e2e8f0;
+    -fx-font-family: "Segoe UI", sans-serif;
+    -fx-font-size: 14px;
+    -fx-font-weight: 600;
+    -fx-padding: 14 28;
+    -fx-background-radius: 12;
+    -fx-cursor: hand;
+    -fx-border-color: rgba(255, 255, 255, 0.12);
+    -fx-border-width: 1;
+    -fx-border-radius: 12;
+    -fx-alignment: CENTER;
+}
+
+.close-button:hover {
+    -fx-background-color: rgba(255, 255, 255, 0.12);
+    -fx-text-fill: #ffffff;
+    -fx-border-color: rgba(255, 255, 255, 0.2);
+}
+
+.close-button:pressed {
+    -fx-scale-x: 0.98;
+    -fx-scale-y: 0.98;
+}
+
+/* Bottone INFO - Chat con venditore */
+.info-button {
+    -fx-background-color: rgba(59, 130, 246, 0.15);
+    -fx-text-fill: #60a5fa;
+    -fx-font-family: "Segoe UI", sans-serif;
+    -fx-font-size: 14px;
+    -fx-font-weight: 600;
+    -fx-padding: 14 20;
+    -fx-background-radius: 12;
+    -fx-cursor: hand;
+    -fx-border-color: rgba(59, 130, 246, 0.4);
+    -fx-border-width: 1;
+    -fx-border-radius: 12;
+    -fx-alignment: CENTER;
+    -fx-effect: dropshadow(gaussian, rgba(59, 130, 246, 0.2), 8, 0.1, 0, 3);
+}
+
+.info-button:hover {
+    -fx-background-color: rgba(59, 130, 246, 0.25);
+    -fx-text-fill: #93c5fd;
+    -fx-border-color: rgba(59, 130, 246, 0.6);
+    -fx-effect: dropshadow(gaussian, rgba(59, 130, 246, 0.4), 12, 0.2, 0, 4);
+}
+
+.info-button:pressed {
+    -fx-scale-x: 0.98;
+    -fx-scale-y: 0.98;
+}
+
+/* ============================================
+   RESPONSIVE MOBILE (telefono)
+   Quando la finestra è piccola (< 500px)
+   ============================================ */
+
+/* Nota: JavaFX CSS non supporta @media queries nativamente
+   Il responsive è gestito via Java con setMaxWidth e alignment
+   Questo CSS è ottimizzato per funzionare con layout flexible */

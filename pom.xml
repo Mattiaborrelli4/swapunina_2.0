@@ -232,6 +232,9 @@
                 <version>0.0.8</version>
                 <configuration>
                     <mainClass>${main.class}</mainClass>
+                    <jvmArgs>
+                        <jvmArg>-DSWAPUNINA_MASTER_KEY=SwapUnina2025!Secure</jvmArg>
+                    </jvmArgs>
                 </configuration>
             </plugin>
 

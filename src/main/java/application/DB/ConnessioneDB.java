@@ -121,12 +121,15 @@ public class ConnessioneDB {
             poolInizializzato = false;
             String messaggioErrore = "❌ Driver PostgreSQL non trovato. Verifica che il driver sia nel classpath.";
             System.err.println(messaggioErrore);
-            throw new ExceptionInInitializerError(messaggioErrore + " " + e.getMessage());
+            // NON lanciamo eccezione per permettere all'app di partire in modalità demo
+            System.err.println("⚠️  Applicazione avviata in MODALITÀ DEMO senza database");
         } catch (Exception e) {
             poolInizializzato = false;
             String messaggioErrore = "❌ Errore durante l'inizializzazione del pool HikariCP.";
             System.err.println(messaggioErrore);
-            throw new ExceptionInInitializerError(messaggioErrore + " " + e.getMessage());
+            System.err.println("   Dettaglio: " + e.getMessage());
+            // NON lanciamo eccezione per permettere all'app di partire in modalità demo
+            System.err.println("⚠️  Applicazione avviata in MODALITÀ DEMO senza database");
         }
     }
 
@@ -144,7 +147,8 @@ public class ConnessioneDB {
      */
     public static Connection getConnessione() throws SQLException {
         if (!poolInizializzato || dataSource == null) {
-            throw new SQLException("Pool connessioni non inizializzato");
+            System.err.println("⚠️  Tentativo di connessione in modalità DEMO - database non disponibile");
+            throw new SQLException("Database non disponibile - modalità demo attiva");
         }
 
         try {

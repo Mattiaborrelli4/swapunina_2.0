@@ -115,7 +115,7 @@ public class RecensioneDAO {
      */
     public List<Recensioni> getRecensioniPerVenditore(int idVenditore) {
         List<Recensioni> recensioni = new ArrayList<>();
-        
+
         String sql = "SELECT r.*, " +
                      "acquirente.nome as acqu_nome, acquirente.cognome as acqu_cognome, " +
                      "venditore.nome as vend_nome, venditore.cognome as vend_cognome, " +
@@ -126,10 +126,10 @@ public class RecensioneDAO {
                      "JOIN annuncio a ON r.annuncio_id = a.id " +
                      "WHERE r.venditore_id = ? AND r.visibile = TRUE " +
                      "ORDER BY r.data_recensione DESC";
-        
+
         try (Connection conn = ConnessioneDB.getConnessione();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
-            
+
             stmt.setInt(1, idVenditore);
             try (ResultSet rs = stmt.executeQuery()) {
                 while (rs.next()) {
@@ -139,8 +139,39 @@ public class RecensioneDAO {
         } catch (SQLException e) {
             System.err.println("Errore recupero recensioni per venditore " + idVenditore + ": " + e.getMessage());
         }
-        
+
         return recensioni;
+    }
+
+    /**
+     * Recupera recensioni e statistiche per un VENDITORE (sistema Vinted-style)
+     * @param idVenditore ID del venditore
+     * @return StatisticheRecensioni con lista recensioni e punteggio medio
+     */
+    public StatisticheRecensioni getRecensioniEStatistichePerVenditore(int idVenditore) {
+        List<Recensioni> recensioni = new ArrayList<>();
+        StatisticheEconomiche statistiche;
+
+        // Recupera tutte le recensioni del venditore
+        recensioni = getRecensioniPerVenditore(idVenditore);
+
+        // Calcola statistiche dalle recensioni
+        if (!recensioni.isEmpty()) {
+            List<BigDecimal> punteggi = new ArrayList<>();
+            for (Recensioni r : recensioni) {
+                punteggi.add(BigDecimal.valueOf(r.getPunteggio()));
+            }
+
+            statistiche = StatisticheEconomiche.daBigDecimal(
+                punteggi,
+                LocalDateTime.now().minusMonths(1).toLocalDate(),
+                LocalDateTime.now().toLocalDate()
+            );
+        } else {
+            statistiche = creaStatisticheVuote();
+        }
+
+        return new StatisticheRecensioni(recensioni, statistiche);
     }
 
     /**
@@ -220,18 +251,42 @@ public class RecensioneDAO {
      */
     public boolean haGiaRecensito(int idAcquirente, int idAnnuncio) {
         String sql = "SELECT 1 FROM " + TABLE_NAME + " WHERE acquirente_id = ? AND annuncio_id = ? LIMIT 1";
-        
+
         try (Connection conn = ConnessioneDB.getConnessione();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
-            
+
             stmt.setInt(1, idAcquirente);
             stmt.setInt(2, idAnnuncio);
-            
+
             try (ResultSet rs = stmt.executeQuery()) {
                 return rs.next();
             }
         } catch (SQLException e) {
             System.err.println("Errore verifica recensione esistente: " + e.getMessage());
+            return false;
+        }
+    }
+
+    /**
+     * Verifica se un utente ha già recensito un venditore (recensioni tra persone)
+     * @param idAcquirente ID dell'acquirente
+     * @param idVenditore ID del venditore
+     * @return true se l'acquirente ha già recensito questo venditore
+     */
+    public boolean haGiaRecensitoVenditore(int idAcquirente, int idVenditore) {
+        String sql = "SELECT 1 FROM " + TABLE_NAME + " WHERE acquirente_id = ? AND venditore_id = ? LIMIT 1";
+
+        try (Connection conn = ConnessioneDB.getConnessione();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, idAcquirente);
+            stmt.setInt(2, idVenditore);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                return rs.next();
+            }
+        } catch (SQLException e) {
+            System.err.println("Errore verifica recensione venditore: " + e.getMessage());
             return false;
         }
     }

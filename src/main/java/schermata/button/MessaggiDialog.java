@@ -111,6 +111,15 @@ public class MessaggiDialog extends Dialog<Void> {
         getDialogPane().getButtonTypes().add(ButtonType.CLOSE);
         getDialogPane().setMinWidth(DIALOG_MIN_WIDTH);
         getDialogPane().setMinHeight(DIALOG_MIN_HEIGHT);
+
+        // Carica foglio di stile CSS Royal Purple
+        try {
+            getDialogPane().getStylesheets().add(
+                getClass().getResource("/styles/finestre-utente.css").toExternalForm()
+            );
+        } catch (Exception e) {
+            System.err.println("Errore nel caricamento CSS: " + e.getMessage());
+        }
     }
 
     /**

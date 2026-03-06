@@ -15,13 +15,13 @@
     -fx-font-size: 14px;
     -fx-font-smoothing-type: gray;
 
-    /* ===== COLORS - Dark Backgrounds (Spotify-inspired) ===== */
-    -fx-color-bg-primary: #0f172a;        /* Slate 900 - Main background */
-    -fx-color-bg-secondary: #1e293b;      /* Slate 800 - Cards, sidebar */
-    -fx-color-bg-tertiary: #334155;        /* Slate 700 - Hover states */
-    -fx-color-bg-elevated: #475569;       /* Slate 600 - Elevated elements */
+    /* ===== COLORS - Dark Backgrounds (Royal Purple Theme) ===== */
+    -fx-color-bg-primary: #0a0a0f;        /* Near-black - Deepest background */
+    -fx-color-bg-secondary: #13131a;      /* Very dark purple-gray - Secondary */
+    -fx-color-bg-tertiary: #1c1c26;       /* Dark purple-gray - Cards */
+    -fx-color-bg-elevated: #252532;       /* Elevated elements */
     -fx-color-bg-white: #ffffff;          /* Pure white - Text, icons */
-    -fx-color-bg-glass: rgba(30, 41, 59, 0.95); /* Glass morphism */
+    -fx-color-bg-glass: rgba(19, 19, 26, 0.95); /* Premium glass */
 
     /* ===== COLORS - Text Hierarchy ===== */
     -fx-color-text-primary: #f8fafc;      /* Slate 50 - Primary text */
@@ -30,30 +30,56 @@
     -fx-color-text-inverse: #0f172a;      /* Dark text on light backgrounds */
     -fx-color-text-muted: #64748b;        /* Slate 500 - Muted text */
 
-    /* ===== COLORS - Brand & Accents (Indigo/Vibrant) ===== */
-    -fx-color-brand-primary: #6366f1;     /* Indigo 500 - Primary CTA */
-    -fx-color-brand-dark: #4f46e5;        /* Indigo 600 - Hover CTA */
-    -fx-color-brand-light: #818cf8;       /* Indigo 400 - Light accent */
-    -fx-color-accent: #10b981;            /* Emerald 500 - Success */
-    -fx-color-accent-dark: #059669;       /* Emerald 600 - Success hover */
+    /* ===== COLORS - Royal Purple Luxury System ===== */
+    /* Primary Purple Hierarchy - Notion/Arc inspired */
+    -fx-color-purple-primary: #8b5cf6;     /* Violet 500 - Main CTA */
+    -fx-color-purple-dark: #7c3aed;        /* Violet 600 - Hover state */
+    -fx-color-purple-light: #a78bfa;       /* Violet 400 - Active/focus */
+    -fx-color-purple-dim: #6d28d9;         /* Violet 700 - Pressed state */
 
-    /* ===== COLORS - Semantic States ===== */
-    -fx-color-success-bg: rgba(16, 185, 129, 0.2);
+    /* Pink Accents - Royal Luxury */
+    -fx-color-pink-primary: #ec4899;       /* Pink 500 - Secondary accent */
+    -fx-color-pink-light: #f472b6;         /* Pink 400 - Hover accents */
+    -fx-color-pink-dark: #db2777;          /* Pink 600 - Deep accent */
+    -fx-color-pink-glow: rgba(236, 72, 153, 0.4);
+
+    /* Luxury Gradients */
+    -fx-gradient-purple-premium: linear-gradient(to right, #8b5cf6, #a855f7, #ec4899);
+    -fx-gradient-purple-subtle: linear-gradient(to right, #8b5cf6, #7c3aed);
+
+    /* Backward Compatibility - Map brand colors to purple */
+    -fx-color-brand-primary: #8b5cf6;      /* Now maps to purple-primary */
+    -fx-color-brand-dark: #7c3aed;         /* Now maps to purple-dark */
+    -fx-color-brand-light: #a78bfa;        /* Now maps to purple-light */
+    -fx-color-accent: #10b981;             /* Emerald 500 - Success (unchanged) */
+    -fx-color-accent-dark: #059669;        /* Emerald 600 - Success hover (unchanged) */
+
+    /* ===== COLORS - Semantic States (Purple-tinted) ===== */
+    -fx-color-success-bg: rgba(16, 185, 129, 0.15);
     -fx-color-success-text: #34d399;
-    -fx-color-warning-bg: rgba(245, 158, 11, 0.2);
-    -fx-color-warning-text: #fbbf24;
-    -fx-color-error-bg: rgba(239, 68, 68, 0.2);
-    -fx-color-error-text: #f87171;
-    -fx-color-info-bg: rgba(99, 102, 241, 0.2);
-    -fx-color-info-text: #818cf8;
+    -fx-color-success-border: rgba(16, 185, 129, 0.4);
 
-    /* ===== SHADOWS (Layered for depth - Airbnb inspired) ===== */
+    -fx-color-warning-bg: rgba(251, 191, 36, 0.15);
+    -fx-color-warning-text: #fbbf24;
+    -fx-color-warning-border: rgba(251, 191, 36, 0.4);
+
+    -fx-color-error-bg: rgba(244, 63, 94, 0.15);
+    -fx-color-error-text: #fb7185;
+    -fx-color-error-border: rgba(244, 63, 94, 0.4);
+
+    -fx-color-info-bg: rgba(139, 92, 246, 0.15);
+    -fx-color-info-text: #a78bfa;
+    -fx-color-info-border: rgba(139, 92, 246, 0.4);
+
+    /* ===== SHADOWS (Layered for depth - Royal Purple Glow) ===== */
     -fx-shadow-sm: dropshadow(gaussian, rgba(0, 0, 0, 0.3), 4px, 0, 0, 2px);
     -fx-shadow-md: dropshadow(gaussian, rgba(0, 0, 0, 0.4), 8px, 0, 0, 4px);
     -fx-shadow-lg: dropshadow(gaussian, rgba(0, 0, 0, 0.5), 16px, 0, 0, 8px);
     -fx-shadow-xl: dropshadow(gaussian, rgba(0, 0, 0, 0.6), 24px, 0, 0, 12px);
-    -fx-shadow-glow: dropshadow(gaussian, rgba(99, 102, 241, 0.4), 20px, 0, 0, 0px);
+    -fx-shadow-glow: dropshadow(gaussian, rgba(139, 92, 246, 0.5), 20px, 0, 0, 0px);  /* Purple glow */
     -fx-shadow-card: dropshadow(gaussian, rgba(0, 0, 0, 0.25), 12px, 0, 0, 6px);
+    -fx-shadow-purple-glow: dropshadow(gaussian, rgba(139, 92, 246, 0.4), 25px, 0, 0, 0px);  /* Premium purple glow */
+    -fx-shadow-pink-glow: dropshadow(gaussian, rgba(236, 72, 153, 0.5), 25px, 0, 0, 0px);  /* Pink accent glow */
 }
 
 /* ==============================================================================
@@ -143,16 +169,16 @@
 .fw-bold { -fx-font-weight: 700; }
 
 /* ==============================================================================
-   3. LAYOUT PRINCIPALE - Dark Theme Base
+   3. LAYOUT PRINCIPALE - Premium Dark Gradient Background
    ============================================================================== */
 
 .main-layout {
-    -fx-background-color: -fx-color-bg-primary;
+    -fx-background-color: linear-gradient(to bottom, #0f172a, #1e293b, #0f172a);
 }
 
 .content-area {
     -fx-background-color: transparent;
-    -fx-spacing: 20px;
+    -fx-spacing: 24px;
 }
 
 .main-scroll {
@@ -166,39 +192,41 @@
 
 .main-scroll .scroll-bar:vertical {
     -fx-background-color: transparent;
-    -fx-pref-width: 10px;
+    -fx-pref-width: 12px;
 }
 
 .main-scroll .scroll-bar:vertical .track {
-    -fx-background-color: -fx-color-bg-tertiary;
-    -fx-background-radius: 10px;
+    -fx-background-color: rgba(51, 65, 85, 0.5);
+    -fx-background-radius: 12px;
     -fx-border-color: transparent;
 }
 
 .main-scroll .scroll-bar:vertical .thumb {
-    -fx-background-color: -fx-color-bg-elevated;
-    -fx-background-radius: 10px;
+    -fx-background-color: rgba(99, 102, 241, 0.6);
+    -fx-background-radius: 12px;
     -fx-border-color: transparent;
 }
 
 .main-scroll .scroll-bar:vertical .thumb:hover {
     -fx-background-color: -fx-color-brand-primary;
+    -fx-effect: dropshadow(gaussian, rgba(99, 102, 241, 0.5), 8px, 0, 0, 0px);
 }
 
 /* ==============================================================================
-   4. TOP BAR - Dark Modern
+   4. TOP BAR - Premium Glass Effect Design
    ============================================================================== */
 
 .top-bar {
-    -fx-background-color: #1e293b;
-    -fx-padding: 16px 32px;
-    -fx-spacing: 20px;
+    -fx-background-color: linear-gradient(to right, rgba(10, 10, 15, 0.98), rgba(19, 19, 26, 0.95));
+    -fx-padding: 18px 36px;
+    -fx-spacing: 24px;
     -fx-alignment: center;
-    -fx-min-height: 72px;
-    -fx-pref-height: 72px;
-    -fx-effect: -fx-shadow-md;
-    -fx-border-color: #334155;
-    -fx-border-width: 0 0 2px 0;
+    -fx-min-height: 78px;
+    -fx-pref-height: 78px;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.5), 20px, 0, 0, 8px);
+    -fx-border-color: transparent;
+    -fx-border-width: 0 0 0 0;
+    -fx-background-radius: 0;
 }
 
 .logo-section {
@@ -207,69 +235,85 @@
 }
 
 .logo-container {
-    -fx-background-color: -fx-color-brand-primary;
-    -fx-background-radius: 18px;
-    -fx-padding: 12px;
-    -fx-effect: -fx-shadow-glow;
+    -fx-background-color: -fx-color-purple-primary;
+    -fx-background-radius: 22px;
+    -fx-padding: 14px;
+    -fx-effect: dropshadow(gaussian, rgba(139, 92, 246, 0.6), 25px, 0, 0, 0px);
+    -fx-cursor: hand;
+}
+
+.logo-container:hover {
+    -fx-effect: dropshadow(gaussian, rgba(139, 92, 246, 0.8), 35px, 0, 0, 0px);
+    -fx-scale-x: 1.05;
+    -fx-scale-y: 1.05;
 }
 
 .app-title {
     -fx-text-fill: -fx-color-text-primary;
-    -fx-font-size: 22px;
-    -fx-font-weight: 700;
-    -fx-letter-spacing: -0.01em;
+    -fx-font-size: 24px;
+    -fx-font-weight: 800;
+    -fx-letter-spacing: -0.02em;
+    -fx-effect: dropshadow(gaussian, rgba(139, 92, 246, 0.3), 8px, 0, 0, 2px);
 }
 
 /* ===== Search Bar ===== */
 .search-container {
     -fx-spacing: 0;
     -fx-alignment: center;
-    -fx-max-width: 700px;
-    -fx-pref-width: 700px;
+    -fx-max-width: 720px;
+    -fx-pref-width: 720px;
 }
 
 .search-field {
-    -fx-background-color: -fx-color-bg-secondary;
+    -fx-background-color: rgba(28, 28, 38, 0.8);
     -fx-text-fill: -fx-color-text-primary;
     -fx-prompt-text-fill: -fx-color-text-secondary;
     -fx-background-radius: 9999px;
-    -fx-border-color: -fx-color-bg-elevated;
+    -fx-border-color: rgba(139, 92, 246, 0.5);
     -fx-border-radius: 9999px;
     -fx-border-width: 2px;
-    -fx-padding: 16px 24px;
+    -fx-padding: 18px 28px;
     -fx-font-size: 15px;
-    -fx-pref-width: 600px;
-    -fx-pref-height: 52px;
-    -fx-font-weight: 500;
+    -fx-pref-width: 620px;
+    -fx-pref-height: 56px;
 }
 
 .search-field:focused {
-    -fx-background-color: -fx-color-bg-secondary;
+    -fx-border-color: -fx-color-purple-primary;
+    -fx-background-color: rgba(28, 28, 38, 0.95);
+    -fx-effect: dropshadow(gaussian, rgba(139, 92, 246, 0.3), 12px, 0, 0, 0px);
+}
+    -fx-font-weight: 500;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 8px, 0, 0, 4px);
+}
+
+.search-field:focused {
+    -fx-background-color: rgba(15, 23, 42, 0.95);
     -fx-border-color: -fx-color-brand-primary;
     -fx-border-width: 2px;
-    -fx-effect: -fx-shadow-glow;
+    -fx-effect: dropshadow(gaussian, rgba(99, 102, 241, 0.5), 20px, 0, 0, 0px);
 }
 
 .search-button {
-    -fx-background-color: -fx-color-brand-primary;
+    -fx-background-color: -fx-color-purple-primary;
     -fx-text-fill: white;
     -fx-background-radius: 9999px;
     -fx-border-color: transparent;
     -fx-padding: 16px;
-    -fx-font-size: 18px;
+    -fx-font-size: 20px;
     -fx-font-weight: 600;
     -fx-cursor: hand;
-    -fx-pref-height: 52px;
-    -fx-pref-width: 52px;
-    -fx-min-width: 52px;
-    -fx-effect: -fx-shadow-sm;
+    -fx-pref-height: 56px;
+    -fx-pref-width: 56px;
+    -fx-min-width: 56px;
+    -fx-effect: dropshadow(gaussian, rgba(139, 92, 246, 0.4), 15px, 0, 0, 0px);
 }
 
 .search-button:hover {
-    -fx-background-color: -fx-color-brand-dark;
-    -fx-effect: -fx-shadow-md;
-    -fx-scale-x: 1.05;
-    -fx-scale-y: 1.05;
+    -fx-background-color: -fx-color-purple-dark;
+    -fx-effect: dropshadow(gaussian, rgba(139, 92, 246, 0.6), 25px, 0, 0, 0px);
+    -fx-scale-x: 1.08;
+    -fx-scale-y: 1.08;
 }
 
 .search-button:pressed {
@@ -279,69 +323,66 @@
 
 /* ===== Action Buttons ===== */
 .action-buttons {
-    -fx-spacing: 12px;
+    -fx-spacing: 14px;
     -fx-alignment: center;
 }
 
 .action-button {
-    -fx-background-color: -fx-color-bg-secondary;
+    -fx-background-color: rgba(28, 28, 38, 0.6);
     -fx-text-fill: -fx-color-text-primary;
-    -fx-background-radius: 18px;
-    -fx-padding: 12px;
+    -fx-background-radius: 20px;
+    -fx-padding: 14px;
     -fx-cursor: hand;
-    -fx-min-width: 48px;
-    -fx-min-height: 48px;
-    -fx-border-color: -fx-color-bg-elevated;
+    -fx-min-width: 52px;
+    -fx-min-height: 52px;
+    -fx-border-color: rgba(139, 92, 246, 0.3);
     -fx-border-width: 2px;
-    -fx-border-radius: 18px;
+    -fx-border-radius: 20px;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 6px, 0, 0, 3px);
 }
 
 .action-button > .ikonli-font-icon {
-    -fx-icon-size: 22px;
+    -fx-icon-size: 24px;
     -fx-icon-color: -fx-color-text-primary;
 }
 
 .action-button:hover {
-    -fx-background-color: -fx-color-bg-tertiary;
-    -fx-border-color: -fx-color-brand-primary;
-    -fx-scale-x: 1.05;
-    -fx-scale-y: 1.05;
+    -fx-background-color: rgba(38, 38, 48, 0.8);
+    -fx-border-color: -fx-color-purple-primary;
+    -fx-effect: dropshadow(gaussian, rgba(139, 92, 246, 0.4), 12px, 0, 0, 0px);
+    -fx-scale-x: 1.08;
+    -fx-scale-y: 1.08;
 }
 
-.action-button > .ikonli-font-icon {
-    -fx-icon-size: 22px;
-    -fx-icon-color: -fx-color-text-primary;
-}
-
-.action-button:hover {
-    -fx-background-color: -fx-color-bg-tertiary;
-    -fx-border-color: -fx-color-bg-elevated;
-    -fx-scale-x: 1.05;
-    -fx-scale-y: 1.05;
+.action-button:pressed {
+    -fx-scale-x: 0.95;
+    -fx-scale-y: 0.95;
 }
 
 .account-button {
-    -fx-background-color: -fx-color-brand-primary;
+    -fx-background-color: #6366f1;
     -fx-text-fill: white;
     -fx-background-radius: 9999px;
-    -fx-padding: 8px 16px;
+    -fx-padding: 10px 20px;
     -fx-cursor: hand;
     -fx-spacing: 12px;
     -fx-alignment: center;
     -fx-border-color: transparent;
-    -fx-font-weight: 600;
-    -fx-font-size: 14px;
-    -fx-effect: -fx-shadow-sm;
+    -fx-font-weight: 700;
+    -fx-font-size: 15px;
+    -fx-effect: dropshadow(gaussian, rgba(99, 102, 241, 0.5), 18px, 0, 0, 0px);
 }
 
 .account-button > .ikonli-font-icon {
-    -fx-icon-size: 20px;
+    -fx-icon-size: 22px;
     -fx-icon-color: white;
 }
 
 .account-button:hover {
-    -fx-background-color: -fx-color-brand-dark;
-    -fx-effect: -fx-shadow-md;
+    -fx-background-color: #4f46e5;
+    -fx-effect: dropshadow(gaussian, rgba(99, 102, 241, 0.7), 25px, 0, 0, 0px);
+    -fx-scale-x: 1.03;
+    -fx-scale-y: 1.03;
 }
 
 /* ==============================================================================
@@ -359,8 +400,17 @@
 }
 
 .category-title {
-    -fx-text-fill: -fx-color-text-primary;
+    -fx-text-fill: white;
     -fx-font-size: 12px;
+    -fx-font-weight: 700;
+    -fx-text-transform: uppercase;
+    -fx-letter-spacing: 0.08em;
+}
+
+/* Menu title (Categorie) - Text control usa -fx-fill, non -fx-text-fill */
+.menu-title {
+    -fx-fill: white !important;
+    -fx-font-size: 14px;
     -fx-font-weight: 700;
     -fx-text-transform: uppercase;
     -fx-letter-spacing: 0.08em;
@@ -469,62 +519,86 @@
 }
 
 /* ==============================================================================
-   7. FILTER BAR - Modern Elevated Design
+   7. FILTER BAR - Premium Glass Effect Design
    ============================================================================== */
 
 .filter-bar {
-    -fx-background-color: -fx-color-bg-secondary;
-    -fx-background-radius: 22px;
-    -fx-border-color: -fx-color-bg-tertiary;
-    -fx-border-radius: 22px;
-    -fx-border-width: 1px;
-    -fx-padding: 16px 24px;
-    -fx-spacing: 20px;
+    -fx-background-color: rgba(28, 28, 38, 0.9);
+    -fx-background-radius: 26px;
+    -fx-border-color: rgba(139, 92, 246, 0.4);
+    -fx-border-radius: 26px;
+    -fx-border-width: 2px;
+    -fx-padding: 20px 28px;
+    -fx-spacing: 24px;
     -fx-alignment: center-left;
-    -fx-effect: -fx-shadow-card;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.4), 16px, 0, 0, 8px);
 }
 
 .filter-section {
-    -fx-spacing: 12px;
+    -fx-spacing: 14px;
     -fx-alignment: center-left;
 }
 
 .filter-label {
     -fx-text-fill: -fx-color-text-primary;
     -fx-font-weight: 700;
-    -fx-font-size: 14px;
+    -fx-font-size: 13px;
     -fx-text-transform: uppercase;
-    -fx-letter-spacing: 0.08em;
+    -fx-letter-spacing: 0.1em;
+    -fx-effect: dropshadow(gaussian, rgba(139, 92, 246, 0.3), 4px, 0, 0, 0px);
 }
 
 .filter-combo {
-    -fx-background-color: -fx-color-bg-secondary;
-    -fx-border-color: -fx-color-brand-primary;
-    -fx-border-radius: 20px;
-    -fx-background-radius: 20px;
+    -fx-background-color: rgba(19, 19, 26, 0.8);
+    -fx-border-color: rgba(139, 92, 246, 0.6);
+    -fx-border-radius: 22px;
+    -fx-background-radius: 22px;
     -fx-border-width: 2px;
-    -fx-padding: 14px 18px;
+    -fx-padding: 16px 20px;
     -fx-font-size: 15px;
     -fx-text-fill: -fx-color-text-primary;
-    -fx-pref-width: 190px;
-    -fx-font-weight: 700;
+    -fx-pref-width: 200px;
+    -fx-font-weight: 600;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 6px, 0, 0, 3px);
 }
 
 .filter-combo:focused {
-    -fx-border-color: -fx-color-brand-primary;
+    -fx-border-color: -fx-color-purple-primary;
     -fx-border-width: 2px;
-    -fx-effect: -fx-shadow-glow;
+    -fx-background-color: rgba(19, 19, 26, 0.95);
+    -fx-effect: dropshadow(gaussian, rgba(139, 92, 246, 0.5), 15px, 0, 0, 0px);
+}
+
+.filter-combo .arrow-button {
+    -fx-background-color: transparent;
+}
+
+.filter-combo .arrow {
+    -fx-background-color: -fx-color-purple-primary;
+}
+
+.filter-combo:hover {
+    -fx-border-color: -fx-color-purple-light;
+    -fx-background-color: rgba(19, 19, 26, 0.9);
 }
 
 .sort-section {
-    -fx-spacing: 12px;
+    -fx-spacing: 14px;
     -fx-alignment: center;
 }
 
-.total-count {
-    -fx-text-fill: -fx-color-text-primary;
-    -fx-font-size: 15px;
+.count-text {
+    -fx-text-fill: -fx-color-purple-primary;
+    -fx-font-size: 16px;
     -fx-font-weight: 700;
+    -fx-effect: dropshadow(gaussian, rgba(139, 92, 246, 0.3), 4px, 0, 0, 0px);
+}
+
+.total-count {
+    -fx-text-fill: -fx-color-purple-primary;
+    -fx-font-size: 16px;
+    -fx-font-weight: 700;
+    -fx-effect: dropshadow(gaussian, rgba(139, 92, 246, 0.3), 4px, 0, 0, 0px);
 }
 
 /* ==============================================================================
@@ -532,8 +606,8 @@
    ============================================================================== */
 
 .product-grid {
-    -fx-hgap: 24px;
-    -fx-vgap: 24px;
+    -fx-hgap: 28px;
+    -fx-vgap: 28px;
     -fx-padding: 0;
     -fx-alignment: top-center;
 }
@@ -544,16 +618,16 @@
 }
 
 /* ==============================================================================
-   9. PRODUCT CARD - Pinterest/Instagram Style
+   9. PRODUCT CARD - Premium Glass Effect Design
    ============================================================================== */
 
 .product-card {
-    -fx-background-color: -fx-color-bg-secondary;
-    -fx-background-radius: 36px;
-    -fx-border-color: -fx-color-brand-primary;
-    -fx-border-radius: 36px;
+    -fx-background-color: rgba(28, 28, 38, 0.95);
+    -fx-background-radius: 24px;
+    -fx-border-color: rgba(139, 92, 246, 0.3);
+    -fx-border-radius: 24px;
     -fx-border-width: 2px;
-    -fx-effect: -fx-shadow-card;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.4), 20px, 0, 0, 10px);
     -fx-padding: 0;
     -fx-spacing: 0;
     -fx-pref-width: 340px;
@@ -565,31 +639,68 @@
 }
 
 .product-card:hover {
-    -fx-effect: -fx-shadow-lg;
-    -fx-translate-y: -4px;
-    -fx-border-color: -fx-color-brand-primary;
+    -fx-effect: dropshadow(gaussian, rgba(139, 92, 246, 0.5), 30px, 0, 0, 15px);
+    -fx-translate-y: -6px;
+    -fx-border-color: -fx-color-purple-primary;
+    -fx-background-color: rgba(28, 28, 38, 1);
 }
 
 /* ===== Product Image ===== */
 .product-image-container {
-    -fx-background-radius: 36px 36px 0 0;
+    -fx-background-radius: 24px 24px 0 0;
     -fx-pref-height: 220px;
     -fx-min-height: 220px;
     -fx-max-height: 220px;
     -fx-alignment: center;
     -fx-overflow: hidden;
+    -fx-background-color: rgba(15, 23, 42, 0.5);
+}
+
+.image-container-premium {
+    -fx-background-color: -fx-color-bg-tertiary;
+    -fx-border-color: rgba(139, 92, 246, 0.2);
+    -fx-border-width: 1px;
+    -fx-border-radius: 24px 24px 0 0;
 }
 
 .product-image {
-    -fx-background-radius: 36px 36px 0 0;
     -fx-fit-width: 340px;
     -fx-fit-height: 220px;
-    -fx-preserve-ratio: true;
     -fx-smooth: true;
 }
 
 /* ===== Product Badge ===== */
 .product-badge {
+    -fx-background-radius: 9999px;
+    -fx-padding: 10px 18px;
+    -fx-font-size: 11px;
+    -fx-font-weight: 800;
+    -fx-text-transform: uppercase;
+    -fx-letter-spacing: 0.08em;
+}
+
+.badge-vendita {
+    -fx-background-color: -fx-color-purple-primary;
+    -fx-text-fill: white;
+    -fx-effect: dropshadow(gaussian, rgba(139, 92, 246, 0.5), 12px, 0, 0, 0px);
+}
+
+.badge-scambio {
+    -fx-background-color: #10b981;
+    -fx-text-fill: white;
+    -fx-effect: dropshadow(gaussian, rgba(16, 185, 129, 0.5), 12px, 0, 0, 0px);
+}
+
+.badge-regalo {
+    -fx-background-color: -fx-color-pink-primary;
+    -fx-text-fill: white;
+    -fx-effect: dropshadow(gaussian, rgba(236, 72, 153, 0.5), 12px, 0, 0, 0px);
+}
+
+/* State Badges - Royal Purple Theme */
+.badge-sold {
+    -fx-background-color: #374151;
+    -fx-text-fill: #9ca3af;
     -fx-background-radius: 9999px;
     -fx-padding: 8px 16px;
     -fx-font-size: 12px;
@@ -598,22 +709,28 @@
     -fx-letter-spacing: 0.05em;
 }
 
-.badge-vendita {
-    -fx-background-color: -fx-color-brand-primary;
+.badge-pending {
+    -fx-background-color: linear-gradient(to right, #fbbf24, #f59e0b);
     -fx-text-fill: white;
-    -fx-effect: -fx-shadow-sm;
+    -fx-background-radius: 9999px;
+    -fx-padding: 8px 16px;
+    -fx-font-size: 12px;
+    -fx-font-weight: 700;
+    -fx-text-transform: uppercase;
+    -fx-letter-spacing: 0.05em;
+    -fx-effect: dropshadow(gaussian, rgba(251, 191, 36, 0.4), 10px, 0, 0, 0px);
 }
 
-.badge-scambio {
-    -fx-background-color: -fx-color-accent;
+.badge-delivered {
+    -fx-background-color: #10b981;
     -fx-text-fill: white;
-    -fx-effect: -fx-shadow-sm;
-}
-
-.badge-regalo {
-    -fx-background-color: #a855f7;
-    -fx-text-fill: white;
-    -fx-effect: -fx-shadow-sm;
+    -fx-background-radius: 9999px;
+    -fx-padding: 8px 16px;
+    -fx-font-size: 12px;
+    -fx-font-weight: 700;
+    -fx-text-transform: uppercase;
+    -fx-letter-spacing: 0.05em;
+    -fx-effect: dropshadow(gaussian, rgba(16, 185, 129, 0.4), 10px, 0, 0, 0px);
 }
 
 /* ===== Product Content ===== */
@@ -633,24 +750,64 @@
 
 .product-title {
     -fx-text-fill: -fx-color-text-primary;
-    -fx-font-size: 18px;
-    -fx-font-weight: 700;
+    -fx-font-size: 19px;
+    -fx-font-weight: 800;
     -fx-wrap-text: true;
     -fx-max-width: 300px;
+    -fx-effect: dropshadow(gaussian, rgba(255, 255, 255, 0.1), 4px, 0, 0, 1px);
 }
 
 .product-price {
-    -fx-text-fill: -fx-color-brand-primary;
-    -fx-font-size: 22px;
-    -fx-font-weight: 700;
+    -fx-text-fill: -fx-color-purple-primary;
+    -fx-font-size: 24px;
+    -fx-font-weight: 800;
+    -fx-effect: dropshadow(gaussian, rgba(139, 92, 246, 0.4), 8px, 0, 0, 0px);
 }
 
 .product-description {
-    -fx-text-fill: -fx-color-text-secondary;
-    -fx-font-size: 14px;
+    -fx-text-fill: -fx-color-text-tertiary;
+    -fx-font-size: 13px;
     -fx-wrap-text: true;
     -fx-max-width: 300px;
     -fx-max-height: 65px;
+}
+
+/* Text wrap utility */
+.text-wrap {
+    -fx-wrap-text: true;
+    -fx-text-overrun: word-ellipsis;
+}
+
+/* ==============================================================================
+   PRODUCT CARD STATES - Royal Purple Theme
+   ============================================================================== */
+
+/* Sold State */
+.product-card-sold {
+    -fx-opacity: 0.8;
+    -fx-border-color: #374151;
+}
+
+/* Pending/In Attesa State */
+.product-card-pending {
+    -fx-border-color: rgba(251, 191, 36, 0.5);
+}
+
+/* Delivered State */
+.product-card-delivered {
+    -fx-border-color: rgba(16, 185, 129, 0.5);
+}
+
+/* Acquistato State - Viola pallido (non invadente) */
+.product-card-acquistato {
+    -fx-background-color: rgba(139, 92, 246, 0.08) !important;
+    -fx-border-color: rgba(139, 92, 246, 0.3) !important;
+}
+
+/* Consegnato State - Verde pallido (non invadente) */
+.product-card-consegnato {
+    -fx-background-color: rgba(16, 185, 129, 0.08) !important;
+    -fx-border-color: rgba(16, 185, 129, 0.3) !important;
 }
 
 /* ===== Product Meta ===== */
@@ -681,78 +838,88 @@
     -fx-max-height: 55px;
 }
 
+/* Review Actions - Contiene i bottoni delle recensioni */
+.review-actions {
+    -fx-spacing: 10px;
+    -fx-alignment: center;
+    -fx-padding: 8px 0 4px 0;
+    -fx-fill-width: false;
+}
+
 .details-button {
-    -fx-background-color: transparent;
+    -fx-background-color: rgba(15, 23, 42, 0.6);
     -fx-text-fill: -fx-color-text-primary;
-    -fx-background-radius: 24px;
-    -fx-border-color: -fx-color-bg-elevated;
-    -fx-border-radius: 24px;
+    -fx-background-radius: 26px;
+    -fx-border-color: rgba(99, 102, 241, 0.4);
+    -fx-border-radius: 26px;
     -fx-border-width: 2px;
-    -fx-padding: 12px 20px;
+    -fx-padding: 14px 22px;
     -fx-font-weight: 600;
     -fx-cursor: hand;
     -fx-pref-width: 140px;
     -fx-min-width: 140px;
     -fx-max-width: 140px;
-    -fx-pref-height: 48px;
-    -fx-min-height: 48px;
-    -fx-max-height: 48px;
+    -fx-pref-height: 50px;
+    -fx-min-height: 50px;
+    -fx-max-height: 50px;
     -fx-font-size: 14px;
 }
 
 .details-button:hover {
-    -fx-background-color: -fx-color-bg-tertiary;
+    -fx-background-color: rgba(51, 65, 85, 0.8);
     -fx-border-color: -fx-color-brand-primary;
-    -fx-scale-x: 1.02;
-    -fx-scale-y: 1.02;
+    -fx-effect: dropshadow(gaussian, rgba(99, 102, 241, 0.3), 10px, 0, 0, 0px);
+    -fx-scale-x: 1.03;
+    -fx-scale-y: 1.03;
 }
 
 .offer-button {
-    -fx-background-color: -fx-color-brand-primary;
+    -fx-background-color: #6366f1;
     -fx-text-fill: white;
-    -fx-background-radius: 24px;
+    -fx-background-radius: 26px;
     -fx-border-color: transparent;
-    -fx-border-radius: 24px;
+    -fx-border-radius: 26px;
     -fx-border-width: 0;
-    -fx-padding: 12px 20px;
-    -fx-font-weight: 600;
+    -fx-padding: 14px 22px;
+    -fx-font-weight: 700;
     -fx-cursor: hand;
     -fx-pref-width: 140px;
     -fx-min-width: 140px;
     -fx-max-width: 140px;
-    -fx-pref-height: 48px;
-    -fx-min-height: 48px;
-    -fx-max-height: 48px;
+    -fx-pref-height: 50px;
+    -fx-min-height: 50px;
+    -fx-max-height: 50px;
     -fx-spacing: 8px;
     -fx-alignment: center;
-    -fx-effect: -fx-shadow-sm;
+    -fx-effect: dropshadow(gaussian, rgba(99, 102, 241, 0.5), 15px, 0, 0, 0px);
     -fx-font-size: 14px;
 }
 
 .offer-button:hover {
-    -fx-background-color: -fx-color-brand-dark;
-    -fx-effect: -fx-shadow-md;
-    -fx-scale-x: 1.02;
-    -fx-scale-y: 1.02;
+    -fx-background-color: #4f46e5;
+    -fx-effect: dropshadow(gaussian, rgba(99, 102, 241, 0.7), 20px, 0, 0, 0px);
+    -fx-scale-x: 1.03;
+    -fx-scale-y: 1.03;
 }
 
 .favorite-button {
-    -fx-background-color: -fx-color-bg-tertiary;
-    -fx-border-color: -fx-color-bg-elevated;
-    -fx-border-radius: 24px;
-    -fx-background-radius: 24px;
+    -fx-background-color: rgba(15, 23, 42, 0.6);
+    -fx-border-color: rgba(99, 102, 241, 0.4);
+    -fx-border-radius: 26px;
+    -fx-background-radius: 26px;
     -fx-border-width: 2px;
     -fx-padding: 12px;
     -fx-cursor: hand;
-    -fx-min-width: 48px;
-    -fx-min-height: 48px;
-    -fx-max-width: 48px;
-    -fx-max-height: 48px;
+    -fx-min-width: 50px;
+    -fx-min-height: 50px;
+    -fx-max-width: 50px;
+    -fx-max-height: 50px;
 }
 
 .favorite-button:hover {
-    -fx-background-color: rgba(239, 68, 68, 0.3);
+    -fx-background-color: rgba(239, 68, 68, 0.2);
     -fx-border-color: #f87171;
+    -fx-effect: dropshadow(gaussian, rgba(248, 113, 113, 0.5), 15px, 0, 0, 0px);
     -fx-scale-x: 1.1;
     -fx-scale-y: 1.1;
 }
@@ -798,7 +965,240 @@
 
 .contact-button-action:hover {
     -fx-background-color: -fx-color-bg-elevated;
-    -fx-border-color: -fx-color-brand-primary;
+    -fx-border-color: -fx-color-purple-primary;
+}
+
+/* ==============================================================================
+   PREMIUM CARD BUTTONS - ROYAL PURPLE SYSTEM
+   ============================================================================== */
+
+/* Base Card Button - Uniform sizing and rounded corners */
+.card-button {
+    -fx-background-radius: 16px;
+    -fx-border-radius: 16px;
+    -fx-pref-width: 140px;
+    -fx-min-width: 140px;
+    -fx-max-width: 140px;
+    -fx-pref-height: 48px;
+    -fx-min-height: 48px;
+    -fx-max-height: 48px;
+    -fx-font-weight: 600;
+    -fx-font-size: 14px;
+    -fx-cursor: hand;
+    -fx-padding: 0 16px;
+    -fx-background-color: transparent;
+    -fx-border-width: 0;
+}
+
+/* Primary Button - Royal Purple Gradient */
+.card-button-primary {
+    -fx-background-color: -fx-color-purple-primary;
+    -fx-text-fill: white;
+    -fx-border-color: transparent;
+    -fx-border-width: 0;
+}
+
+.card-button-primary:hover {
+    -fx-background-color: -fx-color-purple-dark;
+    -fx-effect: dropshadow(gaussian, rgba(139, 92, 246, 0.5), 15px, 0, 0, 0px);
+    -fx-scale-x: 1.02;
+    -fx-scale-y: 1.02;
+}
+
+.card-button-primary:pressed {
+    -fx-background-color: -fx-color-purple-dim;
+    -fx-scale-x: 0.97;
+    -fx-scale-y: 0.97;
+}
+
+/* Secondary Button - Outlined */
+.card-button-secondary {
+    -fx-background-color: transparent;
+    -fx-text-fill: -fx-color-purple-primary;
+    -fx-border-color: -fx-color-purple-primary;
+    -fx-border-width: 2px;
+}
+
+.card-button-secondary:hover {
+    -fx-background-color: rgba(139, 92, 246, 0.1);
+    -fx-border-color: -fx-color-purple-dark;
+    -fx-text-fill: -fx-color-purple-dark;
+}
+
+.card-button-secondary:pressed {
+    -fx-background-color: rgba(139, 92, 246, 0.15);
+    -fx-scale-x: 0.97;
+    -fx-scale-y: 0.97;
+}
+
+/* Info Button - Blue for exchange */
+.card-button-info {
+    -fx-background-color: #3b82f6;
+    -fx-text-fill: white;
+    -fx-border-color: transparent;
+    -fx-border-width: 0;
+}
+
+.card-button-info:hover {
+    -fx-background-color: #2563eb;
+    -fx-effect: dropshadow(gaussian, rgba(59, 130, 246, 0.5), 15px, 0, 0, 0px);
+}
+
+.card-button-info:pressed {
+    -fx-background-color: #1d4ed8;
+    -fx-scale-x: 0.97;
+    -fx-scale-y: 0.97;
+}
+
+/* Accent Button - Pink for contact */
+.card-button-accent {
+    -fx-background-color: -fx-color-pink-primary;
+    -fx-text-fill: white;
+    -fx-border-color: transparent;
+    -fx-border-width: 0;
+}
+
+.card-button-accent:hover {
+    -fx-background-color: -fx-color-pink-dark;
+    -fx-effect: dropshadow(gaussian, rgba(236, 72, 153, 0.5), 15px, 0, 0, 0px);
+}
+
+.card-button-accent:pressed {
+    -fx-background-color: #be185d;
+    -fx-scale-x: 0.97;
+    -fx-scale-y: 0.97;
+}
+
+/* Auction Button - Gold/Orange */
+.card-button-auction {
+    -fx-background-color: #f59e0b;
+    -fx-text-fill: white;
+    -fx-border-color: transparent;
+    -fx-border-width: 0;
+}
+
+.card-button-auction:hover {
+    -fx-background-color: #d97706;
+    -fx-effect: dropshadow(gaussian, rgba(245, 158, 11, 0.5), 15px, 0, 0, 0px);
+}
+
+.card-button-auction:pressed {
+    -fx-background-color: #b45309;
+    -fx-scale-x: 0.97;
+    -fx-scale-y: 0.97;
+}
+
+/* Edit Button - Gray for modification */
+.card-button-edit {
+    -fx-background-color: #6b7280;
+    -fx-text-fill: white;
+    -fx-border-color: transparent;
+    -fx-border-width: 0;
+}
+
+.card-button-edit:hover {
+    -fx-background-color: #4b5563;
+    -fx-effect: dropshadow(gaussian, rgba(107, 114, 128, 0.5), 15px, 0, 0, 0px);
+}
+
+.card-button-edit:pressed {
+    -fx-background-color: #374151;
+    -fx-scale-x: 0.97;
+    -fx-scale-y: 0.97;
+}
+
+/* Success Button - Green for cart/add */
+.card-button-success {
+    -fx-background-color: #10b981;
+    -fx-text-fill: white;
+    -fx-border-color: transparent;
+    -fx-border-width: 0;
+}
+
+.card-button-success:hover {
+    -fx-background-color: #059669;
+    -fx-effect: dropshadow(gaussian, rgba(16, 185, 129, 0.5), 15px, 0, 0, 0px);
+}
+
+.card-button-success:pressed {
+    -fx-background-color: #047857;
+    -fx-scale-x: 0.97;
+    -fx-scale-y: 0.97;
+}
+
+/* Disabled Button */
+.card-button-disabled {
+    -fx-background-color: #374151;
+    -fx-text-fill: #9ca3af;
+    -fx-border-color: transparent;
+    -fx-border-width: 0;
+    -fx-cursor: default;
+    -fx-opacity: 0.7;
+}
+
+/* Pending Button - Yellow gradient */
+.card-button-pending {
+    -fx-background-color: linear-gradient(to right, #fbbf24, #f59e0b);
+    -fx-text-fill: white;
+    -fx-border-color: transparent;
+    -fx-border-width: 0;
+}
+
+.card-button-pending:hover {
+    -fx-background-color: linear-gradient(to right, #f59e0b, #d97706);
+    -fx-effect: dropshadow(gaussian, rgba(251, 191, 36, 0.5), 15px, 0, 0, 0px);
+}
+
+.card-button-pending:pressed {
+    -fx-scale-x: 0.97;
+    -fx-scale-y: 0.97;
+}
+
+/* Icon Button - For contact button in card header */
+.button-icon {
+    -fx-background-color: transparent;
+    -fx-background-radius: 50%;
+    -fx-pref-width: 48px;
+    -fx-min-width: 48px;
+    -fx-max-width: 48px;
+    -fx-pref-height: 48px;
+    -fx-min-height: 48px;
+    -fx-max-height: 48px;
+    -fx-padding: 0;
+    -fx-cursor: hand;
+    -fx-border-color: transparent;
+    -fx-border-width: 0;
+}
+
+.button-icon:hover {
+    -fx-background-color: rgba(139, 92, 246, 0.15);
+}
+
+.button-icon:pressed {
+    -fx-background-color: rgba(139, 92, 246, 0.25);
+    -fx-scale-x: 0.95;
+    -fx-scale-y: 0.95;
+}
+
+.contact-button {
+    -fx-background-radius: 50%;
+    -fx-pref-width: 44px;
+    -fx-min-width: 44px;
+    -fx-max-width: 44px;
+    -fx-pref-height: 44px;
+    -fx-min-height: 44px;
+    -fx-max-height: 44px;
+    -fx-padding: 0;
+    -fx-background-color: -fx-color-bg-elevated;
+    -fx-border-color: rgba(139, 92, 246, 0.3);
+    -fx-border-width: 1px;
+    -fx-border-radius: 50%;
+    -fx-cursor: hand;
+}
+
+.contact-button:hover {
+    -fx-background-color: rgba(139, 92, 246, 0.15);
+    -fx-border-color: -fx-color-purple-primary;
 }
 
 /* ==============================================================================
@@ -1090,4 +1490,273 @@
 .product-card[data-stato="ACQUISTATO"] {
     -fx-border-color: -fx-color-brand-primary;
     -fx-background-color: rgba(99, 102, 241, 0.1);
+}
+
+/* ==============================================================================
+   17. INSERISCI ANNUNCIO DIALOG - Premium Professional Design
+   ============================================================================== */
+
+/* ===== Dialog Container ===== */
+.dialog-pane {
+    -fx-background-color: rgba(15, 23, 42, 0.98);
+    -fx-border-color: rgba(99, 102, 241, 0.6);
+    -fx-border-width: 2px;
+    -fx-border-radius: 24px;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.6), 40px, 0, 0, 20px);
+}
+
+.dialog-pane .header-panel {
+    -fx-background-color: rgba(30, 41, 59, 0.95);
+    -fx-background-radius: 22px 22px 0 0;
+    -fx-padding: 24px 28px;
+    -fx-border-color: rgba(99, 102, 241, 0.3);
+    -fx-border-width: 0 0 2px 0;
+}
+
+.dialog-pane .header-panel .header {
+    -fx-text-fill: #f1f5f9;
+    -fx-font-size: 22px;
+    -fx-font-weight: 700;
+    -fx-font-family: "Segoe UI", "SF Pro Display", -apple-system, sans-serif;
+}
+
+.dialog-pane .content {
+    -fx-padding: 28px;
+    -fx-background-color: transparent;
+}
+
+/* ===== Dialog Buttons ===== */
+.dialog-pane .button-bar {
+    -fx-background-color: rgba(15, 23, 42, 0.95);
+    -fx-background-radius: 0 0 22px 22px;
+    -fx-padding: 16px 28px;
+    -fx-border-color: rgba(99, 102, 241, 0.3);
+    -fx-border-width: 2px 0 0 0;
+    -fx-alignment: center-right;
+    -fx-spacing: 12px;
+}
+
+.dialog-pane .button-type {
+    -fx-background-color: rgba(99, 102, 241, 0.2);
+    -fx-text-fill: #a5b4fc;
+    -fx-background-radius: 16px;
+    -fx-border-color: rgba(99, 102, 241, 0.5);
+    -fx-border-width: 2px;
+    -fx-border-radius: 16px;
+    -fx-font-weight: 700;
+    -fx-font-size: 14px;
+    -fx-padding: 12px 28px;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 6px, 0, 0, 3px);
+}
+
+.dialog-pane .button-type:hover {
+    -fx-background-color: rgba(99, 102, 241, 0.3);
+    -fx-border-color: rgba(99, 102, 241, 0.8);
+    -fx-effect: dropshadow(gaussian, rgba(99, 102, 241, 0.5), 12px, 0, 0, 0px);
+}
+
+.dialog-pane .button-type:default {
+    -fx-background-color: #6366f1;
+    -fx-text-fill: white;
+    -fx-border-color: transparent;
+}
+
+.dialog-pane .button-type:default:hover {
+    -fx-background-color: #4f46e5;
+    -fx-effect: dropshadow(gaussian, rgba(99, 102, 241, 0.6), 15px, 0, 0, 0px);
+}
+
+.dialog-pane .button-type:disabled {
+    -fx-opacity: 0.4;
+    -fx-cursor: default;
+}
+
+/* ===== Form Fields ===== */
+.insert-annuncio-field {
+    -fx-background-color: rgba(15, 23, 42, 0.8);
+    -fx-border-color: rgba(99, 102, 241, 0.4);
+    -fx-border-radius: 16px;
+    -fx-background-radius: 16px;
+    -fx-border-width: 2px;
+    -fx-padding: 14px 18px;
+    -fx-text-fill: #f1f5f9;
+    -fx-font-size: 15px;
+    -fx-font-weight: 500;
+    -fx-prompt-text-fill: #64748b;
+}
+
+.insert-annuncio-field:focused {
+    -fx-border-color: #6366f1;
+    -fx-background-color: rgba(15, 23, 42, 0.95);
+    -fx-effect: dropshadow(gaussian, rgba(99, 102, 241, 0.3), 10px, 0, 0, 0px);
+}
+
+/* ===== Text Area ===== */
+.insert-annuncio-textarea {
+    -fx-background-color: rgba(15, 23, 42, 0.8);
+    -fx-border-color: rgba(99, 102, 241, 0.4);
+    -fx-border-radius: 16px;
+    -fx-background-radius: 16px;
+    -fx-border-width: 2px;
+    -fx-padding: 14px 18px;
+    -fx-text-fill: #f1f5f9;
+    -fx-font-size: 14px;
+    -fx-font-weight: 400;
+    -fx-prompt-text-fill: #64748b;
+}
+
+.insert-annuncio-textarea .content {
+    -fx-background-color: transparent;
+}
+
+.insert-annuncio-textarea:focused {
+    -fx-border-color: #6366f1;
+    -fx-background-color: rgba(15, 23, 42, 0.95);
+}
+
+/* ===== ComboBox ===== */
+.insert-annuncio-combo {
+    -fx-background-color: rgba(15, 23, 42, 0.8);
+    -fx-border-color: rgba(99, 102, 241, 0.4);
+    -fx-border-radius: 18px;
+    -fx-background-radius: 18px;
+    -fx-border-width: 2px;
+    -fx-padding: 14px 18px;
+    -fx-text-fill: #f1f5f9;
+    -fx-font-size: 15px;
+    -fx-font-weight: 500;
+    -fx-prompt-text-fill: #64748b;
+}
+
+.insert-annuncio-combo:focused {
+    -fx-border-color: #6366f1;
+    -fx-background-color: rgba(15, 23, 42, 0.95);
+    -fx-effect: dropshadow(gaussian, rgba(99, 102, 241, 0.3), 10px, 0, 0, 0px);
+}
+
+.insert-annuncio-combo .list-cell {
+    -fx-background-color: transparent;
+    -fx-text-fill: #f1f5f9;
+    -fx-padding: 8px 12px;
+}
+
+.insert-annuncio-combo .list-cell:filled:hover {
+    -fx-background-color: rgba(99, 102, 241, 0.2);
+}
+
+/* ===== Form Labels ===== */
+.insert-annuncio-label {
+    -fx-text-fill: #cbd5e1;
+    -fx-font-size: 14px;
+    -fx-font-weight: 600;
+    -fx-font-family: "Segoe UI", sans-serif;
+}
+
+/* ===== Error Labels ===== */
+.insert-annuncio-error {
+    -fx-text-fill: #f87171;
+    -fx-font-size: 12px;
+    -fx-font-weight: 500;
+    -fx-padding: 4px 0;
+}
+
+/* ===== Image Section ===== */
+.insert-annuncio-image-section {
+    -fx-background-color: rgba(30, 41, 59, 0.5);
+    -fx-border-color: rgba(99, 102, 241, 0.3);
+    -fx-border-radius: 20px;
+    -fx-border-width: 2px;
+    -fx-padding: 20px;
+    -fx-spacing: 16px;
+}
+
+.insert-annuncio-image-title {
+    -fx-text-fill: #f1f5f9;
+    -fx-font-size: 16px;
+    -fx-font-weight: 700;
+    -fx-font-family: "Segoe UI", sans-serif;
+}
+
+.insert-annuncio-image-description {
+    -fx-text-fill: #94a3b8;
+    -fx-font-size: 13px;
+    -fx-font-weight: 400;
+}
+
+.insert-annuncio-preview {
+    -fx-background-color: rgba(15, 23, 42, 0.6);
+    -fx-border-color: rgba(99, 102, 241, 0.4);
+    -fx-border-radius: 16px;
+    -fx-border-width: 2px;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.3), 8px, 0, 0, 4px);
+}
+
+.insert-annuncio-filename {
+    -fx-text-fill: #10b981;
+    -fx-font-size: 12px;
+    -fx-font-weight: 500;
+    -fx-padding: 8px 12px;
+    -fx-background-color: rgba(16, 185, 129, 0.1);
+    -fx-background-radius: 12px;
+    -fx-border-color: rgba(16, 185, 129, 0.3);
+    -fx-border-width: 1px;
+    -fx-border-radius: 12px;
+}
+
+/* ===== Image Upload Button ===== */
+.insert-annuncio-upload-btn {
+    -fx-background-color: #6366f1;
+    -fx-text-fill: white;
+    -fx-background-radius: 18px;
+    -fx-font-size: 15px;
+    -fx-font-weight: 700;
+    -fx-padding: 14px 24px;
+    -fx-cursor: hand;
+    -fx-border-color: transparent;
+    -fx-effect: dropshadow(gaussian, rgba(99, 102, 241, 0.4), 12px, 0, 0, 0px);
+}
+
+.insert-annuncio-upload-btn:hover {
+    -fx-background-color: #4f46e5;
+    -fx-effect: dropshadow(gaussian, rgba(99, 102, 241, 0.6), 18px, 0, 0, 0px);
+    -fx-scale-y: 1.02;
+}
+
+.insert-annuncio-upload-btn:pressed {
+    -fx-scale-y: 0.98;
+}
+
+/* ===== Grid Layout ===== */
+.insert-annuncio-grid {
+    -fx-hgap: 20px;
+    -fx-vgap: 16px;
+    -fx-padding: 8px;
+}
+
+/* ===== Section Dividers ===== */
+.insert-annuncio-divider {
+    -fx-background-color: rgba(99, 102, 241, 0.3);
+    -fx-pref-height: 2px;
+}
+
+/* ===== Field Groups ===== */
+.insert-annuncio-field-group {
+    -fx-spacing: 6px;
+}
+
+/* ===== Focus Visuals ===== */
+.insert-annuncio-field:focused,
+.insert-annuncio-textarea:focused,
+.insert-annuncio-combo:focused {
+    -fx-border-color: #6366f1;
+    -fx-border-width: 2px;
+}
+
+/* ===== Optional Field Indicator ===== */
+.insert-annuncio-optional {
+    -fx-text-fill: #64748b;
+    -fx-font-size: 12px;
+    -font-style: italic;
+    -fx-padding: 0 0 0 4px;
 }

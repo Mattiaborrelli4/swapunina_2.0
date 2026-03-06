@@ -85,7 +85,7 @@ public class FilterBar {
         HBox sortSection = new HBox(12);
         sortSection.setAlignment(Pos.CENTER_RIGHT);
         sortSection.getChildren().addAll(
-            countText,
+            // countText rimosso - non mostrare più il conteggio
             new Label("Ordina:"),
             sortCombo
         );

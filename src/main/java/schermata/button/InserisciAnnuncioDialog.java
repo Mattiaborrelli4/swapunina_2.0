@@ -106,20 +106,28 @@ public class InserisciAnnuncioDialog extends Dialog<Annuncio> {
      * Inizializza le proprietà base del dialog
      */
     private void initializeDialog() {
-        setTitle("Inserisci Nuovo Annuncio");
+        setTitle("✨ Inserisci Nuovo Annuncio");
         setHeaderText("Compila tutti i campi richiesti");
-       // Dimensione preferita
-        getDialogPane().setPrefSize(700, 600);
 
-// Impedisce al dialogo di crescere oltre
-        getDialogPane().setMaxHeight(600);
-
-// Permette al contenuto interno di scrollare invece di allargarsi
+        // Dimensione preferita aumentata
+        getDialogPane().setPrefSize(750, 650);
+        getDialogPane().setMaxHeight(650);
         getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
 
-        
+        // Stile del dialog pane
+        getDialogPane().getStyleClass().add("dialog-pane");
+
+        // Carica foglio di stile CSS Royal Purple
+        try {
+            getDialogPane().getStylesheets().add(
+                getClass().getResource("/styles/inserisci-annuncio.css").toExternalForm()
+            );
+        } catch (Exception e) {
+            System.err.println("Errore nel caricamento CSS: " + e.getMessage());
+        }
+
         // Aggiunta pulsanti principali
-        ButtonType inserisciButtonType = new ButtonType("Inserisci", ButtonBar.ButtonData.OK_DONE);
+        ButtonType inserisciButtonType = new ButtonType("Pubblica Annuncio", ButtonBar.ButtonData.OK_DONE);
         getDialogPane().getButtonTypes().addAll(inserisciButtonType, ButtonType.CANCEL);
     }
 
@@ -154,6 +162,7 @@ public class InserisciAnnuncioDialog extends Dialog<Annuncio> {
     private TextField createTextField(String prompt) {
         TextField field = new TextField();
         field.setPromptText(prompt);
+        field.getStyleClass().add("insert-annuncio-field");
         return field;
     }
 
@@ -164,7 +173,8 @@ public class InserisciAnnuncioDialog extends Dialog<Annuncio> {
         TextArea area = new TextArea();
         area.setPromptText("Descrizione prodotto (max " + MAX_DESCRIZIONE_LENGTH + " caratteri)");
         area.setPrefRowCount(3);
-        area.getStyleClass().add("text-area");
+        area.getStyleClass().add("insert-annuncio-textarea");
+        area.setWrapText(true);
         return area;
     }
 
@@ -173,9 +183,10 @@ public class InserisciAnnuncioDialog extends Dialog<Annuncio> {
      */
     private ComboBox<String> createCategoriaComboBox() {
         ComboBox<String> combo = new ComboBox<>();
+        combo.getStyleClass().add("insert-annuncio-combo");
         // Usa i display names con emoji dalla enum Categoria
         combo.getItems().addAll(Categoria.getDisplayNamesWithEmojiList());
-        combo.setPromptText("Categoria");
+        combo.setPromptText("🏷️ Categoria");
         return combo;
     }
 
@@ -184,8 +195,9 @@ public class InserisciAnnuncioDialog extends Dialog<Annuncio> {
      */
     private ComboBox<String> createTipoComboBox() {
         ComboBox<String> combo = new ComboBox<>();
-        combo.getItems().addAll("Vendita", "Scambio", "Regalo", "Asta");
-        combo.setPromptText("Tipologia");
+        combo.getStyleClass().add("insert-annuncio-combo");
+        combo.getItems().addAll("💰 Vendita", "🔄 Scambio", "🎁 Regalo", "🔨 Asta");
+        combo.setPromptText("📋 Tipologia");
         return combo;
     }
 
@@ -194,10 +206,11 @@ public class InserisciAnnuncioDialog extends Dialog<Annuncio> {
      */
     private ComboBox<String> createOrigineComboBox() {
         ComboBox<String> combo = new ComboBox<>();
+        combo.getStyleClass().add("insert-annuncio-combo");
         // Usa i display names con emoji dalla enum OrigineOggetto
         combo.getItems().addAll(OrigineOggetto.getDisplayNamesWithEmojiList());
         combo.setValue(OrigineOggetto.USATO.getDisplayNameWithEmoji()); // Imposta "Usato" come default
-        combo.setPromptText("Origine oggetto");
+        combo.setPromptText("📦 Origine oggetto");
         return combo;
     }
 
@@ -206,7 +219,8 @@ public class InserisciAnnuncioDialog extends Dialog<Annuncio> {
      */
     private TextField createPrezzoField() {
         TextField field = new TextField();
-        field.setPromptText("Es: 12,99");
+        field.setPromptText("💶 Es: 12,99");
+        field.getStyleClass().add("insert-annuncio-field");
         field.setTextFormatter(createPriceTextFormatter());
         return field;
     }
@@ -216,15 +230,16 @@ public class InserisciAnnuncioDialog extends Dialog<Annuncio> {
      */
     private ComboBox<String> createConsegnaComboBox() {
         ComboBox<String> combo = new ComboBox<>();
+        combo.getStyleClass().add("insert-annuncio-combo");
         combo.getItems().addAll(
-            "Incontro di persona",
-            "Spedizione gratuita", 
-            "Spedizione a carico acquirente",
-            "Ritiro in sede",
-            "Standard"
+            "🤝 Incontro di persona",
+            "📦 Spedizione gratuita",
+            "📬 Spedizione a carico acquirente",
+            "🏢 Ritiro in sede",
+            "🚚 Standard"
         );
-        combo.setValue("Incontro di persona");
-        combo.setPromptText("Modalità consegna");
+        combo.setValue("🤝 Incontro di persona");
+        combo.setPromptText("🚚 Modalità consegna");
         return combo;
     }
 
@@ -285,8 +300,7 @@ public class InserisciAnnuncioDialog extends Dialog<Annuncio> {
      */
     private Label createErrorLabel() {
         Label label = new Label();
-        label.getStyleClass().add("error-label");
-        label.setStyle("-fx-text-fill: red; -fx-font-size: 11px;");
+        label.getStyleClass().add("insert-annuncio-error");
         label.setVisible(false);
         return label;
     }
@@ -312,9 +326,10 @@ public class InserisciAnnuncioDialog extends Dialog<Annuncio> {
      */
     private GridPane createMainGrid() {
         GridPane grid = new GridPane();
-        grid.setVgap(10);
-        grid.setHgap(15);
-        grid.setPadding(new Insets(20));
+        grid.setVgap(16);
+        grid.setHgap(20);
+        grid.setPadding(new Insets(24));
+        grid.getStyleClass().add("insert-annuncio-grid");
         return grid;
     }
 
@@ -353,9 +368,12 @@ public class InserisciAnnuncioDialog extends Dialog<Annuncio> {
      * Aggiunge un singolo campo al grid layout
      */
     private void addFieldToGrid(GridPane grid, String labelText, Control field, Label errorLabel, int row) {
-        grid.add(new Label(labelText), 0, row);
-        
+        Label label = new Label(labelText);
+        label.getStyleClass().add("insert-annuncio-label");
+        grid.add(label, 0, row);
+
         VBox fieldContainer = new VBox(2);
+        fieldContainer.getStyleClass().add("insert-annuncio-field-group");
         fieldContainer.getChildren().addAll(field, errorLabel);
         grid.add(fieldContainer, 1, row);
     }
@@ -373,22 +391,37 @@ public class InserisciAnnuncioDialog extends Dialog<Annuncio> {
      */
     private VBox createImageSelectionSection() {
         VBox imageSection = new VBox(10);
-        imageSection.setStyle("-fx-border-color: #ddd; -fx-border-radius: 5; -fx-padding: 10;");
-        
-        Label titoloSezione = new Label("Immagine dell'articolo:");
-        titoloSezione.setStyle("-fx-font-weight: bold;");
-        
+        imageSection.getStyleClass().add("insert-annuncio-image-section");
+
+        Label titoloSezione = new Label("📸 Immagine dell'articolo");
+        titoloSezione.getStyleClass().add("insert-annuncio-image-title");
+
+        Label descrizione = new Label("Carica un'immagine per il tuo annuncio (verrà caricata su Cloudinary)");
+        descrizione.getStyleClass().add("insert-annuncio-image-description");
+
+        // Configura il pulsante
+        selezioneImmagineButton.getStyleClass().clear();
+        selezioneImmagineButton.getStyleClass().add("insert-annuncio-upload-btn");
+        selezioneImmagineButton.setText("📷 Seleziona Immagine");
+
+        // Configura l'anteprima
+        anteprimaImageView.getStyleClass().add("insert-annuncio-preview");
+        anteprimaImageView.setStyle("");  // Rimuovi stile inline
+
+        // Configura il label del nome file
+        nomeFileLabel.getStyleClass().add("insert-annuncio-filename");
+
         VBox anteprimaContainer = new VBox(5);
         anteprimaContainer.getChildren().addAll(anteprimaImageView, nomeFileLabel);
-        
+
         imageSection.getChildren().addAll(
             titoloSezione,
-            new Label("Seleziona un'immagine per il tuo annuncio (verrà caricata su Cloudinary)"),
+            descrizione,
             selezioneImmagineButton,
             anteprimaContainer,
             erroreImmagine
         );
-        
+
         return imageSection;
     }
 

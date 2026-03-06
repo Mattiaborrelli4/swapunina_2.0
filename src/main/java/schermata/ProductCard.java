@@ -7,6 +7,11 @@ import application.Classe.Oggetto;
 import application.Classe.utente;
 import application.Enum.OrigineOggetto;
 import application.Enum.Tipologia;
+import application.utils.IconProvider;
+import application.utils.AnimationConstants;
+import javafx.scene.shape.SVGPath;
+import javafx.scene.shape.Rectangle;
+import javafx.scene.paint.Color;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
@@ -52,13 +57,14 @@ public class ProductCard extends VBox {
     private final Button contactButton = new Button();
     private final Label title = new Label();
     private final Text price = new Text();
-    private final Text description = new Text();
+    private final Label description = new Label();
     private final Button detailsButton = new Button("Dettagli");
     private final Button actionButton = new Button();
     private final Label vendutoBadge = new Label("VENDUTO");
     private final Label acquistatoBadge = new Label("ACQUISTATO - IN ATTESA RITIRO");
     private final Label consegnatoBadge = new Label("CONSEGNATO");
-    
+    private final Label ratingLabel = new Label(); // Punteggio medio venditore
+
     // Callback per azioni utente
     private Consumer<Annuncio> onDetailsAction;
     private Consumer<Annuncio> onAction;
@@ -98,12 +104,14 @@ public class ProductCard extends VBox {
 
     /**
      * Inizializza le proprietà base della card
+     * Royal Purple Premium Design - Bordi più rotondi (24px)
      */
     private void initializeCard() {
         setPadding(new Insets(CARD_PADDING));
         setAlignment(Pos.TOP_CENTER);
         getStyleClass().add("product-card");
-        setStyle("-fx-background-color: white; -fx-border-color: #ddd; -fx-border-radius: 8; -fx-background-radius: 8;");
+        // Inline style rimosso - gestito da CSS
+        setPrefWidth(340);
     }
 
     /**
@@ -153,23 +161,42 @@ public class ProductCard extends VBox {
     }
 
     /**
-     * Crea il container per l'immagine
+     * Crea il container per l'immagine con bordi rotondi premium
      */
     private StackPane createImageContainer() {
         StackPane imageContainer = new StackPane();
-        imageContainer.setAlignment(Pos.TOP_CENTER);
-        imageContainer.getStyleClass().add("product-image-container");
+        imageContainer.setAlignment(Pos.CENTER); // Centra l'immagine perfettamente
+        imageContainer.getStyleClass().addAll("product-image-container", "image-container-premium");
+        imageContainer.setPrefSize(IMAGE_WIDTH, IMAGE_HEIGHT);
         return imageContainer;
     }
 
     /**
      * Configura le proprietà dell'immagine
+     * Metodo professionale: centra e riempie senza distorsione
+     * - ImageView usa fitWidth/fitHeight per dimensioni
+     * - Immagine centrata dentro ImageView
+     * - preserveRatio mantiene qualità
      */
     private void setupImageProperties() {
+        // Imposta dimensioni dell'ImageView
         productImage.setFitWidth(IMAGE_WIDTH);
         productImage.setFitHeight(IMAGE_HEIGHT);
+
+        // ON preserveRatio per mantenere qualità (no sgranatura/distorzione)
         productImage.setPreserveRatio(true);
+        productImage.setSmooth(true); // Anti-aliasing per qualità massima
+        productImage.setCache(true); // Performance ottimizzata
         productImage.getStyleClass().add("product-image");
+
+        // Applica clip con bordi rotondi coincidenti con la card (24px)
+        Rectangle clip = new Rectangle(IMAGE_WIDTH, IMAGE_HEIGHT);
+        clip.setArcWidth(24); // Stesso arco della card
+        clip.setArcHeight(24); // Stesso arco della card
+        productImage.setClip(clip);
+
+        // StackPane con CENTER centra ImageView nel container
+        StackPane.setAlignment(productImage, Pos.CENTER);
     }
 
     /**
@@ -187,6 +214,7 @@ public class ProductCard extends VBox {
         setupVendutoBadge();
         setupAcquistatoBadge();
         setupConsegnatoBadge();
+        setupRatingLabel();
     }
 
     /**
@@ -219,66 +247,79 @@ public class ProductCard extends VBox {
     }
 
     /**
-     * Configura l'icona del pulsante contatto
+     * Configura l'icona del pulsante contatto con SVG premium
      */
     private void setupContactButtonIcon() {
-        InputStream contactStream = getClass().getResourceAsStream("/icons/message-icon.png");
-        if (contactStream != null) {
-            ImageView messageIcon = new ImageView(new Image(contactStream));
-            messageIcon.setFitWidth(28);
-            messageIcon.setFitHeight(28);
-            contactButton.setGraphic(messageIcon);
-        } else {
-            contactButton.setText("💬");
-        }
+        // Usa IconProvider per icona SVG Lucide-style
+        SVGPath messageIcon = IconProvider.getIcon("message-circle");
+        IconProvider.scaleIcon(messageIcon, IconProvider.IconSize.LG);
+        messageIcon.setFill(Color.rgb(148, 163, 184)); // text-tertiary
+
+        contactButton.setGraphic(messageIcon);
+        contactButton.setText("");
+        contactButton.getStyleClass().addAll("contact-button", "button-icon");
+        contactButton.setTooltip(new Tooltip("Contatta venditore"));
     }
 
     /**
-     * Configura il badge "VENDUTO"
+     * Configura il badge "VENDUTO" - Stile Royal Purple
      */
     private void setupVendutoBadge() {
-        vendutoBadge.getStyleClass().add("venduto-badge");
-        vendutoBadge.setStyle(
-            "-fx-background-color: #e74c3c; " +
-            "-fx-text-fill: white; " +
-            "-fx-font-weight: bold; " +
-            "-fx-padding: 5px 10px; " +
-            "-fx-border-radius: 10; " +
-            "-fx-background-radius: 10;"
-        );
+        vendutoBadge.getStyleClass().addAll("venduto-badge", "badge-sold");
         vendutoBadge.setVisible(false);
     }
 
     /**
-     * Configura il badge "ACQUISTATO"
+     * Configura il badge "ACQUISTATO" - Stile Royal Purple
      */
     private void setupAcquistatoBadge() {
-        acquistatoBadge.getStyleClass().add("acquistato-badge");
-        acquistatoBadge.setStyle(
-            "-fx-background-color: #3498db; " +
-            "-fx-text-fill: white; " +
-            "-fx-font-weight: bold; " +
-            "-fx-padding: 5px 10px; " +
-            "-fx-border-radius: 10; " +
-            "-fx-background-radius: 10;"
-        );
+        acquistatoBadge.getStyleClass().addAll("acquistato-badge", "badge-pending");
         acquistatoBadge.setVisible(false);
     }
 
     /**
-     * Configura il badge "CONSEGNATO"
+     * Configura il badge "CONSEGNATO" - Stile Royal Purple
      */
     private void setupConsegnatoBadge() {
-        consegnatoBadge.getStyleClass().add("consegnato-badge");
-        consegnatoBadge.setStyle(
-            "-fx-background-color: #27ae60; " +
-            "-fx-text-fill: white; " +
-            "-fx-font-weight: bold; " +
-            "-fx-padding: 5px 10px; " +
-            "-fx-border-radius: 10; " +
-            "-fx-background-radius: 10;"
-        );
+        consegnatoBadge.getStyleClass().addAll("consegnato-badge", "badge-delivered");
         consegnatoBadge.setVisible(false);
+    }
+
+    /**
+     * Configura la label del rating del venditore (Vinted-style)
+     */
+    private void setupRatingLabel() {
+        try {
+            RecensioneDAO recensioneDAO = new RecensioneDAO();
+            double punteggioMedio = recensioneDAO.getPunteggioMedioVenditore(annuncio.getVenditoreId());
+            int numeroRecensioni = recensioneDAO.contaRecensioniVenditore(annuncio.getVenditoreId());
+
+            if (numeroRecensioni > 0) {
+                String stelle = generateStars(punteggioMedio);
+                ratingLabel.setText(String.format("★ %.1f (%d)", punteggioMedio, numeroRecensioni));
+                ratingLabel.getStyleClass().add("seller-rating");
+                ratingLabel.setStyle("-fx-text-fill: #f59e0b; -fx-font-weight: 700; -fx-font-size: 13px;");
+            } else {
+                ratingLabel.setText("Nuovo venditore");
+                ratingLabel.getStyleClass().add("seller-rating-new");
+                ratingLabel.setStyle("-fx-text-fill: #94a3b8; -fx-font-style: italic; -fx-font-size: 12px;");
+            }
+        } catch (Exception e) {
+            ratingLabel.setText("N/A");
+            ratingLabel.setStyle("-fx-text-fill: #64748b; -fx-font-size: 12px;");
+        }
+    }
+
+    /**
+     * Genera stelle per il punteggio medio
+     */
+    private String generateStars(double punteggioMedio) {
+        int stellePiene = (int) Math.round(punteggioMedio);
+        StringBuilder stelle = new StringBuilder();
+        for (int i = 0; i < 5; i++) {
+            stelle.append(i < stellePiene ? "★" : "☆");
+        }
+        return stelle.toString();
     }
 
     /**
@@ -341,8 +382,10 @@ public class ProductCard extends VBox {
      * Configura il pulsante principale per stato venduto
      */
     private void setupVendutoButton() {
-        actionButton.setText("✅ Venduto");
-        actionButton.setStyle("-fx-background-color: #95a5a6; -fx-text-fill: white;");
+        actionButton.setText("Venduto");
+        actionButton.getStyleClass().addAll("card-button", "card-button-disabled");
+        setupPremiumIcon(actionButton, "check-circle");
+
         Tooltip.install(actionButton, new Tooltip("Questo articolo è stato venduto"));
         Tooltip.install(vendutoBadge, new Tooltip("Questo articolo è stato venduto"));
     }
@@ -351,8 +394,10 @@ public class ProductCard extends VBox {
      * Configura il pulsante principale per stato acquistato
      */
     private void setupAcquistatoButton() {
-        actionButton.setText("📦 In Attesa di Ritiro");
-        actionButton.setStyle("-fx-background-color: #3498db; -fx-text-fill: white;");
+        actionButton.setText("In Attesa");
+        actionButton.getStyleClass().addAll("card-button", "card-button-pending");
+        setupPremiumIcon(actionButton, "clock");
+
         Tooltip.install(actionButton, new Tooltip("Questo articolo è stato acquistato e attende il ritiro"));
         Tooltip.install(acquistatoBadge, new Tooltip("Questo articolo è stato acquistato e attende il ritiro"));
     }
@@ -361,31 +406,51 @@ public class ProductCard extends VBox {
      * Configura il pulsante principale per stato consegnato
      */
     private void setupConsegnatoButton() {
-        actionButton.setText("✅ Consegnato");
-        actionButton.setStyle("-fx-background-color: #95a5a6; -fx-text-fill: white;");
+        actionButton.setText("Consegnato");
+        actionButton.getStyleClass().addAll("card-button", "card-button-disabled");
+        setupPremiumIcon(actionButton, "check-circle");
+
         Tooltip.install(actionButton, new Tooltip("Questo articolo è stato consegnato"));
         Tooltip.install(consegnatoBadge, new Tooltip("Questo articolo è stato consegnato"));
+    }
+
+    /**
+     * Aggiunge icona SVG premium a un bottone
+     */
+    private void setupPremiumIcon(Button button, String iconName) {
+        try {
+            SVGPath icon = IconProvider.getIcon(iconName);
+            IconProvider.scaleIcon(icon, IconProvider.IconSize.SM);
+            icon.setFill(Color.WHITE);
+            button.setGraphic(icon);
+        } catch (Exception e) {
+            // Fallback se icona non trovata
+            System.err.println("Icona non trovata: " + iconName);
+        }
     }
 
     /**
      * Applica lo stile per annuncio venduto
      */
     private void applyVendutoStyle() {
-        setStyle("-fx-background-color: #f8f9fa; -fx-border-color: #ddd; -fx-border-radius: 8; -fx-background-radius: 8; -fx-opacity: 0.8;");
+        getStyleClass().add("product-card-sold");
+        // Inline style rimosso - gestito da CSS
     }
 
     /**
      * Applica lo stile per annuncio acquistato
      */
     private void applyAcquistatoStyle() {
-        setStyle("-fx-background-color: #f0f8ff; -fx-border-color: #3498db; -fx-border-radius: 8; -fx-background-radius: 8; -fx-opacity: 0.9;");
+        getStyleClass().add("product-card-acquistato");
+        // Inline style rimosso - gestito da CSS
     }
 
     /**
      * Applica lo stile per annuncio consegnato
      */
     private void applyConsegnatoStyle() {
-        setStyle("-fx-background-color: #f0f9f0; -fx-border-color: #27ae60; -fx-border-radius: 8; -fx-background-radius: 8; -fx-opacity: 0.9;");
+        getStyleClass().add("product-card-consegnato");
+        // Inline style rimosso - gestito da CSS
     }
 
     /**
@@ -404,20 +469,26 @@ public class ProductCard extends VBox {
 
     /**
      * Carica l'immagine del prodotto
+     * Metodo professionale: carica con parametri ottimali per qualità massima
      */
     private void loadProductImage() {
         // Carica prima l'immagine di default
         loadDefaultImage();
-        
+
         // Poi in un thread separato carica l'immagine reale se disponibile
         new Thread(() -> {
             try {
                 AnnuncioDAO dao = new AnnuncioDAO();
                 String imageUrl = dao.getImageUrlAnnuncio(annuncio.getId());
-                
+
                 if (imageUrl != null && !imageUrl.isEmpty()) {
+                    // Parametri Image JavaFX professionali:
+                    // - width, height: dimensioni target
+                    // - preserveRatio: TRUE per mantenere qualità (no sgranatura)
+                    // - smooth: TRUE per anti-aliasing di qualità
+                    // - backgroundLoading: TRUE per non bloccare UI
                     Image realImage = new Image(imageUrl, IMAGE_WIDTH, IMAGE_HEIGHT, true, true, true);
-                    
+
                     // Aggiorna l'immagine nella UI thread
                     javafx.application.Platform.runLater(() -> {
                         productImage.setImage(realImage);
@@ -431,32 +502,35 @@ public class ProductCard extends VBox {
 
     /**
      * Carica l'immagine di default
+     * Stesso approccio professionale delle immagini reali
      */
     private void loadDefaultImage() {
         try {
             InputStream defaultStream = getClass().getResourceAsStream("/application/img/default-product.png");
             if (defaultStream != null) {
+                // preserveRatio: true per mantenere qualità
                 productImage.setImage(new Image(defaultStream, IMAGE_WIDTH, IMAGE_HEIGHT, true, true));
             } else {
-                productImage.setImage(new Image("https://via.placeholder.com/280x200.png?text=No+Image", 
+                productImage.setImage(new Image("https://via.placeholder.com/280x200.png?text=No+Image",
                     IMAGE_WIDTH, IMAGE_HEIGHT, true, true));
             }
         } catch (Exception e) {
-            productImage.setImage(new Image("https://via.placeholder.com/280x200.png?text=No+Image", 
+            productImage.setImage(new Image("https://via.placeholder.com/280x200.png?text=No+Image",
                 IMAGE_WIDTH, IMAGE_HEIGHT, true, true));
         }
     }
 
     /**
      * Configura la sezione contenuto della card
+     * NOTA: Descrizione rimossa per mostrare solo in Dettagli
      */
     private void setupContentSection() {
         VBox content = createContentContainer();
         setupHeader(content);
-        setupDescription(content);
+        // setupDescription(content); // Rimosso - descrizione visibile solo in Dettagli
         setupMetaInfo(content);
         setupActionButtons(content);
-        
+
         getChildren().add(content);
     }
 
@@ -493,35 +567,39 @@ public class ProductCard extends VBox {
     }
 
     /**
-     * Configura il titolo dell'annuncio
+     * Configura il titolo dell'annuncio con wrapping per non farlo uscire
      */
     private void setupTitle() {
         String titoloAnnuncio = annuncio.getTitolo() != null ? annuncio.getTitolo() : "Senza titolo";
+
         title.setText(titoloAnnuncio);
-        title.setStyle("-fx-font-weight: bold; -fx-font-size: 16px; -fx-text-fill: #2c3e50;");
-        title.setWrapText(true);
-        title.setMaxWidth(Double.MAX_VALUE);
+        title.getStyleClass().addAll("product-title", "text-wrap"); // Aggiunge wrapping
+        title.setWrapText(true); // Abilita il wrapping del testo
+        title.setMaxWidth(IMAGE_WIDTH - 40); // Limita larghezza con margin
+        title.setMinHeight(Region.USE_PREF_SIZE); // Permetti al label di crescere in altezza
     }
 
     /**
      * Configura il prezzo dell'annuncio
      */
     private void setupPrice() {
-        String formattedPrice = annuncio.getPrezzo() > 0 ? 
+        String formattedPrice = annuncio.getPrezzo() > 0 ?
             annuncio.getPrezzoFormattato() : "Gratuito";
         price.setText(formattedPrice);
         price.getStyleClass().add("product-price");
-        price.setStyle("-fx-font-weight: bold; -fx-font-size: 18px; -fx-fill: #e74c3c;");
+        // Inline style rimosso - gestito da CSS
     }
 
     /**
-     * Configura la descrizione
+     * Configura la descrizione con wrapping per non farla uscire
      */
     private void setupDescription(VBox content) {
         String descrizioneTesto = getDescrizioneTesto();
         description.setText(descrizioneTesto);
-        description.getStyleClass().add("product-description");
-        description.setStyle("-fx-font-size: 14px; -fx-fill: #7f8c8d;");
+        description.getStyleClass().addAll("product-description", "text-wrap");
+        description.setWrapText(true); // Abilita wrapping
+        description.setMaxWidth(IMAGE_WIDTH - 40); // Limita larghezza
+        // Inline style rimosso - gestito da CSS
         content.getChildren().add(description);
     }
 
@@ -551,21 +629,23 @@ public class ProductCard extends VBox {
      */
     private VBox createMetaInfo() {
         VBox meta = new VBox(4);
-        
+
         HBox row1 = new HBox(8,
                 createIconText("📍", annuncio.getSedeConsegna() != null ? annuncio.getSedeConsegna() : "Non specificato"),
                 new Text("•"),
                 createIconText("🚚", annuncio.getModalitaConsegna() != null ? annuncio.getModalitaConsegna() : "Non specificata")
         );
         row1.getStyleClass().add("meta-row");
-        
+
+        // Row 2: Venditore + Rating + Data
         HBox row2 = new HBox(8,
                 createIconText("👤", annuncio.getNomeUtenteVenditore() != null ? annuncio.getNomeUtenteVenditore() : "Venditore"),
+                ratingLabel, // Rating del venditore (Vinted-style)
                 new Text("•"),
                 createIconText("📅", formatDate(annuncio.getDataPubblicazione()))
         );
         row2.getStyleClass().add("meta-row");
-        
+
         meta.getChildren().addAll(row1, row2);
         return meta;
     }
@@ -599,9 +679,9 @@ public class ProductCard extends VBox {
         setupDetailsButton();
         HBox actions = createActionButtons();
         content.getChildren().add(actions);
-        
-        // Aggiungi pulsanti recensioni se utente loggato
-        if (currentUserId != -1) {
+
+        // Aggiungi pulsanti recensioni SOLO dopo acquisto (stato CONSEGNATO)
+        if (currentUserId != -1 && "CONSEGNATO".equalsIgnoreCase(annuncio.getStato())) {
             HBox recensioniBox = createRecensioniButtons();
             content.getChildren().add(recensioniBox);
         }
@@ -627,15 +707,17 @@ public class ProductCard extends VBox {
      */
     private void setupModificaButton() {
         actionButton.setText("Modifica Annuncio");
-        actionButton.setStyle("-fx-background-color: #6b7280; -fx-text-fill: white; -fx-font-weight: bold;");
+        actionButton.getStyleClass().addAll("card-button", "card-button-edit");
+        setupPremiumIcon(actionButton, "edit");
     }
 
     /**
      * Configura pulsante per aste
      */
     private void setupAstaButton() {
-        actionButton.setText("💰 Fai Offerta");
-        actionButton.setStyle("-fx-background-color: #f39c12; -fx-text-fill: white; -fx-font-weight: bold;");
+        actionButton.setText("Fai Offerta");
+        actionButton.getStyleClass().addAll("card-button", "card-button-auction");
+        setupPremiumIcon(actionButton, "gavel");
     }
 
     /**
@@ -644,16 +726,19 @@ public class ProductCard extends VBox {
     private void setupOrigineButton() {
         switch (annuncio.getOggetto().getOrigine()) {
             case USATO:
-                actionButton.setText("🛒 Aggiungi al Carrello");
-                actionButton.setStyle("-fx-background-color: #27ae60; -fx-text-fill: white; -fx-font-weight: bold;");
+                actionButton.setText("Aggiungi al Carrello");
+                actionButton.getStyleClass().addAll("card-button", "card-button-success");
+                setupPremiumIcon(actionButton, "shopping-cart");
                 break;
             case SCAMBIO:
-                actionButton.setText("🔄 Proponi Scambio");
-                actionButton.setStyle("-fx-background-color: #3498db; -fx-text-fill: white; -fx-font-weight: bold;");
+                actionButton.setText("Proponi Scambio");
+                actionButton.getStyleClass().addAll("card-button", "card-button-info");
+                setupPremiumIcon(actionButton, "repeat");
                 break;
             case REGALO:
-                actionButton.setText("📞 Contatta");
-                actionButton.setStyle("-fx-background-color: #9b59b6; -fx-text-fill: white; -fx-font-weight: bold;");
+                actionButton.setText("Contatta");
+                actionButton.getStyleClass().addAll("card-button", "card-button-accent");
+                setupPremiumIcon(actionButton, "message-circle");
                 break;
             default:
                 setupDefaultButton();
@@ -664,25 +749,40 @@ public class ProductCard extends VBox {
      * Configura pulsante default
      */
     private void setupDefaultButton() {
-        actionButton.setText("📞 Contatta");
-        actionButton.setStyle("-fx-background-color: #9b59b6; -fx-text-fill: white; -fx-font-weight: bold;");
+        actionButton.setText("Contatta");
+        actionButton.getStyleClass().addAll("card-button", "card-button-primary");
+        setupPremiumIcon(actionButton, "message-circle");
     }
 
     /**
-     * Configura il pulsante dettagli
+     * Configura il pulsante dettagli con stile premium uniforme
      */
     private void setupDetailsButton() {
-        detailsButton.getStyleClass().add("details-button");
-        detailsButton.setStyle("-fx-background-color: #95a5a6; -fx-text-fill: white; -fx-font-weight: bold;");
+        detailsButton.setText("Dettagli");
+        detailsButton.getStyleClass().addAll("card-button", "card-button-secondary");
+        // Rimuovi inline style - gestito da CSS
     }
 
     /**
-     * Crea il container dei pulsanti azione
+     * Crea il container dei pulsanti azione con dimensioni uniformi
+     * Royal Purple Premium - Bottoni stessi per grandezza e stile
      */
     private HBox createActionButtons() {
-        HBox actions = new HBox(10, detailsButton, actionButton);
+        HBox actions = new HBox(12, detailsButton, actionButton);
         actions.setAlignment(Pos.CENTER);
         actions.getStyleClass().add("product-actions");
+
+        // Imposta dimensioni uniformi per entrambi i bottoni
+        detailsButton.setPrefHeight(48);
+        detailsButton.setPrefWidth(140);
+        detailsButton.setMinHeight(48);
+        detailsButton.setMinWidth(140);
+
+        actionButton.setPrefHeight(48);
+        actionButton.setPrefWidth(140);
+        actionButton.setMinHeight(48);
+        actionButton.setMinWidth(140);
+
         return actions;
     }
 
@@ -710,7 +810,7 @@ public class ProductCard extends VBox {
      */
     private Button createRecensioniButton() {
         Button recensioniBtn = new Button("⭐ Recensioni");
-        recensioniBtn.setStyle("-fx-background-color: #f1c40f; -fx-text-fill: white; -fx-font-weight: bold;");
+        recensioniBtn.getStyleClass().addAll("card-button", "card-button-info");
         recensioniBtn.setOnAction(e -> mostraRecensioniVenditore());
         return recensioniBtn;
     }
@@ -720,7 +820,7 @@ public class ProductCard extends VBox {
      */
     private Button createLasciaRecensioneButton() {
         Button lasciaRecensioneBtn = new Button("✍️ Lascia Recensione");
-        lasciaRecensioneBtn.setStyle("-fx-background-color: #e67e22; -fx-text-fill: white; -fx-font-weight: bold;");
+        lasciaRecensioneBtn.getStyleClass().addAll("card-button", "card-button-accent");
         lasciaRecensioneBtn.setOnAction(e -> lasciaRecensione());
         return lasciaRecensioneBtn;
     }
@@ -1029,32 +1129,44 @@ public class ProductCard extends VBox {
     }
 
     /**
-     * Mostra le recensioni del venditore
+     * Mostra le recensioni del venditore (Vinted-style)
      */
     private void mostraRecensioniVenditore() {
         try {
             RecensioneDAO recensioneDAO = new RecensioneDAO();
-            RecensioneDAO.StatisticheRecensioni risultato = 
-                recensioneDAO.getRecensioniEStatistichePerAnnuncio(annuncio.getId());
-            
-            List<application.Classe.Recensioni> recensioni = risultato.getRecensioni();
-            
-            if (recensioni.isEmpty()) {
-                mostraMessaggio("Questo annuncio non ha ancora recensioni.");
+            UserDAO userDAO = new UserDAO();
+
+            // Recupera il venditore
+            utente venditore = userDAO.getUserById(annuncio.getVenditoreId());
+            if (venditore == null) {
+                mostraMessaggio("Impossibile recuperare le informazioni del venditore.");
                 return;
             }
-            
+
+            // Recupera tutte le recensioni del venditore (non solo questo annuncio!)
+            RecensioneDAO.StatisticheRecensioni risultato =
+                recensioneDAO.getRecensioniEStatistichePerVenditore(venditore.getId());
+
+            List<application.Classe.Recensioni> recensioni = risultato.getRecensioni();
+
+            if (recensioni.isEmpty()) {
+                String nomeVenditore = venditore.getNome() != null ? venditore.getNome() : "";
+                String cognomeVenditore = venditore.getCognome() != null ? venditore.getCognome() : "";
+                mostraMessaggio((nomeVenditore + " " + cognomeVenditore).trim() + " non ha ancora ricevuto recensioni.");
+                return;
+            }
+
             double punteggioMedio = risultato.getPunteggioMedio();
-            RecensioneDialog dialog = new RecensioneDialog(annuncio, recensioni, punteggioMedio);
+            RecensioneDialog dialog = new RecensioneDialog(venditore, recensioni, punteggioMedio);
             dialog.showAndWait();
-            
+
         } catch (Exception e) {
             mostraMessaggio("Errore nel caricamento delle recensioni. Riprova più tardi.");
         }
     }
     
     /**
-     * Gestisce l'invio di una recensione
+     * Gestisce l'invio di una recensione (Vinted-style: recensione tra persone)
      */
     private void lasciaRecensione() {
         if (!isUtenteLoggato()) {
@@ -1070,8 +1182,9 @@ public class ProductCard extends VBox {
         try {
             RecensioneDAO recensioneDAO = new RecensioneDAO();
 
-            if (recensioneDAO.haGiaRecensito(currentUserId, annuncio.getId())) {
-                mostraMessaggio("Hai già lasciato una recensione per questo annuncio.");
+            // Verifica se ha già recensito questo VENDITORE (non l'annuncio!)
+            if (recensioneDAO.haGiaRecensitoVenditore(currentUserId, annuncio.getVenditoreId())) {
+                mostraMessaggio("Hai già lasciato una recensione a questo venditore.");
                 return;
             }
 
@@ -1140,16 +1253,11 @@ public class ProductCard extends VBox {
 
     /**
      * Configura l'effetto hover per il pulsante contatto
+     * Gestito interamente da CSS - niente inline styles
      */
     private void setupContactButtonHover() {
-        contactButton.setStyle("-fx-background-color: transparent; -fx-border-color: transparent; -fx-padding: 4px;");
-        contactButton.hoverProperty().addListener((obs, oldVal, isHovering) -> {
-            if (isHovering) {
-                contactButton.setStyle("-fx-background-color: #e0e0e0; -fx-border-radius: 3px; -fx-padding: 4px;");
-            } else {
-                contactButton.setStyle("-fx-background-color: transparent; -fx-border-color: transparent; -fx-padding: 4px;");
-            }
-        });
+        // L'hover è gestito da CSS - .contact-button:hover
+        // setupContactButtonIcon() aggiunge già le classi CSS necessarie
     }
 
     /**

@@ -1,6 +1,11 @@
 package schermata;
 
+import application.utils.IconProvider;
+import application.utils.AnimationConstants;
 import application.utils.LoggerUtil;
+import javafx.animation.KeyFrame;
+import javafx.animation.KeyValue;
+import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -15,8 +20,14 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
+import javafx.scene.shape.SVGPath;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
+import javafx.scene.Group;
+import javafx.scene.text.Text;
+import javafx.util.Duration;
 
 import java.util.function.Consumer;
 
@@ -70,13 +81,14 @@ public class TopBar {
     private static final String LOGO_PATH = "/application/icons/logo.png";
     private static final String DEFAULT_SEARCH_PROMPT = "Cerca prodotti...";
     private static final String DEFAULT_ACCOUNT_ICON_URL = "https://cdn-icons-png.flaticon.com/512/1077/1077063.png";
-    
-    // ✅ Icone con Emoji Unicode (funzionano perfettamente, senza dipendenze)
-    private static final String ACCOUNT_EMOJI = "👤";
-    private static final String CART_EMOJI = "🛒";
-    private static final String MESSAGES_EMOJI = "💬";
-    private static final String SCAMBI_EMOJI = "🔄";
-    private static final String ADD_EMOJI = "➕";
+
+    // ✅ Royal Purple Icon System (Lucide-style SVG icons)
+    private static final String ICON_ACCOUNT = "user";
+    private static final String ICON_CART = "shopping-cart";
+    private static final String ICON_MESSAGES = "message-circle";
+    private static final String ICON_SCAMBI = "repeat";
+    private static final String ICON_ADD = "plus-circle";
+    private static final String ICON_SEARCH = "search";
 
     /**
      * Costruttore principale della TopBar
@@ -175,15 +187,40 @@ public class TopBar {
     }
     
     /**
-     * Crea un logo di fallback con emoji
+     * Crea un logo di fallback con icona SVG premium realistica
+     * Logo Marketplace MB: Design moderno con lettere MB
      */
     private Region createFallbackLogo() {
-        Text emojiLogo = new Text("📦");
-        emojiLogo.setFont(Font.font(24));
-        
-        HBox fallbackContainer = new HBox(emojiLogo);
-        fallbackContainer.setPrefSize(LOGO_SIZE, LOGO_SIZE);
+        // Crea un gruppo per contenere più elementi grafici
+        Group logoGroup = new Group();
+
+        // 1. Cerchio sfondo con gradiente
+        Circle bgCircle = new Circle(18);
+        bgCircle.setFill(Color.rgb(139, 92, 246)); // Royal Purple
+        bgCircle.setStroke(Color.rgb(168, 85, 247));
+        bgCircle.setStrokeWidth(2);
+
+        // 2. Lettere "MB" stilizzate (Marketplace)
+        Text mbLetters = new Text("MB");
+        mbLetters.setFill(Color.rgb(255, 255, 255));
+        mbLetters.setStyle("-fx-font-size: 20px; -fx-font-weight: 900; -fx-font-family: 'Arial Black', sans-serif;");
+        // Centra le lettere con micro-regolazione
+        mbLetters.setX(-mbLetters.getLayoutBounds().getWidth() / 2 - 8);
+        mbLetters.setY(7);
+
+        // Assembla il gruppo (solo cerchio + MB, niente frecce)
+        logoGroup.getChildren().addAll(bgCircle, mbLetters);
+
+        StackPane fallbackContainer = new StackPane(logoGroup);
+        fallbackContainer.setPrefSize(48, 48);
         fallbackContainer.setAlignment(Pos.CENTER);
+
+        // Effetto glow premium
+        fallbackContainer.setStyle(
+            "-fx-background-color: transparent; " +
+            "-fx-effect: dropshadow(gaussian, rgba(139, 92, 246, 0.6), 15px, 0, 0, 0px);"
+        );
+
         return fallbackContainer;
     }
     
@@ -232,25 +269,28 @@ public class TopBar {
     }
     
     /**
-     * Configura il pulsante di ricerca
+     * Configura il pulsante di ricerca con icona SVG premium
      */
     private void configureSearchButton() {
-        // Crea l'icona di ricerca usando SVGPath
-        javafx.scene.shape.SVGPath searchIcon = new javafx.scene.shape.SVGPath();
-        searchIcon.setContent("M784-120 532-372q-30 24-69 38t-83 14q-109 0-184.5-75.5T120-580q0-109 75.5-184.5T380-840q109 0 184.5 75.5T640-580q0 44-14 83t-38 69l252 252-56 56ZM380-400q75 0 127.5-52.5T560-580q0-75-52.5-127.5T380-760q-75 0-127.5 52.5T200-580q0 75 52.5 127.5T380-400Z");
-        searchIcon.setFill(javafx.scene.paint.Color.BLACK);
+        // Usa IconProvider per ottenere icona Lucide-style
+        SVGPath searchIcon = IconProvider.getIcon(ICON_SEARCH);
+        IconProvider.scaleIcon(searchIcon, IconProvider.IconSize.LG);
+        // Usa stroke nero per bordi visibili + fill viola trasparente
+        searchIcon.setFill(Color.rgb(139, 92, 246, 0.3));
+        searchIcon.setStroke(Color.rgb(0, 0, 0));
+        searchIcon.setStrokeWidth(2.5);
 
-        // Ridimensiona l'icona per adattarla al pulsante
-        searchIcon.setScaleX(0.035);
-        searchIcon.setScaleY(0.035);
-
-        // Usa un Group per centrare automaticamente l'icona
-        javafx.scene.Group iconGroup = new javafx.scene.Group(searchIcon);
-        searchButton.setGraphic(iconGroup);
+        searchButton.setGraphic(searchIcon);
         searchButton.setText("");
         searchButton.setOnAction(e -> handleSearch());
         searchButton.setPrefHeight(SEARCH_FIELD_HEIGHT);
         searchButton.setPrefWidth(SEARCH_FIELD_HEIGHT);
+
+        // Aggiungi animazione hover premium
+        setupIconButtonAnimation(searchButton, searchIcon);
+
+        // Imposta CSS class
+        searchButton.getStyleClass().addAll("search-button", "icon-button");
     }
 
     /**
@@ -267,39 +307,99 @@ public class TopBar {
     }
     
     /**
-     * Configura tutti i pulsanti di azione
+     * Configura tutti i pulsanti di azione con icone SVG premium
      */
     private void configureActionButtons() {
-        configureEmojiButton(inserisciAnnuncioButton, ADD_EMOJI, e -> handleInserisciAnnuncio());
-        configureEmojiButton(scambiButton, SCAMBI_EMOJI, e -> handleScambi());
-        configureEmojiButton(messagesButton, MESSAGES_EMOJI, e -> handleMessages());
-        configureEmojiButton(cartButton, CART_EMOJI, e -> handleCart());
+        configureEmojiButton(inserisciAnnuncioButton, ICON_ADD, e -> handleInserisciAnnuncio());
+        configureEmojiButton(scambiButton, ICON_SCAMBI, e -> handleScambi());
+        configureEmojiButton(messagesButton, ICON_MESSAGES, e -> handleMessages());
+        configureEmojiButton(cartButton, ICON_CART, e -> handleCart());
 
-        // Configura il pulsante account con gestione immagine profilo
+        // Configura il pulsante account con icona SVG premium
         configureAccountButton();
 
         applyButtonStyles();
     }
 
     /**
-     * Configura un pulsante con emoji
+     * Configura un pulsante con icona SVG premium (Luice-style)
+     * Sostituisce il vecchio sistema emoji
      */
-    private void configureEmojiButton(Button button, String emoji, javafx.event.EventHandler<javafx.event.ActionEvent> handler) {
-        button.setText(emoji);
+    private void configureEmojiButton(Button button, String iconName, javafx.event.EventHandler<javafx.event.ActionEvent> handler) {
+        // Ottieni icona SVG da IconProvider
+        SVGPath icon = IconProvider.getIcon(iconName);
+        IconProvider.scaleIcon(icon, IconProvider.IconSize.LG);
+
+        // Configura icone con stroke nero per migliore visibilità
+        if ("plus-circle".equals(iconName) || "repeat".equals(iconName)) {
+            // Per icone complesse, usa stroke nero + fill viola
+            icon.setFill(Color.rgb(139, 92, 246, 0.4));
+            icon.setStroke(Color.rgb(0, 0, 0));
+            icon.setStrokeWidth(2.0);
+        } else {
+            icon.setFill(Color.rgb(148, 163, 184)); // text-tertiary color
+        }
+
+        // Configura bottone
+        button.setGraphic(icon);
+        button.setText("");
         button.setOnAction(handler);
-        button.setStyle("-fx-background-radius: 8px; -fx-cursor: hand; -fx-font-size: 18px; -fx-text-fill: black;");
+
+        // Applica stile premium
+        button.getStyleClass().add("action-button");
+
+        // Aggiungi animazione hover premium
+        setupIconButtonAnimation(button, icon);
+    }
+
+    /**
+     * Configura animazione hover premium per icone
+     * Transizione smooth da grigio a purple con spring physics
+     */
+    private void setupIconButtonAnimation(Button button, SVGPath icon) {
+        button.hoverProperty().addListener((obs, wasHovering, isNowHovering) -> {
+            // Colore target: purple-primary quando hover, text-tertiary quando non
+            Color targetColor = isNowHovering ?
+                Color.rgb(139, 92, 246) :  // purple-primary
+                Color.rgb(148, 163, 184);   // text-tertiary
+
+            // Animazione smooth 150ms con EASE_OUT_QUINT
+            Timeline colorAnim = new Timeline(
+                new KeyFrame(Duration.millis(AnimationConstants.DURATION_FAST),
+                    new KeyValue(icon.fillProperty(), targetColor, AnimationConstants.EASE_OUT_QUINT)
+                )
+            );
+            colorAnim.play();
+        });
     }
     
     
     /**
-     * Configura un pulsante con icona da URL
+     * Configura il pulsante account con icona SVG premium
+     * Usa l'icona user di default, ma supporta anche immagine profilo personalizzata
      */
     private void configureAccountButton() {
-        accountButton.setText(ACCOUNT_EMOJI);
+        // Crea icona SVG user come default
+        SVGPath userIcon = IconProvider.getIcon(ICON_ACCOUNT);
+        IconProvider.scaleIcon(userIcon, IconProvider.IconSize.LG);
+        // Usa stroke nero + fill bianco per visibilità su sfondo viola
+        userIcon.setFill(Color.rgb(255, 255, 255));
+        userIcon.setStroke(Color.rgb(0, 0, 0));
+        userIcon.setStrokeWidth(1.5);
+
+        accountButton.setGraphic(userIcon);
+        accountButton.setText("");
         accountButton.setOnAction(e -> handleAccount());
-        accountButton.setPrefHeight(SEARCH_FIELD_HEIGHT);
-        accountButton.setPrefWidth(SEARCH_FIELD_HEIGHT);
-        accountButton.setStyle("-fx-background-radius: 8px; -fx-cursor: hand; -fx-font-size: 18px; -fx-text-fill: black;");
+
+        // Dimensioni leggermente maggiorate per il bottone account
+        accountButton.setPrefHeight(48);
+        accountButton.setPrefWidth(48);
+
+        // Applica stile premium
+        accountButton.getStyleClass().addAll("action-button", "account-button");
+
+        // Aggiungi animazione hover
+        setupIconButtonAnimation(accountButton, userIcon);
 
         // Rendi l'immagine circolare (sarà usata se c'è immagine profilo personalizzata)
         makeImageCircular(accountImageView);
@@ -307,18 +407,21 @@ public class TopBar {
     
     
     /**
-     * Applica gli stili ai pulsanti
+     * Applica gli stili CSS ai pulsanti (Royal Purple Premium)
+     * Rimuove inline styles e usa solo classi CSS
      */
     private void applyButtonStyles() {
-        String iconButtonStyle = "-fx-background-color: transparent; -fx-padding: 10px; " +
-                               "-fx-border-color: #e2e8f0; -fx-border-width: 1; -fx-border-radius: 8px;";
-        messagesButton.setStyle(messagesButton.getStyle() + iconButtonStyle);
-        cartButton.setStyle(cartButton.getStyle() + iconButtonStyle);
-        accountButton.setStyle(accountButton.getStyle() + iconButtonStyle);
+        // Icon buttons - stile premium già applicato in configureEmojiButton
+        scambiButton.getStyleClass().add("action-button");
+        messagesButton.getStyleClass().add("action-button");
+        cartButton.getStyleClass().add("action-button");
+        accountButton.getStyleClass().add("action-button");
+        accountButton.getStyleClass().add("account-button");
 
-        String primaryButtonStyle = "-fx-background-color: #3b82f6; " +
-                                   "-fx-font-weight: bold; -fx-padding: 8px 16px;";
-        inserisciAnnuncioButton.setStyle(inserisciAnnuncioButton.getStyle() + primaryButtonStyle);
+        // Inserisci annuncio button - stile primary button con icona + testo
+        inserisciAnnuncioButton.getStyleClass().add("button-primary");
+
+        // Search button - già configurato in configureSearchButton
     }
     /**
      * Configura i tooltip per accessibilità
@@ -341,21 +444,25 @@ public class TopBar {
     }
     
     /**
-     * Applica gli stili CSS ai componenti
+     * Applica gli stili CSS ai componenti principali
      */
     private void applyStyling() {
+        // Top bar container
         root.getStyleClass().add("top-bar");
+
+        // Search components
         searchField.getStyleClass().add("search-field");
         searchButton.getStyleClass().add("search-button");
-        accountButton.getStyleClass().add("action-button");
-        cartButton.getStyleClass().add("action-button");
+
+        // Action buttons - le classi sono già state aggiunte in applyButtonStyles()
+        scambiButton.getStyleClass().add("action-button");
         messagesButton.getStyleClass().add("action-button");
-        inserisciAnnuncioButton.getStyleClass().add("inserisci-annuncio-button");
-        
-        // Stili inline per garantire il funzionamento
-        root.setStyle("-fx-background-color: white; -fx-border-color: #e2e8f0; -fx-border-width: 0 0 1 0;");
-        searchField.setStyle("-fx-background-radius: 8px; -fx-border-radius: 8px; -fx-padding: 0 12px;");
-        searchButton.setStyle("-fx-min-width: 44px; -fx-min-height: 44px; -fx-background-radius: 8px;");
+        cartButton.getStyleClass().add("action-button");
+        accountButton.getStyleClass().add("action-button");
+        accountButton.getStyleClass().add("account-button");
+
+        // Primary button
+        inserisciAnnuncioButton.getStyleClass().add("button-primary");
     }
 
     /**
@@ -730,27 +837,33 @@ public class TopBar {
         try {
             LoggerUtil.debug("TopBar - Tentativo di caricamento immagine: " + imageUrl);
 
-            // Se non c'è immagine, mantieni l'emoji
+            // Se non c'è immagine, usa l'icona SVG user premium
             if (imageUrl == null || imageUrl.isEmpty()) {
-                LoggerUtil.debug("TopBar - Nessuna immagine profilo, uso emoji");
-                accountButton.setText(ACCOUNT_EMOJI);
-                accountButton.setGraphic(null);
+                LoggerUtil.debug("TopBar - Nessuna immagine profilo, uso icona SVG user");
+                SVGPath userIcon = IconProvider.getIcon(ICON_ACCOUNT);
+                IconProvider.scaleIcon(userIcon, IconProvider.IconSize.LG);
+                userIcon.setFill(Color.rgb(148, 163, 184));
+                accountButton.setGraphic(userIcon);
+                accountButton.setText("");
                 return;
             }
 
             Image image;
 
+            // Dimensione per l'immagine account (42x42)
+            double accountImageSize = 42;
+
             // Verifica se è un URL Cloudinary o un percorso locale valido
             if (imageUrl.contains("cloudinary.com") || imageUrl.startsWith("http")) {
                 // URL Cloudinary
                 LoggerUtil.debug("TopBar - Caricamento da Cloudinary");
-                image = new Image(imageUrl, BUTTON_ICON_SIZE, BUTTON_ICON_SIZE, true, true, true);
+                image = new Image(imageUrl, accountImageSize, accountImageSize, true, true, true);
             } else {
                 // Percorso locale - converti in URL file
                 LoggerUtil.debug("TopBar - Caricamento da file locale: " + imageUrl);
                 File file = new File(imageUrl);
                 if (file.exists()) {
-                    image = new Image(file.toURI().toString(), BUTTON_ICON_SIZE, BUTTON_ICON_SIZE, true, true, true);
+                    image = new Image(file.toURI().toString(), accountImageSize, accountImageSize, true, true, true);
                 } else {
                     throw new Exception("File locale non trovato: " + imageUrl);
                 }
@@ -760,6 +873,8 @@ public class TopBar {
                 accountImageView.setImage(image);
                 accountButton.setGraphic(accountImageView);
                 accountButton.setText(""); // Rimuovi emoji se c'è immagine
+                // Rimuovi sfondo dal bottone quando c'è l'immagine profilo
+                accountButton.setStyle("-fx-background-color: transparent; -fx-background-radius: 0;");
                 LoggerUtil.success("TopBar - Immagine profilo caricata");
             } else {
                 throw new Exception("Errore nel caricamento immagine");
@@ -767,41 +882,49 @@ public class TopBar {
 
         } catch (Exception e) {
             LoggerUtil.error("TopBar - Error loading account image", e);
-            // Fallback a emoji
-            accountButton.setText(ACCOUNT_EMOJI);
-            accountButton.setGraphic(null);
+            // Fallback a icona SVG user premium
+            SVGPath userIcon = IconProvider.getIcon(ICON_ACCOUNT);
+            IconProvider.scaleIcon(userIcon, IconProvider.IconSize.LG);
+            userIcon.setFill(Color.rgb(148, 163, 184));
+            accountButton.setGraphic(userIcon);
+            accountButton.setText("");
         }
     }
     
 
-    // Nuovo metodo per rendere l'immagine circolare
+    // Metodo per rendere l'immagine circolare senza bordi (dimensione account 42x42)
     private void makeImageCircular(ImageView imageView) {
-        imageView.setFitWidth(BUTTON_ICON_SIZE);
-        imageView.setFitHeight(BUTTON_ICON_SIZE);
-        imageView.setPreserveRatio(true);
-        
-        // Crea un clip circolare
+        // Dimensione per il bottone account (42x42)
+        double accountImageSize = 42;
+
+        imageView.setFitWidth(accountImageSize);
+        imageView.setFitHeight(accountImageSize);
+        imageView.setPreserveRatio(false); // NON mantenere il ratio per coprire tutto
+
+        // Crea un clip circolare che copre tutto il bottone
         javafx.scene.shape.Circle clip = new javafx.scene.shape.Circle(
-            BUTTON_ICON_SIZE / 2.0, 
-            BUTTON_ICON_SIZE / 2.0, 
-            BUTTON_ICON_SIZE / 2.0
+            accountImageSize / 2.0,
+            accountImageSize / 2.0,
+            accountImageSize / 2.0
         );
         imageView.setClip(clip);
-        
-        // Aggiungi un bordo sottile
-        imageView.setStyle("-fx-border-radius: " + (BUTTON_ICON_SIZE / 2) + "px; " +
-                          "-fx-border-color: #e2e8f0; -fx-border-width: 1px;");
+
+        // Nessun bordo - l'immagine deve coprire tutto
+        imageView.setStyle("");
     }
 
-    // Nuovo metodo per impostare l'immagine profilo
+    // Metodo per impostare l'immagine profilo
     public void setProfileImage(String imageUrl) {
         this.profileImageUrl = imageUrl;
         if (imageUrl != null && !imageUrl.isEmpty()) {
             loadAccountImage(imageUrl);
         } else {
-            // ✅ FIX: Se non c'è immagine profilo, usa emoji
-            accountButton.setText(ACCOUNT_EMOJI);
-            accountButton.setGraphic(null);
+            // Se non c'è immagine profilo, usa icona SVG user premium
+            SVGPath userIcon = IconProvider.getIcon(ICON_ACCOUNT);
+            IconProvider.scaleIcon(userIcon, IconProvider.IconSize.LG);
+            userIcon.setFill(Color.rgb(148, 163, 184));
+            accountButton.setGraphic(userIcon);
+            accountButton.setText("");
         }
     }
 

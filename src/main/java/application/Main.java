@@ -73,23 +73,36 @@ public class Main extends Application {
     public void init() {
         try {
             System.out.println("🚀 Inizializzazione applicazione...");
-            
+
             // Inizializza la connessione al database
-            Connection connessione = ConnessioneDB.getConnessione();
-            if (connessione != null && !connessione.isClosed()) {
-                System.out.println("✅ Connessione al database stabilita con successo");
-            } else {
-                System.err.println("❌ Impossibile stabilire la connessione al database");
+            // Inizializza la connessione al database
+            boolean databaseDisponibile = false;
+            try {
+                Connection connessione = ConnessioneDB.getConnessione();
+                if (connessione != null && !connessione.isClosed()) {
+                    System.out.println("✅ Connessione al database stabilita con successo");
+                    databaseDisponibile = true;
+                }
+            } catch (SQLException e) {
+                System.err.println("⚠️  Database non disponibile: " + e.getMessage());
+                System.err.println("🎨 Applicazione avviata in MODALITÀ DEMO - Solo interfaccia");
             }
-            
-            // CORREZIONE TEMPORANEA: TEST AVATAR UNIVOCI
-            System.out.println("🎨 Test avatar univoci per tutti gli utenti...");
-            utentiDAO.testAvatarPerTuttiUtenti();
-            
-            // Registra tutti i trigger per la gestione automatica degli annunci
-            AnnuncioTrigger.registraTuttiITrigger();
-            System.out.println("✅ Trigger annunci registrati");
-            
+
+            // Esegue operazioni database solo se disponibile
+            if (databaseDisponibile) {
+                try {
+                    // CORREZIONE TEMPORANEA: TEST AVATAR UNIVOCI
+                    System.out.println("🎨 Test avatar univoci per tutti gli utenti...");
+                    utentiDAO.testAvatarPerTuttiUtenti();
+
+                    // Registra tutti i trigger per la gestione automatica degli annunci
+                    AnnuncioTrigger.registraTuttiITrigger();
+                    System.out.println("✅ Trigger annunci registrati");
+                } catch (Exception e) {
+                    System.err.println("⚠️  Errore inizializzazione database (continuo senza): " + e.getMessage());
+                }
+            }
+
         } catch (Exception e) {
             System.err.println("❌ Errore critico durante l'inizializzazione: " + e.getMessage());
             e.printStackTrace();
@@ -209,12 +222,14 @@ public class Main extends Application {
      */
     private void caricaFogliStile(Scene scena) {
         try {
+            // Carica fogli di stile principali
+            scena.getStylesheets().add(getClass().getResource("/style/application.css").toExternalForm());
+            scena.getStylesheets().add(getClass().getResource("/style/principali.css").toExternalForm());
 
-scena.getStylesheets().add(getClass().getResource("/style/application.css").toExternalForm());
-scena.getStylesheets().add(getClass().getResource("/style/principali.css").toExternalForm());
+            // Carica Royal Purple Premium Button System
+            scena.getStylesheets().add(getClass().getResource("/style/buttons-premium.css").toExternalForm());
 
- 
-            System.out.println("✅ Fogli di stile CSS caricati con successo");
+            System.out.println("✅ Fogli di stile CSS caricati con successo (incluso Royal Purple Premium)");
         } catch (NullPointerException e) {
             System.err.println("⚠️ Attenzione: File CSS non trovato! L'applicazione potrebbe non essere stilizzata correttamente.");
         } catch (Exception e) {

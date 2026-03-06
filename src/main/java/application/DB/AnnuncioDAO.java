@@ -212,11 +212,13 @@ public class AnnuncioDAO {
 
         // Query ottimizzata con JOIN per evitare N+1
         String sql = "SELECT " +
-                     "a.id, a.stato, a.prezzo, a.venditore_id, a.data_pubblicazione, " +
-                     "o.nome AS oggetto_nome, o.categoria, " +
+                     "a.id, a.titolo, a.stato, a.prezzo, a.venditore_id, a.data_pubblicazione, " +
+                     "a.in_evidenza, a.tipologia, a.modalita_consegna, a.descrizione, a.image_url, " +
+                     "o.nome AS oggetto_nome, c.nome AS categoria, " +
                      "u.nome, u.email " +
                      "FROM annuncio a " +
                      "JOIN oggetto o ON a.oggetto_id = o.id " +
+                     "LEFT JOIN categoria c ON o.categoria_id = c.id " +
                      "JOIN utente u ON a.venditore_id = u.id " +
                      "WHERE a.stato = 'ATTIVO' " +
                      "ORDER BY a.data_pubblicazione DESC";
@@ -248,36 +250,69 @@ public class AnnuncioDAO {
      * Usato da getAnnunciAttivi() per evitare query N+1
      */
     private Annuncio mapResultSetToAnnuncioLite(ResultSet rs) throws SQLException {
-        Annuncio annuncio = new Annuncio();
-        annuncio.setId(rs.getInt("id"));
-        annuncio.setStato(rs.getString("stato"));
-        annuncio.setPrezzo(rs.getDouble("prezzo"));
-        annuncio.setVenditoreId(rs.getInt("venditore_id"));
+        // Recupera tutti i campi necessari per la validazione
+        int id = rs.getInt("id");
+        String titolo = rs.getString("titolo");
+        String stato = rs.getString("stato");
+        double prezzo = rs.getDouble("prezzo");
+        int venditoreId = rs.getInt("venditore_id");
+        boolean inEvidenza = rs.getBoolean("in_evidenza");
+        String tipologiaStr = rs.getString("tipologia");
+        String modalitaConsegna = rs.getString("modalita_consegna");
+        String descrizione = rs.getString("descrizione");
 
         Timestamp dataPubb = rs.getTimestamp("data_pubblicazione");
+
+        // Crea oggetto Oggetto con i dati dal DB
+        String oggettoNome = rs.getString("oggetto_nome");
+        String categoriaStr = rs.getString("categoria");
+
+        // Gestione categoria null (LEFT JOIN può restituire null)
+        Categoria categoria = Categoria.ALTRO; // default
+        if (categoriaStr != null && !categoriaStr.isEmpty()) {
+            try {
+                categoria = Categoria.valueOf(categoriaStr.toUpperCase());
+            } catch (IllegalArgumentException e) {
+                System.err.println("⚠️ Categoria non riconosciuta: " + categoriaStr + ", usando ALTRO");
+                categoria = Categoria.ALTRO;
+            }
+        }
+
+        Oggetto oggetto = new Oggetto(
+            oggettoNome != null ? oggettoNome : (titolo != null ? titolo : "Oggetto"),
+            descrizione != null ? descrizione : "",
+            categoria
+        );
+
+        // Crea Annuncio con i campi obbligatori per il costruttore
+        Tipologia tipologia;
+        try {
+            tipologia = Tipologia.valueOf(tipologiaStr.toUpperCase());
+        } catch (IllegalArgumentException | NullPointerException e) {
+            System.err.println("⚠️ Tipologia non riconosciuta: " + tipologiaStr + ", usando VENDITA");
+            tipologia = Tipologia.VENDITA;
+        }
+
+        Annuncio annuncio = new Annuncio(
+            oggetto,
+            prezzo,
+            tipologia,
+            modalitaConsegna != null ? modalitaConsegna : "RITIRO",
+            venditoreId
+        );
+
+        // Imposta tutti i campi per la validazione del trigger
+        annuncio.setId(id);
+        annuncio.setTitolo(titolo != null ? titolo : (oggettoNome != null ? oggettoNome : "Senza titolo"));
+        annuncio.setStato(stato != null ? stato : "ATTIVO");
+        annuncio.setInEvidenza(inEvidenza);
+
         if (dataPubb != null) {
             annuncio.setDataPubblicazione(dataPubb.toLocalDateTime());
         }
 
-        // Nota: Annuncio non ha tutti i campi direttamente, usa Oggetto
-        // Creiamo l'Oggetto con i dati disponibili
-        try {
-            String titolo = rs.getString("titolo");
-            String descrizione = rs.getString("descrizione");
-
-            // Crea oggetto Oggetto con i dati dal DB
-            String oggettoNome = rs.getString("oggetto_nome");
-            String categoriaStr = rs.getString("categoria");
-
-            Oggetto oggetto = new Oggetto(
-                oggettoNome != null ? oggettoNome : (titolo != null ? titolo : ""),
-                descrizione != null ? descrizione : "",
-                application.Enum.Categoria.valueOf(categoriaStr.toUpperCase())
-            );
-
-            annuncio.setOggetto(oggetto);
-        } catch (Exception e) {
-            System.err.println("⚠️ Errore creazione oggetto: " + e.getMessage());
+        if (descrizione != null) {
+            annuncio.setDescrizione(descrizione);
         }
 
         return annuncio;

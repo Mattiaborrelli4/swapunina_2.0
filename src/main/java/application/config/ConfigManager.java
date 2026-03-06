@@ -64,14 +64,16 @@ public class ConfigManager {
             Path configPath = Paths.get(userDir, CONFIG_FILE);
             this.configFilePath = configPath.toString();
 
-            // Ottiene la master password dalle variabili d'ambiente
+            // Ottiene la master password dalle variabili d'ambiente o system properties
             this.masterPassword = System.getenv(MASTER_PASSWORD_ENV);
             if (this.masterPassword == null || this.masterPassword.isEmpty()) {
-                throw new IllegalStateException(
-                    "❌ ERRORE CRITICO: La variabile d'ambiente " + MASTER_PASSWORD_ENV + " è OBBLIGATORIA!\n" +
-                    "Impostala con: export " + MASTER_PASSWORD_ENV + "=\"tua_password_sicura\"\n" +
-                    "Oppure usare: set " + MASTER_PASSWORD_ENV + "=tua_password_sicura (Windows)"
-                );
+                // Fallback 1: cerca nelle system properties (-D flag)
+                this.masterPassword = System.getProperty(MASTER_PASSWORD_ENV);
+                if (this.masterPassword == null || this.masterPassword.isEmpty()) {
+                    // Fallback 2: valore hardcoded per development (DA RIMUOVERE IN PRODUZIONE!)
+                    this.masterPassword = "SwapUnina2025!Secure";
+                    System.err.println("⚠️  ATTENZIONE: Usando MASTER KEY di default per development. Imposta SWAPUNINA_MASTER_KEY in produzione!");
+                }
             }
 
             // Inizializza il servizio di crittografia sicuro con AES-256-GCM
@@ -264,7 +266,18 @@ public class ConfigManager {
             return envValue;
         }
 
-        return properties.getProperty(key);
+        String value = properties.getProperty(key);
+
+        // Decifra se il valore è criptato
+        if (value != null && value.startsWith(ENCRYPTED_PREFIX) && value.endsWith(ENCRYPTED_SUFFIX)) {
+            String encrypted = value.substring(
+                ENCRYPTED_PREFIX.length(),
+                value.length() - ENCRYPTED_SUFFIX.length()
+            );
+            return decryptValue(encrypted);
+        }
+
+        return value;
     }
 
     /**

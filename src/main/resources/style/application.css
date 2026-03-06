@@ -57,38 +57,39 @@ StackPane {
     -fx-border-width: 2;
 }
 
-/* Stile successo (bordo blu) */
+/* Stile successo (bordo viola royal) */
 .campo-successo {
-    -fx-border-color: #5a67d8;
+    -fx-border-color: #8b5cf6;
     -fx-border-width: 2;
 }
 
 .campo-testo:focused {
-    -fx-border-color: #5a67d8;
+    -fx-border-color: #8b5cf6;
     -fx-border-width: 2;
 }
 
 /* Bottone login */
 .bottone-registrati {
-    -fx-background-color: linear-gradient(to right, #6a11cb, #2575fc);
+    -fx-background-color: linear-gradient(to right, #8b5cf6, #a855f7, #7c3aed);
     -fx-text-fill: white;
     -fx-font-weight: bold;
     -fx-font-size: 15;
     -fx-background-radius: 15;
     -fx-padding: 12 30 12 30;
     -fx-cursor: hand;
-    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.4), 10, 0.3, 0, 4);
+    -fx-effect: dropshadow(gaussian, rgba(139, 92, 246, 0.4), 10, 0.3, 0, 4);
 }
 
 .bottone-registrati:hover {
-    -fx-background-color: linear-gradient(to right, #5f0da4, #1d5edb);
+    -fx-background-color: linear-gradient(to right, #a78bfa, #8b5cf6, #7c3aed);
     -fx-scale-x: 1.02;
     -fx-scale-y: 1.02;
+    -fx-effect: dropshadow(gaussian, rgba(139, 92, 246, 0.6), 15, 0.4, 0, 6);
 }
 
 /* Link "Registrati" */
 .collegamento-login {
-    -fx-text-fill: #9bb4ff;
+    -fx-text-fill: #a78bfa;
     -fx-font-size: 13;
     -fx-font-weight: bold;
     -fx-cursor: hand;
@@ -96,20 +97,160 @@ StackPane {
 
 .collegamento-login:hover {
     -fx-underline: true;
-    -fx-text-fill: #c2d2ff;
+    -fx-text-fill: #c4b5fd;
 }
 
 
 
+/* ==============================================================================
+   PRODUCT CARDS - Premium Modern Design
+   ============================================================================== */
+
 .product-card {
-    -fx-background-color: white;
-    -fx-background-radius: 16px;
-    -fx-border-color: #192a54;  /* Changed to blue */
-    -fx-border-radius: 16px;
-    -fx-border-width: 1px;      /* Slightly thicker border for emphasis */
-    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 4, 0, 0, 2);
+    -fx-background-color: rgba(30, 41, 59, 0.95);
+    -fx-background-radius: 24px;
+    -fx-border-color: rgba(99, 102, 241, 0.5);
+    -fx-border-radius: 24px;
+    -fx-border-width: 2px;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.4), 20px, 0, 0, 10px);
     -fx-padding: 0;
     -fx-spacing: 0;
-    -fx-pref-width: 320px;
-    -fx-max-width: 320px;
+    -fx-pref-width: 340px;
+    -fx-max-width: 340px;
+    -fx-cursor: hand;
+    -fx-transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.product-card:hover {
+    -fx-effect: dropshadow(gaussian, rgba(99, 102, 241, 0.4), 30px, 0, 0, 15px);
+    -fx-border-color: rgba(99, 102, 241, 0.8);
+    -fx-background-color: rgba(30, 41, 59, 0.98);
+}
+
+/* ===== Card Image Container ===== */
+.product-card .image-container {
+    -fx-background-color: rgba(15, 23, 42, 0.5);
+    -fx-background-radius: 22px 22px 0 0;
+    -fx-padding: 16px;
+}
+
+.product-card .product-image {
+    -fx-background-radius: 16px;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.3), 8px, 0, 0, 4px);
+}
+
+/* ===== Card Content Container ===== */
+.product-card .content-container {
+    -fx-padding: 20px;
+    -fx-spacing: 12px;
+}
+
+/* ===== Card Title ===== */
+.product-card .card-title {
+    -fx-text-fill: #f1f5f9;
+    -fx-font-size: 18px;
+    -fx-font-weight: 700;
+    -fx-font-family: "Segoe UI", "SF Pro Display", -apple-system, sans-serif;
+    -fx-wrap-text: true;
+    -fx-graphic-text-gap: 0;
+}
+
+/* ===== Card Category Badge ===== */
+.product-card .category-badge {
+    -fx-background-color: rgba(99, 102, 241, 0.2);
+    -fx-text-fill: #a5b4fc;
+    -fx-background-radius: 12px;
+    -fx-padding: 6px 14px;
+    -fx-font-size: 11px;
+    -fx-font-weight: 700;
+    -fx-text-transform: uppercase;
+    -fx-letter-spacing: 0.05em;
+    -fx-border-color: rgba(99, 102, 241, 0.4);
+    -fx-border-width: 1px;
+    -fx-border-radius: 12px;
+}
+
+/* ===== Card Price ===== */
+.product-card .card-price {
+    -fx-text-fill: #10b981;
+    -fx-font-size: 24px;
+    -fx-font-weight: 800;
+    -fx-font-family: "Segoe UI", sans-serif;
+}
+
+.product-card .card-price .currency {
+    -fx-font-size: 16px;
+    -fx-font-weight: 600;
+}
+
+/* ===== Card Description ===== */
+.product-card .card-description {
+    -fx-text-fill: #94a3b8;
+    -fx-font-size: 13px;
+    -fx-font-weight: 400;
+    -fx-wrap-text: true;
+    -fx-graphic-text-gap: 0;
+}
+
+/* ===== Card Meta Info ===== */
+.product-card .meta-info {
+    -fx-spacing: 8px;
+    -fx-alignment: center-left;
+}
+
+.product-card .meta-item {
+    -fx-text-fill: #64748b;
+    -fx-font-size: 11px;
+    -fx-font-weight: 500;
+}
+
+/* ===== Card Status Badge ===== */
+.product-card .status-badge {
+    -fx-background-radius: 8px;
+    -fx-padding: 4px 10px;
+    -fx-font-size: 10px;
+    -fx-font-weight: 700;
+    -fx-text-transform: uppercase;
+    -fx-letter-spacing: 0.05em;
+}
+
+.product-card .status-badge[data-stato="ATTIVO"] {
+    -fx-background-color: rgba(16, 185, 129, 0.2);
+    -fx-text-fill: #34d399;
+    -fx-border-color: rgba(16, 185, 129, 0.4);
+    -fx-border-width: 1px;
+    -fx-border-radius: 8px;
+}
+
+.product-card .status-badge[data-stato="VENDUTO"] {
+    -fx-background-color: rgba(239, 68, 68, 0.2);
+    -fx-text-fill: #f87171;
+    -fx-border-color: rgba(239, 68, 68, 0.4);
+    -fx-border-width: 1px;
+    -fx-border-radius: 8px;
+}
+
+.product-card .status-badge[data-stato="IN_EVIDENZA"] {
+    -fx-background-color: rgba(251, 191, 36, 0.2);
+    -fx-text-fill: #fbbf24;
+    -fx-border-color: rgba(251, 191, 36, 0.5);
+    -fx-border-width: 1px;
+    -fx-border-radius: 8px;
+}
+
+/* ===== Card Footer ===== */
+.product-card .card-footer {
+    -fx-padding: 16px 20px 20px 20px;
+    -fx-spacing: 10px;
+    -fx-alignment: center-left;
+}
+
+/* ===== Featured Card Glow Effect ===== */
+.product-card[data-featured="true"] {
+    -fx-border-color: rgba(251, 191, 36, 0.6);
+    -fx-effect: dropshadow(gaussian, rgba(251, 191, 36, 0.3), 25px, 0, 0, 0px);
+}
+
+.product-card[data-featured="true"]:hover {
+    -fx-effect: dropshadow(gaussian, rgba(251, 191, 36, 0.5), 35px, 0, 0, 0px);
 }

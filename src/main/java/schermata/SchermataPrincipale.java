@@ -110,8 +110,9 @@ public class SchermataPrincipale extends BorderPane {
     private void initializeUI() {
         getStyleClass().add("main-layout");
 
-        VBox contentBox = new VBox(10);
+        VBox contentBox = new VBox(16);
         contentBox.getStyleClass().add("content-area");
+        contentBox.setStyle("-fx-padding: 16px 0 0 0;");
         
         // Barra di stato con refresh
         HBox statusBar = createStatusBar();
@@ -120,9 +121,8 @@ public class SchermataPrincipale extends BorderPane {
         productGridNode = productGrid.creaProductGrid();
         
         contentBox.getChildren().addAll(
-            createHeader(),
-            statusBar,
             filterBar.getRoot(),
+            statusBar,
             productGridNode
         );
 
