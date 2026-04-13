@@ -83,14 +83,15 @@ public class ProductCard extends VBox {
     public ProductCard(Annuncio annuncio) {
         super(10);
         this.annuncio = annuncio;
-        
+
         initializeCard();
         setupImageSection();
         setupContentSection();
         setupEventHandlers();
         applyStyles();
         setupTooltips();
-        
+        setupPriceDisplay();
+
         checkStatoAnnuncio();
     }
 
@@ -653,6 +654,24 @@ public class ProductCard extends VBox {
         price.setText(formattedPrice);
         price.getStyleClass().add("product-price");
         // Inline style rimosso - gestito da CSS
+    }
+
+    /**
+     * Configure price display with mandatory validation
+     * Shows price prominently in black, or placeholder if missing
+     */
+    private void setupPriceDisplay() {
+        double prezzo = annuncio.getPrezzo();
+
+        if (prezzo <= 0) {
+            // Missing price: show placeholder
+            price.setText("€ --");
+            price.setStyle("-fx-fill: #9CA3AF; -fx-font-size: 22px; -fx-font-weight: 700;");
+        } else {
+            // Valid price: show prominently in black
+            price.setText(String.format("€ %.2f", prezzo));
+            price.setStyle("-fx-fill: #000000; -fx-font-size: 22px; -fx-font-weight: 700;");
+        }
     }
 
     /**
