@@ -691,6 +691,18 @@
     -fx-effect: dropshadow(gaussian, rgba(236, 72, 153, 0.5), 12px, 0, 0, 0px);
 }
 
+.badge-usato {
+    -fx-background-color: linear-gradient(to right, #F59E0B, #D97706);
+    -fx-text-fill: white;
+    -fx-font-size: 12px;
+    -fx-font-weight: 800;
+    -fx-text-transform: uppercase;
+    -fx-letter-spacing: 0.08em;
+    -fx-background-radius: 9999px;
+    -fx-padding: 8px 16px;
+    -fx-effect: dropshadow(gaussian, rgba(245, 158, 11, 0.5), 8px, 0, 0, 2px);
+}
+
 /* State Badges - Royal Purple Theme */
 .badge-sold {
     -fx-background-color: #374151;

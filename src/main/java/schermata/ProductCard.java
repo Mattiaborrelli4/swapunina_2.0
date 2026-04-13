@@ -1400,7 +1400,7 @@ public class ProductCard extends VBox {
     private String getBadgeStyle(OrigineOggetto origine) {
         if (origine == null) return "badge-vendita";
         switch (origine) {
-            case USATO: return "badge-vendita";  
+            case USATO: return "badge-usato";
             case SCAMBIO: return "badge-scambio";
             case REGALO:  return "badge-regalo";
             default:      return "badge-vendita";
