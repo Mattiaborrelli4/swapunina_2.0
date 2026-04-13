@@ -469,7 +469,7 @@ public class ProductCard extends VBox {
 
     /**
      * Carica l'immagine del prodotto
-     * Metodo professionale: carica con parametri ottimali per qualità massima
+     * Metodo professionale "Object-Fit: Cover" - riempie tutto, no spazi vuoti
      */
     private void loadProductImage() {
         // Carica prima l'immagine di default
@@ -482,16 +482,17 @@ public class ProductCard extends VBox {
                 String imageUrl = dao.getImageUrlAnnuncio(annuncio.getId());
 
                 if (imageUrl != null && !imageUrl.isEmpty()) {
-                    // Parametri Image JavaFX professionali:
-                    // - width, height: dimensioni target
-                    // - preserveRatio: TRUE per mantenere qualità (no sgranatura)
-                    // - smooth: TRUE per anti-aliasing di qualità
-                    // - backgroundLoading: TRUE per non bloccare UI
-                    Image realImage = new Image(imageUrl, IMAGE_WIDTH, IMAGE_HEIGHT, true, true, true);
+                    // Carica l'immagine in background
+                    final Image realImage = new Image(imageUrl, true);
 
-                    // Aggiorna l'immagine nella UI thread
-                    javafx.application.Platform.runLater(() -> {
-                        productImage.setImage(realImage);
+                    // Aspetta che sia caricata
+                    realImage.progressProperty().addListener((observable, oldValue, newValue) -> {
+                        if (newValue.doubleValue() >= 1.0) {
+                            // Immagine completamente caricata - applica la logica cover
+                            javafx.application.Platform.runLater(() -> {
+                                applyObjectFitCover(productImage, realImage, IMAGE_WIDTH, IMAGE_HEIGHT);
+                            });
+                        }
                     });
                 }
             } catch (Exception e) {
@@ -501,22 +502,86 @@ public class ProductCard extends VBox {
     }
 
     /**
+     * Applica l'effetto "object-fit: cover" - riempie tutto il contenitore
+     * Funziona come Amazon/Instagram: l'immagine copre tutto, con crop se necessario
+     */
+    private void applyObjectFitCover(ImageView imageView, Image image, double containerWidth, double containerHeight) {
+        if (image.isError() || image.getWidth() == 0 || image.getHeight() == 0) {
+            // Se l'immagine ha errori, usa il metodo semplice
+            imageView.setImage(image);
+            imageView.setFitWidth(containerWidth);
+            imageView.setFitHeight(containerHeight);
+            imageView.setPreserveRatio(true);
+            imageView.setSmooth(true);
+            return;
+        }
+
+        imageView.setImage(image);
+        imageView.setSmooth(true);
+
+        // Calcola i ratio
+        double imageRatio = image.getWidth() / image.getHeight();
+        double containerRatio = containerWidth / containerHeight;
+
+        // Imposta le dimensioni per coprire completamente (cover)
+        if (imageRatio > containerRatio) {
+            // Immagine più larga del contenitore - adatta all'altezza
+            double fitHeight = containerHeight;
+            double fitWidth = fitHeight * imageRatio;
+
+            imageView.setFitWidth(fitWidth);
+            imageView.setFitHeight(fitHeight);
+
+            // Centra orizzontalmente
+            double x = (containerWidth - fitWidth) / 2;
+            imageView.setX(x);
+            imageView.setY(0);
+        } else {
+            // Immagine più alta del contenitore - adatta alla larghezza
+            double fitWidth = containerWidth;
+            double fitHeight = fitWidth / imageRatio;
+
+            imageView.setFitWidth(fitWidth);
+            imageView.setFitHeight(fitHeight);
+
+            // Centra verticalmente
+            double y = (containerHeight - fitHeight) / 2;
+            imageView.setX(0);
+            imageView.setY(y);
+        }
+
+        imageView.setPreserveRatio(false);
+
+        // Clip per assicurarsi che non esca dal contenitore
+        javafx.scene.shape.Rectangle clip = new javafx.scene.shape.Rectangle(containerWidth, containerHeight);
+        clip.setArcWidth(16);
+        clip.setArcHeight(16);
+        imageView.setClip(clip);
+    }
+
+    /**
      * Carica l'immagine di default
-     * Stesso approccio professionale delle immagini reali
      */
     private void loadDefaultImage() {
         try {
             InputStream defaultStream = getClass().getResourceAsStream("/application/img/default-product.png");
             if (defaultStream != null) {
-                // preserveRatio: true per mantenere qualità
-                productImage.setImage(new Image(defaultStream, IMAGE_WIDTH, IMAGE_HEIGHT, true, true));
+                Image defaultImage = new Image(defaultStream);
+                applyObjectFitCover(productImage, defaultImage, IMAGE_WIDTH, IMAGE_HEIGHT);
             } else {
-                productImage.setImage(new Image("https://via.placeholder.com/280x200.png?text=No+Image",
-                    IMAGE_WIDTH, IMAGE_HEIGHT, true, true));
+                Image placeholderImage = new Image("https://via.placeholder.com/320x200.png?text=No+Image", true);
+                applyObjectFitCover(productImage, placeholderImage, IMAGE_WIDTH, IMAGE_HEIGHT);
             }
         } catch (Exception e) {
-            productImage.setImage(new Image("https://via.placeholder.com/280x200.png?text=No+Image",
-                IMAGE_WIDTH, IMAGE_HEIGHT, true, true));
+            try {
+                Image placeholderImage = new Image("https://via.placeholder.com/320x200.png?text=No+Image", true);
+                applyObjectFitCover(productImage, placeholderImage, IMAGE_WIDTH, IMAGE_HEIGHT);
+            } catch (Exception ex) {
+                // Ultimo fallback - metodo semplice
+                productImage.setFitWidth(IMAGE_WIDTH);
+                productImage.setFitHeight(IMAGE_HEIGHT);
+                productImage.setPreserveRatio(true);
+            }
         }
     }
 

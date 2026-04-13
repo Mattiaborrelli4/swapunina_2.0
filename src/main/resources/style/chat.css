@@ -1,254 +1,439 @@
-/* 
- * Modern TableView CSS Styles - JavaFX Compatible
- * Optimized for performance and visual appeal
- */
+/* ============================================
+   CHAT & CONVERSAZIONI - WHATSAPP STYLE LIGHT THEME
+   Palette: sfondo bianco/grigio, messaggi blu ricevuti grigio
+   Design professionale moderno
+   ============================================ */
 
-.table-view {
-    -fx-background-color: transparent;
-    -fx-border-color: #e2e8f0;
-    -fx-border-width: 1;
-    -fx-border-radius: 6;
-    -fx-background-radius: 6;
-    -fx-padding: 0;
+/* ============================================
+   DIALOG PANE - Container principale
+   Sfondo chiaro professionale
+   ============================================ */
+
+.dialog-pane {
+    -fx-background-color: #F5F7FA !important;
 }
 
-/* VirtualFlow container - performance optimization */
-.table-view .virtual-flow {
-    -fx-background-color: transparent;
+.dialog-pane > .content {
+    -fx-background-color: #F5F7FA !important;
 }
 
-/* Table rows - optimized for performance */
-.table-row-cell {
-    -fx-background-color: #ffffff;
-    -fx-border-color: #f1f5f9;
-    -fx-border-width: 0 0 1 0;
-    -fx-pref-height: 48px; /* Fixed height for better performance */
-    -fx-padding: 0;
+.dialog-pane > .content.label {
+    -fx-text-fill: #2D3748 !important;
+    -fx-font-family: "Segoe UI", "Helvetica Neue", sans-serif;
+    -fx-font-size: 18px;
+    -fx-font-weight: 700;
+    -fx-padding: 20 20 10 20;
 }
 
-/* Alternate row coloring for better readability */
-.table-row-cell:even {
-    -fx-background-color: #fafafa;
+.dialog-pane > .button-bar {
+    -fx-background-color: #FFFFFF !important;
+    -fx-padding: 15 20 20 20;
+    -fx-border-color: #E2E8F0;
+    -fx-border-width: 1px 0 0 0;
 }
 
-.table-row-cell:odd {
-    -fx-background-color: #ffffff;
+/* ============================================
+   LIST VIEW - Lista conversazioni (Style: WhatsApp)
+   Sfondo bianco, bordi sottili grigi
+   ============================================ */
+
+.list-view {
+    -fx-background-color: #FFFFFF !important;
+    -fx-border-color: #E2E8F0;
+    -fx-border-width: 1px;
+    -fx-border-radius: 8px;
+    -fx-background-radius: 8px;
 }
 
-/* Hover state - subtle effect */
-.table-row-cell:hover {
-    -fx-background-color: #f8fafc;
+.list-view .virtual-flow {
+    -fx-background-color: #FFFFFF !important;
+}
+
+/* ============================================
+   LIST CELL - Singole conversazioni (Style: WhatsApp)
+   Spaziature generose, hover effect moderno
+   ============================================ */
+
+.list-cell {
+    -fx-background-color: #FFFFFF !important;
+    -fx-text-fill: #4A5568 !important;
+    -fx-font-family: "Segoe UI", "Helvetica Neue", sans-serif;
+    -fx-font-size: 14px;
+    -fx-padding: 16 20;
+    -fx-border-width: 0 0 1px 0 !important;
+    -fx-border-color: #F0F2F5 !important;
+    -fx-border-radius: 0;
+    -fx-cell-size: 72;
+}
+
+.list-cell:filled:selected {
+    -fx-background-color: rgba(74, 111, 165, 0.1) !important;
+    -fx-text-fill: #2D3748 !important;
+    -fx-border-width: 0 0 1px 0 !important;
+}
+
+.list-cell:filled:selected:focused {
+    -fx-background-color: rgba(74, 111, 165, 0.15) !important;
+    -fx-text-fill: #2D3748 !important;
+}
+
+.list-cell:odd {
+    -fx-background-color: #FFFFFF !important;
+}
+
+.list-cell:filled:hover {
+    -fx-background-color: rgba(74, 111, 165, 0.08) !important;
+    -fx-text-fill: #2D3748 !important;
     -fx-cursor: hand;
 }
 
-/* Selected row - modern highlight */
-.table-row-cell:selected {
-    -fx-background-color: #3b82f6;
-    -fx-text-fill: white;
+.list-cell:empty {
+    -fx-background-color: #FFFFFF !important;
+    -fx-border-color: transparent !important;
 }
 
-/* Focused cell - minimal indicator */
-.table-row-cell:filled:selected:focused {
-    -fx-background-color: #2563eb;
-    -fx-text-fill: white;
+/* ============================================
+   LABEL - Testi per conversazioni (Contrasto elevato)
+   ============================================ */
+
+.list-cell .label {
+    -fx-text-fill: #f0f0f0 !important;
+    -fx-font-size: 15px;
+    -fx-font-weight: 500;
 }
 
-/* Empty rows */
-.table-row-cell:empty {
-    -fx-background-color: transparent;
-    -fx-border-color: transparent;
+.list-cell:filled:selected .label {
+    -fx-text-fill: #ffffff !important;
+    -fx-font-weight: 600;
 }
 
-/* Table cells - optimized rendering */
-.table-cell {
+/* Nome utente - grassetto per leggibilità */
+.label-header {
+    -fx-text-fill: #ffffff !important;
+    -fx-font-size: 16px;
+    -fx-font-weight: 700;
+    -fx-font-family: "Segoe UI", "SF Pro Display", sans-serif;
+}
+
+/* Preview messaggio - grigio chiaro per contrasto */
+.label-info {
+    -fx-text-fill: #a0a0b0 !important;
+    -fx-font-size: 14px;
+    -fx-font-weight: 400;
+}
+
+/* ============================================
+   SCENE - Finestra chat con utente
+   ============================================ */
+
+.scene {
+    -fx-fill: #0a0a0f;
+}
+
+/* ============================================
+   ROOT - Container finestra chat
+   ============================================ */
+
+.root {
+    -fx-background-color: #0a0a0f !important;
+}
+
+/* ============================================
+   BORDER PANE - Layout principale chat
+   ============================================ */
+
+.border-pane {
+    -fx-background-color: #0a0a0f !important;
+}
+
+/* ============================================
+   HEADER - Header chat con immagine profilo (Style: WhatsApp)
+   Sfondo viola scuro con bordo sottile
+   ============================================ */
+
+.hBox {
+    -fx-background-color: rgba(139, 92, 246, 0.15) !important;
+    -fx-border-color: rgba(139, 92, 246, 0.3) !important;
+    -fx-border-width: 0 0 2px 0 !important;
+    -fx-padding: 15 20;
+    -fx-spacing: 12;
+}
+
+/* Nome utente nell'header - contrasto massimo */
+.hBox .label {
+    -fx-text-fill: #ffffff !important;
+    -fx-font-family: "Segoe UI", "SF Pro Display", "Helvetica Neue", sans-serif;
+    -fx-font-size: 17px;
+    -fx-font-weight: 700;
+}
+
+/* ============================================
+   LIST VIEW MESSAGI - Messaggi chat (Style: WhatsApp)
+   Sfondo scuro, bolle ben distanziate
+   ============================================ */
+
+.list-view {
+    -fx-background-color: #0a0a0f !important;
+    -fx-padding: 15;
+}
+
+/* ============================================
+   LIST CELL MESSAGI - Messaggi singoli (Style: WhatsApp)
+   Padding generoso, bordi arrotondati
+   ============================================ */
+
+.list-cell {
+    -fx-background-color: #0a0a0f !important;
+    -fx-text-fill: #f0f0f0 !important;
+    -fx-font-family: "Segoe UI", "Helvetica Neue", sans-serif;
+    -fx-font-size: 15px;
+    -fx-padding: 8;
+    -fx-border-width: 0 !important;
+    -fx-cell-size: 60;
+}
+
+.list-cell:filled:selected {
+    -fx-background-color: transparent !important;
+    -fx-text-fill: #ffffff !important;
+}
+
+.list-cell:filled:hover {
+    -fx-background-color: transparent !important;
+}
+
+/* ============================================
+   BUBBLE MESSAGGI - Colori viola con ottimo contrasto
+   Style: WhatsApp con sfumature viola - ADATTIVE AL CONTENUTO
+   ============================================ */
+
+.label {
+    -fx-text-fill: #ffffff !important;
+    -fx-font-size: 15px;
     -fx-padding: 12 16;
-    -fx-border-color: transparent;
-    -fx-alignment: center-left;
-    -fx-text-fill: #334155;
-    -fx-font-family: "Segoe UI", "System", sans-serif;
-    -fx-font-size: 14;
-    -fx-wrap-text: true; /* Prevent text clipping */
+    -fx-background-radius: 18px;
+    -fx-wrap-text: true;
+    -fx-max-width: 300px; /* Larghezza massima come WhatsApp */
+    -fx-pref-width: use-labeled-computed-size; /* Adatta al contenuto */
 }
 
-/* Selected cell text color */
-.table-row-cell:selected .table-cell {
-    -fx-text-fill: white;
+/* Messaggio inviato - blu (WhatsApp style, destra) */
+.label[style*="DCF8C6"] {
+    -fx-background-color: #4A6FA5 !important;
+    -fx-text-fill: #ffffff !important;
+    -fx-border-color: transparent !important;
+    -fx-border-width: 0;
+    -fx-background-radius: 18px;
+    -fx-padding: 10px 14px;
+    -fx-font-weight: 500;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.08), 4px, 0, 0, 1);
 }
 
-/* Column headers - modern design */
-.column-header {
-    -fx-background-color: #f8fafc;
-    -fx-border-color: #e2e8f0;
-    -fx-border-width: 0 0 1 0;
-    -fx-padding: 0;
-    -fx-pref-height: 44px; /* Fixed header height */
+/* Messaggio ricevuto - grigio chiaro (WhatsApp style, sinistra) */
+.label[style*="FFFFFF"] {
+    -fx-background-color: #F0F2F5 !important;
+    -fx-text-fill: #1A202C !important;
+    -fx-border-color: #E2E8F0 !important;
+    -fx-border-width: 1px;
+    -fx-background-radius: 18px;
+    -fx-padding: 10px 14px;
+    -fx-font-weight: 400;
 }
 
-.column-header-background {
-    -fx-background-color: #f8fafc;
+/* ============================================
+   TEXT AREA - Input messaggi (Style: Vinted)
+   Sfondo scuro, bordo viola luminoso, grande e accessibile
+   ============================================ */
+
+.text-area {
+    -fx-background-color: #FFFFFF !important;
+    -fx-background-radius: 24px;
+    -fx-border-color: #E2E8F0;
+    -fx-border-width: 1px;
+    -fx-border-radius: 24px;
+    -fx-text-fill: #2D3748 !important;
+    -fx-font-family: "Segoe UI", "Helvetica Neue", sans-serif;
+    -fx-font-size: 14px;
+    -fx-prompt-text-fill: #9AA5B4;
+    -fx-padding: 12 18;
+    -fx-pref-height: 46;
 }
 
-.column-header .label {
-    -fx-text-fill: #475569;
-    -fx-font-weight: bold;
-    -fx-font-size: 13;
-    -fx-alignment: center-left;
-    -fx-padding: 0 16 0 16;
-    -fx-font-family: "Segoe UI", "System", sans-serif;
+.text-area:focused {
+    -fx-background-color: #FFFFFF !important;
+    -fx-border-color: #4A6FA5 !important;
+    -fx-border-width: 2px;
 }
 
-/* Column header hover effect */
-.column-header:hover {
-    -fx-background-color: #f1f5f9;
+.text-area .content {
+    -fx-background-color: #1a1a2e !important;
 }
 
-/* Resize handle styling - JavaFX specific */
-.column-header > .sort-order-dots-container {
-    -fx-background-color: #cbd5e1;
+/* ============================================
+   TEXT FIELD - Campi input (Style: Subito)
+   Design moderno con bordi viola luminosi
+   ============================================ */
+
+.text-field {
+    -fx-background-color: #1a1a2e !important;
+    -fx-background-radius: 24px;
+    -fx-border-color: rgba(139, 92, 246, 0.5);
+    -fx-border-width: 2px;
+    -fx-border-radius: 24px;
+    -fx-text-fill: #ffffff !important;
+    -fx-font-family: "Segoe UI", "Helvetica Neue", sans-serif;
+    -fx-font-size: 15px;
+    -fx-prompt-text-fill: #a78bfa;
+    -fx-padding: 14 20;
+    -fx-pref-height: 50;
 }
 
-.column-header:hover > .sort-order-dots-container {
-    -fx-background-color: #94a3b8;
+.text-field:focused {
+    -fx-background-color: #1a1a2e !important;
+    -fx-border-color: #a78bfa !important;
+    -fx-effect: dropshadow(gaussian, rgba(167, 139, 250, 0.5), 12, 0.4, 0, 0);
 }
 
-/* Table scroll bars - modern styling */
-.table-view .scroll-bar:vertical {
-    -fx-background-color: transparent;
-    -fx-pref-width: 12;
+/* ============================================
+   BUTTON - Pulsante Invia (Style: Premium)
+   Gradient viola con effetto glow, grande e cliccabile
+   ============================================ */
+
+.button {
+    -fx-background-color: #4A6FA5 !important;
+    -fx-text-fill: #ffffff !important;
+    -fx-font-family: "Segoe UI", sans-serif !important;
+    -fx-font-size: 14px;
+    -fx-font-weight: 600;
+    -fx-background-radius: 24px;
+    -fx-padding: 12 24;
+    -fx-cursor: hand;
+    -fx-border-width: 0;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 8px, 0, 0, 3);
+    -fx-pref-height: 46;
 }
 
-.table-view .scroll-bar:horizontal {
-    -fx-background-color: transparent;
-    -fx-pref-height: 12;
+.button:hover {
+    -fx-background-color: #3D5A80 !important;
+    -fx-scale-x: 1.03;
+    -fx-scale-y: 1.03;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.15), 12px, 0, 0, 4);
 }
 
-.table-view .scroll-bar .thumb {
-    -fx-background-color: #cbd5e1;
-    -fx-background-radius: 6;
+.button:pressed {
+    -fx-scale-x: 0.98;
+    -fx-scale-y: 0.98;
 }
 
-.table-view .scroll-bar .thumb:hover {
-    -fx-background-color: #94a3b8;
+/* Pulsante close/dialog */
+.dialog-pane .button {
+    -fx-background-radius: 22px;
+    -fx-pref-height: 45;
 }
 
-.table-view .scroll-bar .track {
-    -fx-background-color: transparent;
-    -fx-border-color: transparent;
+.dialog-pane .button.cancel {
+    -fx-background-color: rgba(45, 30, 80, 0.6) !important;
+    -fx-text-fill: #c4b5fd;
+    -fx-border-color: rgba(139, 92, 246, 0.6);
+    -fx-border-width: 2px;
 }
 
-.table-view .scroll-bar .increment-button,
-.table-view .scroll-bar .decrement-button {
+.dialog-pane .button.cancel:hover {
+    -fx-background-color: rgba(60, 40, 100, 0.7) !important;
+    -fx-border-color: #a78bfa !important;
+}
+
+/* ============================================
+   VBOX/HBOX - Container layout con spaziature
+   ============================================ */
+
+.vBox {
+    -fx-background-color: #0a0a0f !important;
+    -fx-spacing: 15;
+}
+
+.hBox {
+    -fx-background-color: transparent !important;
+    -fx-spacing: 12;
+}
+
+/* ============================================
+   SCROLL BAR - Moderno viola (Style: Vinted)
+   ============================================ */
+
+.list-view .scroll-bar:vertical {
     -fx-background-color: transparent;
     -fx-padding: 2;
 }
 
-.table-view .scroll-bar .increment-arrow,
-.table-view .scroll-bar .decrement-arrow {
-    -fx-background-color: #64748b;
+.list-view .scroll-bar:vertical .thumb {
+    -fx-background-color: #CBD5E0;
+    -fx-background-radius: 8px;
+    -fx-pref-width: 8px;
 }
 
-/* Corner region */
-.table-view .corner {
+.list-view .scroll-bar:vertical .thumb:hover {
+    -fx-background-color: #9AA5B4;
+}
+
+.list-view .scroll-bar:vertical .track {
+    -fx-background-color: #F0F2F5;
+    -fx-background-radius: 8px;
+}
+
+.list-view .scroll-bar:horizontal {
     -fx-background-color: transparent;
 }
 
-/* No content placeholder */
-.table-view .placeholder .label {
-    -fx-text-fill: #64748b;
-    -fx-font-style: italic;
-    -fx-alignment: center;
-    -fx-padding: 40;
+.list-view .scroll-bar:horizontal .thumb {
+    -fx-background-color: #CBD5E0;
+    -fx-background-radius: 8px;
+    -fx-pref-height: 8px;
 }
 
-/* Focus ring - subtle */
-.table-view:focused {
-    -fx-border-color: #3b82f6;
-    -fx-border-width: 1.5;
+.list-view .scroll-bar:horizontal .thumb:hover {
+    -fx-background-color: #9AA5B4;
 }
 
-/* Compact mode for dense data */
-.table-view.compact .table-row-cell {
-    -fx-pref-height: 36px;
+.list-view .scroll-bar:horizontal .track {
+    -fx-background-color: rgba(139, 92, 246, 0.1);
+    -fx-background-radius: 8px;
 }
 
-.table-view.compact .table-cell {
-    -fx-padding: 8 12;
-    -fx-font-size: 13;
+/* ============================================
+   SCROLL PANE - Sfondo scuro
+   ============================================ */
+
+.scroll-pane {
+    -fx-background-color: #0a0a0f !important;
 }
 
-/* Zebra striping alternative */
-.table-view.zebra .table-row-cell:even {
-    -fx-background-color: #f8fafc;
+.scroll-pane > .viewport {
+    -fx-background-color: #0a0a0f !important;
 }
 
-.table-view.zebra .table-row-cell:odd {
-    -fx-background-color: #ffffff;
+/* ============================================
+   IMAGE VIEW - Immagini profilo con bordo
+   ============================================ */
+
+.image-view {
+    -fx-smooth: true;
 }
 
-/* Dark mode support */
-.table-view.dark {
-    -fx-border-color: #374151;
+/* ============================================
+   ANIMAZIONI Sottili e moderne (60fps)
+   ============================================ */
+
+.button,
+.list-cell {
+    -fx-transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.table-view.dark .table-row-cell {
-    -fx-background-color: #1f2937;
-    -fx-border-color: #374151;
+.text-area,
+.text-field {
+    -fx-transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.table-view.dark .table-row-cell:even {
-    -fx-background-color: #111827;
-}
-
-.table-view.dark .table-row-cell:odd {
-    -fx-background-color: #1f2937;
-}
-
-.table-view.dark .table-row-cell:hover {
-    -fx-background-color: #374151;
-}
-
-.table-view.dark .table-row-cell:selected {
-    -fx-background-color: #3b82f6;
-}
-
-.table-view.dark .table-cell {
-    -fx-text-fill: #f9fafb;
-}
-
-.table-view.dark .column-header {
-    -fx-background-color: #111827;
-    -fx-border-color: #374151;
-}
-
-.table-view.dark .column-header .label {
-    -fx-text-fill: #d1d5db;
-}
-
-/* Sort arrow styling - JavaFX specific */
-.table-view .arrow {
-    -fx-background-color: #64748b;
-}
-
-.table-view .column-header.sort-descending .arrow,
-.table-view .column-header.sort-ascending .arrow {
-    -fx-background-color: #3b82f6;
-}
-
-/* Performance optimizations for virtual flow */
-.table-view .clipped-container {
-    -fx-background-color: transparent;
-}
-
-/* Custom styles for specific column types */
-.table-view .number-column .table-cell {
-    -fx-alignment: center-right;
-}
-
-.table-view .center-column .table-cell {
-    -fx-alignment: center;
-}
-
-.table-view .action-column .table-cell {
-    -fx-alignment: center;
-    -fx-padding: 4 8;
+/* Badge notifica - animazione pulse */
+.unread-badge {
+    -fx-transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
 }

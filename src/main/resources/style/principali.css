@@ -15,44 +15,49 @@
     -fx-font-size: 14px;
     -fx-font-smoothing-type: gray;
 
-    /* ===== COLORS - Dark Backgrounds (Royal Purple Theme) ===== */
-    -fx-color-bg-primary: #0a0a0f;        /* Near-black - Deepest background */
-    -fx-color-bg-secondary: #13131a;      /* Very dark purple-gray - Secondary */
-    -fx-color-bg-tertiary: #1c1c26;       /* Dark purple-gray - Cards */
-    -fx-color-bg-elevated: #252532;       /* Elevated elements */
-    -fx-color-bg-white: #ffffff;          /* Pure white - Text, icons */
-    -fx-color-bg-glass: rgba(19, 19, 26, 0.95); /* Premium glass */
+    /* ===== COLORS - Blue Primary System (LIGHT THEME) ===== */
+    -fx-color-blue-primary: #4A6FA5;
+    -fx-color-blue-dark: #3D5A80;
+    -fx-color-blue-light: #5B8BB8;
+    -fx-color-blue-faint: rgba(74, 111, 165, 0.1);
+
+    /* ===== COLORS - Gray System ===== */
+    -fx-color-bg-primary: #FFFFFF;
+    -fx-color-bg-secondary: #F5F7FA;
+    -fx-color-gray-100: #F0F2F5;
+    -fx-color-gray-300: #9AA5B4;
+    -fx-color-gray-600: #4A5568;
+    -fx-color-gray-800: #2D3748;
+
+    /* ===== COLORS - Semantic ===== */
+    -fx-color-success: #10B981;
+    -fx-color-warning: #F59E0B;
+    -fx-color-error: #EF4444;
+
+    /* ===== Legacy mappings for backward compatibility ===== */
+    -fx-color-bg-tertiary: #FFFFFF;
+    -fx-color-bg-elevated: #FFFFFF;
+    -fx-color-bg-white: #FFFFFF;
 
     /* ===== COLORS - Text Hierarchy ===== */
-    -fx-color-text-primary: #f8fafc;      /* Slate 50 - Primary text */
-    -fx-color-text-secondary: #cbd5e1;    /* Slate 300 - Secondary text */
-    -fx-color-text-tertiary: #94a3b8;     /* Slate 400 - Tertiary text */
-    -fx-color-text-inverse: #0f172a;      /* Dark text on light backgrounds */
-    -fx-color-text-muted: #64748b;        /* Slate 500 - Muted text */
+    -fx-color-text-primary: #2D3748;      /* Dark gray on light backgrounds */
+    -fx-color-text-secondary: #4A5568;    /* Medium gray */
+    -fx-color-text-tertiary: #9AA5B4;     /* Light gray */
+    -fx-color-text-inverse: #FFFFFF;      /* White text */
+    -fx-color-text-muted: #9AA5B4;        /* Muted text */
 
-    /* ===== COLORS - Royal Purple Luxury System ===== */
-    /* Primary Purple Hierarchy - Notion/Arc inspired */
-    -fx-color-purple-primary: #8b5cf6;     /* Violet 500 - Main CTA */
-    -fx-color-purple-dark: #7c3aed;        /* Violet 600 - Hover state */
-    -fx-color-purple-light: #a78bfa;       /* Violet 400 - Active/focus */
-    -fx-color-purple-dim: #6d28d9;         /* Violet 700 - Pressed state */
+    /* ===== COLORS - Blue System (Primary) ===== */
+    -fx-color-purple-primary: #4A6FA5;     /* Blue primary */
+    -fx-color-purple-dark: #3D5A80;        /* Blue dark for hover */
+    -fx-color-purple-light: #5B8BB8;       /* Blue light for focus */
+    -fx-color-purple-dim: #3D5A80;         /* Blue dim */
 
-    /* Pink Accents - Royal Luxury */
-    -fx-color-pink-primary: #ec4899;       /* Pink 500 - Secondary accent */
-    -fx-color-pink-light: #f472b6;         /* Pink 400 - Hover accents */
-    -fx-color-pink-dark: #db2777;          /* Pink 600 - Deep accent */
-    -fx-color-pink-glow: rgba(236, 72, 153, 0.4);
-
-    /* Luxury Gradients */
-    -fx-gradient-purple-premium: linear-gradient(to right, #8b5cf6, #a855f7, #ec4899);
-    -fx-gradient-purple-subtle: linear-gradient(to right, #8b5cf6, #7c3aed);
-
-    /* Backward Compatibility - Map brand colors to purple */
-    -fx-color-brand-primary: #8b5cf6;      /* Now maps to purple-primary */
-    -fx-color-brand-dark: #7c3aed;         /* Now maps to purple-dark */
-    -fx-color-brand-light: #a78bfa;        /* Now maps to purple-light */
-    -fx-color-accent: #10b981;             /* Emerald 500 - Success (unchanged) */
-    -fx-color-accent-dark: #059669;        /* Emerald 600 - Success hover (unchanged) */
+    /* Backward Compatibility - Map to blue system */
+    -fx-color-brand-primary: #4A6FA5;      /* Blue primary */
+    -fx-color-brand-dark: #3D5A80;         /* Blue dark */
+    -fx-color-brand-light: #5B8BB8;        /* Blue light */
+    -fx-color-accent: #10B981;             /* Emerald green */
+    -fx-color-accent-dark: #059669;        /* Emerald dark */
 
     /* ===== COLORS - Semantic States (Purple-tinted) ===== */
     -fx-color-success-bg: rgba(16, 185, 129, 0.15);
@@ -71,15 +76,17 @@
     -fx-color-info-text: #a78bfa;
     -fx-color-info-border: rgba(139, 92, 246, 0.4);
 
-    /* ===== SHADOWS (Layered for depth - Royal Purple Glow) ===== */
-    -fx-shadow-sm: dropshadow(gaussian, rgba(0, 0, 0, 0.3), 4px, 0, 0, 2px);
-    -fx-shadow-md: dropshadow(gaussian, rgba(0, 0, 0, 0.4), 8px, 0, 0, 4px);
-    -fx-shadow-lg: dropshadow(gaussian, rgba(0, 0, 0, 0.5), 16px, 0, 0, 8px);
-    -fx-shadow-xl: dropshadow(gaussian, rgba(0, 0, 0, 0.6), 24px, 0, 0, 12px);
-    -fx-shadow-glow: dropshadow(gaussian, rgba(139, 92, 246, 0.5), 20px, 0, 0, 0px);  /* Purple glow */
-    -fx-shadow-card: dropshadow(gaussian, rgba(0, 0, 0, 0.25), 12px, 0, 0, 6px);
-    -fx-shadow-purple-glow: dropshadow(gaussian, rgba(139, 92, 246, 0.4), 25px, 0, 0, 0px);  /* Premium purple glow */
-    -fx-shadow-pink-glow: dropshadow(gaussian, rgba(236, 72, 153, 0.5), 25px, 0, 0, 0px);  /* Pink accent glow */
+    /* ===== SHADOWS - Soft, No Glow ===== */
+    -fx-shadow-sm: dropshadow(gaussian, rgba(0, 0, 0, 0.05), 4px, 0, 0, 2px);
+    -fx-shadow-md: dropshadow(gaussian, rgba(0, 0, 0, 0.07), 6px, 0, 0, 4px);
+    -fx-shadow-lg: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 15px, 0, 0, 10px);
+    -fx-shadow-xl: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 25px, 0, 0, 20px);
+    -fx-shadow-card: dropshadow(gaussian, rgba(0, 0, 0, 0.08), 12px, 0, 0, 6px);
+
+    /* Legacy shadow mappings */
+    -fx-shadow-glow: -fx-shadow-md;
+    -fx-shadow-purple-glow: -fx-shadow-md;
+    -fx-shadow-pink-glow: -fx-shadow-md;
 }
 
 /* ==============================================================================
@@ -173,7 +180,7 @@
    ============================================================================== */
 
 .main-layout {
-    -fx-background-color: linear-gradient(to bottom, #0f172a, #1e293b, #0f172a);
+    -fx-background-color: -fx-color-bg-secondary;
 }
 
 .content-area {
@@ -213,19 +220,19 @@
 }
 
 /* ==============================================================================
-   4. TOP BAR - Premium Glass Effect Design
+   4. TOP BAR - Premium Blue Light Theme
    ============================================================================== */
 
 .top-bar {
-    -fx-background-color: linear-gradient(to right, rgba(10, 10, 15, 0.98), rgba(19, 19, 26, 0.95));
-    -fx-padding: 18px 36px;
-    -fx-spacing: 24px;
+    -fx-background-color: #FFFFFF;
+    -fx-padding: 14px 28px;
+    -fx-spacing: 20px;
     -fx-alignment: center;
-    -fx-min-height: 78px;
-    -fx-pref-height: 78px;
-    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.5), 20px, 0, 0, 8px);
-    -fx-border-color: transparent;
-    -fx-border-width: 0 0 0 0;
+    -fx-min-height: 64px;
+    -fx-pref-height: 64px;
+    -fx-border-color: #E2E8F0;
+    -fx-border-width: 0 0 1px 0;
+    -fx-effect: dropshadow(gaussian, rgba(74, 111, 165, 0.08), 8px, 0, 0, 2px);
     -fx-background-radius: 0;
 }
 
@@ -235,85 +242,74 @@
 }
 
 .logo-container {
-    -fx-background-color: -fx-color-purple-primary;
-    -fx-background-radius: 22px;
-    -fx-padding: 14px;
-    -fx-effect: dropshadow(gaussian, rgba(139, 92, 246, 0.6), 25px, 0, 0, 0px);
+    -fx-background-color: #4A6FA5;
+    -fx-background-radius: 10px;
+    -fx-padding: 10px 18px;
+    -fx-effect: dropshadow(gaussian, rgba(74, 111, 165, 0.25), 6px, 0, 0, 3px);
     -fx-cursor: hand;
 }
 
 .logo-container:hover {
-    -fx-effect: dropshadow(gaussian, rgba(139, 92, 246, 0.8), 35px, 0, 0, 0px);
-    -fx-scale-x: 1.05;
-    -fx-scale-y: 1.05;
+    -fx-background-color: #3D5A80;
+    -fx-effect: dropshadow(gaussian, rgba(74, 111, 165, 0.4), 10px, 0, 0, 4px);
 }
 
 .app-title {
-    -fx-text-fill: -fx-color-text-primary;
-    -fx-font-size: 24px;
-    -fx-font-weight: 800;
+    -fx-text-fill: #2D3748;
+    -fx-font-size: 20px;
+    -fx-font-weight: 700;
     -fx-letter-spacing: -0.02em;
-    -fx-effect: dropshadow(gaussian, rgba(139, 92, 246, 0.3), 8px, 0, 0, 2px);
 }
 
 /* ===== Search Bar ===== */
 .search-container {
-    -fx-spacing: 0;
+    -fx-spacing: 8px;
     -fx-alignment: center;
-    -fx-max-width: 720px;
-    -fx-pref-width: 720px;
+    -fx-max-width: 700px;
+    -fx-pref-width: 700px;
 }
 
 .search-field {
-    -fx-background-color: rgba(28, 28, 38, 0.8);
-    -fx-text-fill: -fx-color-text-primary;
-    -fx-prompt-text-fill: -fx-color-text-secondary;
-    -fx-background-radius: 9999px;
-    -fx-border-color: rgba(139, 92, 246, 0.5);
-    -fx-border-radius: 9999px;
-    -fx-border-width: 2px;
-    -fx-padding: 18px 28px;
-    -fx-font-size: 15px;
-    -fx-pref-width: 620px;
-    -fx-pref-height: 56px;
-}
-
-.search-field:focused {
-    -fx-border-color: -fx-color-purple-primary;
-    -fx-background-color: rgba(28, 28, 38, 0.95);
-    -fx-effect: dropshadow(gaussian, rgba(139, 92, 246, 0.3), 12px, 0, 0, 0px);
-}
+    -fx-background-color: #FFFFFF;
+    -fx-text-fill: #2D3748;
+    -fx-prompt-text-fill: #9AA5B4;
+    -fx-background-radius: 10px;
+    -fx-border-color: #E2E8F0;
+    -fx-border-radius: 10px;
+    -fx-border-width: 1.5px;
+    -fx-padding: 12px 18px;
+    -fx-font-size: 14px;
     -fx-font-weight: 500;
-    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 8px, 0, 0, 4px);
+    -fx-pref-width: 400px;
+    -fx-pref-height: 44px;
 }
 
 .search-field:focused {
-    -fx-background-color: rgba(15, 23, 42, 0.95);
-    -fx-border-color: -fx-color-brand-primary;
-    -fx-border-width: 2px;
-    -fx-effect: dropshadow(gaussian, rgba(99, 102, 241, 0.5), 20px, 0, 0, 0px);
+    -fx-border-color: #4A6FA5;
+    -fx-background-color: #FFFFFF;
+    -fx-effect: dropshadow(gaussian, rgba(74, 111, 165, 0.12), 0, 0, 0, 0);
 }
 
 .search-button {
-    -fx-background-color: -fx-color-purple-primary;
+    -fx-background-color: #4A6FA5;
     -fx-text-fill: white;
-    -fx-background-radius: 9999px;
+    -fx-background-radius: 10px;
     -fx-border-color: transparent;
-    -fx-padding: 16px;
+    -fx-padding: 0;
     -fx-font-size: 20px;
     -fx-font-weight: 600;
     -fx-cursor: hand;
-    -fx-pref-height: 56px;
-    -fx-pref-width: 56px;
-    -fx-min-width: 56px;
-    -fx-effect: dropshadow(gaussian, rgba(139, 92, 246, 0.4), 15px, 0, 0, 0px);
+    -fx-pref-height: 44px;
+    -fx-pref-width: 44px;
+    -fx-min-width: 44px;
+    -fx-effect: dropshadow(gaussian, rgba(74, 111, 165, 0.25), 8px, 0, 0, 3px);
 }
 
 .search-button:hover {
-    -fx-background-color: -fx-color-purple-dark;
-    -fx-effect: dropshadow(gaussian, rgba(139, 92, 246, 0.6), 25px, 0, 0, 0px);
-    -fx-scale-x: 1.08;
-    -fx-scale-y: 1.08;
+    -fx-background-color: #3D5A80;
+    -fx-effect: dropshadow(gaussian, rgba(74, 111, 165, 0.4), 12px, 0, 0, 4px);
+    -fx-scale-x: 1.05;
+    -fx-scale-y: 1.05;
 }
 
 .search-button:pressed {
@@ -323,35 +319,40 @@
 
 /* ===== Action Buttons ===== */
 .action-buttons {
-    -fx-spacing: 14px;
+    -fx-spacing: 12px;
     -fx-alignment: center;
 }
 
 .action-button {
-    -fx-background-color: rgba(28, 28, 38, 0.6);
-    -fx-text-fill: -fx-color-text-primary;
-    -fx-background-radius: 20px;
-    -fx-padding: 14px;
+    -fx-background-color: #F5F7FA;
+    -fx-text-fill: #4A5568;
+    -fx-background-radius: 12px;
+    -fx-padding: 10px;
     -fx-cursor: hand;
-    -fx-min-width: 52px;
-    -fx-min-height: 52px;
-    -fx-border-color: rgba(139, 92, 246, 0.3);
-    -fx-border-width: 2px;
-    -fx-border-radius: 20px;
-    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 6px, 0, 0, 3px);
+    -fx-min-width: 48px;
+    -fx-min-height: 48px;
+    -fx-border-color: #E2E8F0;
+    -fx-border-width: 1.5px;
+    -fx-border-radius: 12px;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.04), 4px, 0, 0, 2px);
 }
 
 .action-button > .ikonli-font-icon {
-    -fx-icon-size: 24px;
-    -fx-icon-color: -fx-color-text-primary;
+    -fx-icon-size: 22px;
+    -fx-icon-color: #4A5568;
 }
 
 .action-button:hover {
-    -fx-background-color: rgba(38, 38, 48, 0.8);
-    -fx-border-color: -fx-color-purple-primary;
-    -fx-effect: dropshadow(gaussian, rgba(139, 92, 246, 0.4), 12px, 0, 0, 0px);
-    -fx-scale-x: 1.08;
-    -fx-scale-y: 1.08;
+    -fx-background-color: #4A6FA5;
+    -fx-border-color: #4A6FA5;
+    -fx-text-fill: white;
+    -fx-effect: dropshadow(gaussian, rgba(74, 111, 165, 0.25), 8px, 0, 0, 4px);
+    -fx-scale-x: 1.05;
+    -fx-scale-y: 1.05;
+}
+
+.action-button:hover > .ikonli-font-icon {
+    -fx-icon-color: white;
 }
 
 .action-button:pressed {
@@ -360,27 +361,29 @@
 }
 
 .account-button {
-    -fx-background-color: #6366f1;
+    -fx-background-color: #4A6FA5;
     -fx-text-fill: white;
-    -fx-background-radius: 9999px;
-    -fx-padding: 10px 20px;
+    -fx-background-radius: 24px;
+    -fx-padding: 10px 16px;
     -fx-cursor: hand;
-    -fx-spacing: 12px;
+    -fx-spacing: 10px;
     -fx-alignment: center;
     -fx-border-color: transparent;
     -fx-font-weight: 700;
-    -fx-font-size: 15px;
-    -fx-effect: dropshadow(gaussian, rgba(99, 102, 241, 0.5), 18px, 0, 0, 0px);
+    -fx-font-size: 14px;
+    -fx-effect: dropshadow(gaussian, rgba(74, 111, 165, 0.3), 10px, 0, 0, 4px);
+    -fx-min-width: 48px;
+    -fx-min-height: 48px;
 }
 
 .account-button > .ikonli-font-icon {
-    -fx-icon-size: 22px;
+    -fx-icon-size: 20px;
     -fx-icon-color: white;
 }
 
 .account-button:hover {
-    -fx-background-color: #4f46e5;
-    -fx-effect: dropshadow(gaussian, rgba(99, 102, 241, 0.7), 25px, 0, 0, 0px);
+    -fx-background-color: #3D5A80;
+    -fx-effect: dropshadow(gaussian, rgba(74, 111, 165, 0.5), 14px, 0, 0, 6px);
     -fx-scale-x: 1.03;
     -fx-scale-y: 1.03;
 }
@@ -444,7 +447,7 @@
 }
 
 .category-button:hover {
-    -fx-background-color: -fx-color-bg-tertiary;
+    -fx-background-color: rgba(30, 41, 59, 0.5);
     -fx-text-fill: -fx-color-text-primary;
 }
 
@@ -453,14 +456,15 @@
 }
 
 .category-button.selected {
-    -fx-background-color: -fx-color-brand-primary;
-    -fx-text-fill: white;
-    -fx-border-color: transparent;
-    -fx-effect: -fx-shadow-glow;
+    -fx-background-color: rgba(71, 85, 105, 0.6);
+    -fx-text-fill: -fx-color-text-primary;
+    -fx-border-color: rgba(139, 92, 246, 0.3);
+    -fx-border-width: 1px;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.4), 15px, 0.3, 0, 5px);
 }
 
 .category-button.selected > .ikonli-font-icon {
-    -fx-icon-color: white;
+    -fx-icon-color: -fx-color-text-primary;
 }
 
 /* ===== Quick Actions ===== */
@@ -519,54 +523,52 @@
 }
 
 /* ==============================================================================
-   7. FILTER BAR - Premium Glass Effect Design
+   7. FILTER BAR - Premium Blue Light Theme
    ============================================================================== */
 
 .filter-bar {
-    -fx-background-color: rgba(28, 28, 38, 0.9);
-    -fx-background-radius: 26px;
-    -fx-border-color: rgba(139, 92, 246, 0.4);
-    -fx-border-radius: 26px;
-    -fx-border-width: 2px;
-    -fx-padding: 20px 28px;
-    -fx-spacing: 24px;
+    -fx-background-color: #FFFFFF;
+    -fx-background-radius: 16px;
+    -fx-border-color: #E2E8F0;
+    -fx-border-radius: 16px;
+    -fx-border-width: 1.5px;
+    -fx-padding: 16px 24px;
+    -fx-spacing: 20px;
     -fx-alignment: center-left;
-    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.4), 16px, 0, 0, 8px);
+    -fx-effect: dropshadow(gaussian, rgba(74, 111, 165, 0.08), 8px, 0, 0, 4px);
 }
 
 .filter-section {
-    -fx-spacing: 14px;
+    -fx-spacing: 12px;
     -fx-alignment: center-left;
 }
 
 .filter-label {
-    -fx-text-fill: -fx-color-text-primary;
+    -fx-text-fill: #4A5568;
     -fx-font-weight: 700;
-    -fx-font-size: 13px;
+    -fx-font-size: 12px;
     -fx-text-transform: uppercase;
-    -fx-letter-spacing: 0.1em;
-    -fx-effect: dropshadow(gaussian, rgba(139, 92, 246, 0.3), 4px, 0, 0, 0px);
+    -fx-letter-spacing: 0.08em;
 }
 
 .filter-combo {
-    -fx-background-color: rgba(19, 19, 26, 0.8);
-    -fx-border-color: rgba(139, 92, 246, 0.6);
-    -fx-border-radius: 22px;
-    -fx-background-radius: 22px;
-    -fx-border-width: 2px;
-    -fx-padding: 16px 20px;
-    -fx-font-size: 15px;
-    -fx-text-fill: -fx-color-text-primary;
-    -fx-pref-width: 200px;
+    -fx-background-color: #FFFFFF;
+    -fx-border-color: #E2E8F0;
+    -fx-border-radius: 10px;
+    -fx-background-radius: 10px;
+    -fx-border-width: 1.5px;
+    -fx-padding: 12px 18px;
+    -fx-font-size: 14px;
+    -fx-text-fill: #2D3748;
+    -fx-pref-width: 180px;
     -fx-font-weight: 600;
-    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 6px, 0, 0, 3px);
 }
 
 .filter-combo:focused {
-    -fx-border-color: -fx-color-purple-primary;
+    -fx-border-color: #4A6FA5;
     -fx-border-width: 2px;
-    -fx-background-color: rgba(19, 19, 26, 0.95);
-    -fx-effect: dropshadow(gaussian, rgba(139, 92, 246, 0.5), 15px, 0, 0, 0px);
+    -fx-background-color: #FFFFFF;
+    -fx-effect: dropshadow(gaussian, rgba(74, 111, 165, 0.12), 0, 0, 0, 0);
 }
 
 .filter-combo .arrow-button {
@@ -574,98 +576,90 @@
 }
 
 .filter-combo .arrow {
-    -fx-background-color: -fx-color-purple-primary;
+    -fx-background-color: #4A6FA5;
 }
 
 .filter-combo:hover {
-    -fx-border-color: -fx-color-purple-light;
-    -fx-background-color: rgba(19, 19, 26, 0.9);
+    -fx-border-color: #5B8BB8;
+    -fx-background-color: #FAFBFF;
 }
 
 .sort-section {
-    -fx-spacing: 14px;
+    -fx-spacing: 12px;
     -fx-alignment: center;
 }
 
 .count-text {
-    -fx-text-fill: -fx-color-purple-primary;
-    -fx-font-size: 16px;
+    -fx-text-fill: #4A6FA5;
+    -fx-font-size: 15px;
     -fx-font-weight: 700;
-    -fx-effect: dropshadow(gaussian, rgba(139, 92, 246, 0.3), 4px, 0, 0, 0px);
 }
 
 .total-count {
-    -fx-text-fill: -fx-color-purple-primary;
-    -fx-font-size: 16px;
+    -fx-text-fill: #4A6FA5;
+    -fx-font-size: 15px;
     -fx-font-weight: 700;
-    -fx-effect: dropshadow(gaussian, rgba(139, 92, 246, 0.3), 4px, 0, 0, 0px);
 }
 
 /* ==============================================================================
-   8. PRODUCT GRID
+   8. PRODUCT GRID - RESPONSIVE LAYOUT
    ============================================================================== */
 
 .product-grid {
-    -fx-hgap: 28px;
-    -fx-vgap: 28px;
-    -fx-padding: 0;
+    -fx-hgap: 20px;
+    -fx-vgap: 20px;
+    -fx-padding: 20px;
     -fx-alignment: top-center;
 }
 
+/* Responsive - TilePane si adatta automaticamente */
 .product-grid .tile {
-    -fx-pref-width: 340px;
-    -fx-pref-height: 520px;
+    /* Le dimensioni vengono gestite dal TilePane responsivo */
 }
 
 /* ==============================================================================
-   9. PRODUCT CARD - Premium Glass Effect Design
+   9. PRODUCT CARD - Premium Responsive Design
    ============================================================================== */
 
 .product-card {
-    -fx-background-color: rgba(28, 28, 38, 0.95);
-    -fx-background-radius: 24px;
-    -fx-border-color: rgba(139, 92, 246, 0.3);
-    -fx-border-radius: 24px;
-    -fx-border-width: 2px;
-    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.4), 20px, 0, 0, 10px);
+    -fx-background-color: white;
+    -fx-background-radius: 16px;
+    -fx-border-color: #192a54;
+    -fx-border-radius: 16px;
+    -fx-border-width: 1px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 4, 0, 0, 2);
     -fx-padding: 0;
     -fx-spacing: 0;
-    -fx-pref-width: 340px;
-    -fx-min-width: 340px;
-    -fx-max-width: 340px;
-    -fx-pref-height: 520px;
-    -fx-min-height: 520px;
-    -fx-max-height: 520px;
+    -fx-pref-width: 320px;
+    -fx-min-width: 320px;
+    -fx-max-width: 320px;
+    -fx-pref-height: 480px;
+    -fx-min-height: 480px;
+    -fx-max-height: 480px;
 }
 
+/* Effetto hover smooth stile web */
 .product-card:hover {
-    -fx-effect: dropshadow(gaussian, rgba(139, 92, 246, 0.5), 30px, 0, 0, 15px);
-    -fx-translate-y: -6px;
-    -fx-border-color: -fx-color-purple-primary;
-    -fx-background-color: rgba(28, 28, 38, 1);
+    -fx-effect: dropshadow(gaussian, rgba(74, 111, 165, 0.18), 16px, 0, 0, 8px);
+    -fx-border-color: #4A6FA5;
+    -fx-background-color: #FAFBFF;
+    /* Simulato translate-y con transform (JavaFX non supporta direttamente) */
 }
 
 /* ===== Product Image ===== */
 .product-image-container {
-    -fx-background-radius: 24px 24px 0 0;
-    -fx-pref-height: 220px;
-    -fx-min-height: 220px;
-    -fx-max-height: 220px;
+    -fx-background-radius: 16px 16px 0 0;
+    -fx-pref-height: 200px;
+    -fx-min-height: 200px;
+    -fx-max-height: 200px;
     -fx-alignment: center;
-    -fx-overflow: hidden;
-    -fx-background-color: rgba(15, 23, 42, 0.5);
-}
-
-.image-container-premium {
-    -fx-background-color: -fx-color-bg-tertiary;
-    -fx-border-color: rgba(139, 92, 246, 0.2);
-    -fx-border-width: 1px;
-    -fx-border-radius: 24px 24px 0 0;
 }
 
 .product-image {
-    -fx-fit-width: 340px;
-    -fx-fit-height: 220px;
+    -fx-background-radius: 16px 16px 0 0;
+    -fx-fit-width: 320px;
+    -fx-fit-height: 200px;
+    -fx-preserve-ratio: true;
     -fx-smooth: true;
 }
 
@@ -735,12 +729,10 @@
 
 /* ===== Product Content ===== */
 .product-content {
-    -fx-padding: 24px;
-    -fx-spacing: 16px;
-    -fx-pref-height: 300px;
-    -fx-min-height: 300px;
-    -fx-max-height: 300px;
-    -fx-background-radius: 0 0 36px 36px;
+    -fx-padding: 20px;
+    -fx-spacing: 12px;
+    -fx-pref-height: 280px;
+    -fx-min-height: 280px;
 }
 
 .product-header {
@@ -749,19 +741,23 @@
 }
 
 .product-title {
-    -fx-text-fill: -fx-color-text-primary;
-    -fx-font-size: 19px;
-    -fx-font-weight: 800;
+    -fx-text-fill: -fx-color-gray-800;
+    -fx-font-size: 17px;
+    -fx-font-weight: 700;
     -fx-wrap-text: true;
     -fx-max-width: 300px;
-    -fx-effect: dropshadow(gaussian, rgba(255, 255, 255, 0.1), 4px, 0, 0, 1px);
 }
 
 .product-price {
-    -fx-text-fill: -fx-color-purple-primary;
-    -fx-font-size: 24px;
-    -fx-font-weight: 800;
-    -fx-effect: dropshadow(gaussian, rgba(139, 92, 246, 0.4), 8px, 0, 0, 0px);
+    -fx-text-fill: -fx-color-blue-primary !important;
+    -fx-fill: -fx-color-blue-primary;
+    -fx-font-size: 22px;
+    -fx-font-weight: 700;
+}
+
+Text.product-price {
+    -fx-fill: white;
+    -fx-text-fill: white;
 }
 
 .product-description {
@@ -847,59 +843,58 @@
 }
 
 .details-button {
-    -fx-background-color: rgba(15, 23, 42, 0.6);
-    -fx-text-fill: -fx-color-text-primary;
-    -fx-background-radius: 26px;
-    -fx-border-color: rgba(99, 102, 241, 0.4);
-    -fx-border-radius: 26px;
+    -fx-background-color: transparent;
+    -fx-text-fill: -fx-color-blue-primary;
+    -fx-background-radius: 8px;
+    -fx-border-color: -fx-color-blue-primary;
+    -fx-border-radius: 8px;
     -fx-border-width: 2px;
-    -fx-padding: 14px 22px;
+    -fx-padding: 10px 18px;
     -fx-font-weight: 600;
     -fx-cursor: hand;
-    -fx-pref-width: 140px;
-    -fx-min-width: 140px;
-    -fx-max-width: 140px;
-    -fx-pref-height: 50px;
-    -fx-min-height: 50px;
-    -fx-max-height: 50px;
+    -fx-pref-width: 120px;
+    -fx-min-width: 120px;
+    -fx-max-width: 120px;
+    -fx-pref-height: 44px;
+    -fx-min-height: 44px;
+    -fx-max-height: 44px;
     -fx-font-size: 14px;
 }
 
 .details-button:hover {
-    -fx-background-color: rgba(51, 65, 85, 0.8);
-    -fx-border-color: -fx-color-brand-primary;
-    -fx-effect: dropshadow(gaussian, rgba(99, 102, 241, 0.3), 10px, 0, 0, 0px);
-    -fx-scale-x: 1.03;
-    -fx-scale-y: 1.03;
+    -fx-background-color: -fx-color-blue-faint;
+    -fx-border-color: -fx-color-blue-dark;
+    -fx-scale-x: 1.02;
+    -fx-scale-y: 1.02;
 }
 
 .offer-button {
-    -fx-background-color: #6366f1;
+    -fx-background-color: -fx-color-blue-primary;
     -fx-text-fill: white;
-    -fx-background-radius: 26px;
+    -fx-background-radius: 8px;
     -fx-border-color: transparent;
-    -fx-border-radius: 26px;
+    -fx-border-radius: 8px;
     -fx-border-width: 0;
-    -fx-padding: 14px 22px;
-    -fx-font-weight: 700;
+    -fx-padding: 10px 18px;
+    -fx-font-weight: 600;
     -fx-cursor: hand;
-    -fx-pref-width: 140px;
-    -fx-min-width: 140px;
-    -fx-max-width: 140px;
-    -fx-pref-height: 50px;
-    -fx-min-height: 50px;
-    -fx-max-height: 50px;
+    -fx-pref-width: 120px;
+    -fx-min-width: 120px;
+    -fx-max-width: 120px;
+    -fx-pref-height: 44px;
+    -fx-min-height: 44px;
+    -fx-max-height: 44px;
     -fx-spacing: 8px;
     -fx-alignment: center;
-    -fx-effect: dropshadow(gaussian, rgba(99, 102, 241, 0.5), 15px, 0, 0, 0px);
+    -fx-effect: -fx-shadow-md;
     -fx-font-size: 14px;
 }
 
 .offer-button:hover {
-    -fx-background-color: #4f46e5;
-    -fx-effect: dropshadow(gaussian, rgba(99, 102, 241, 0.7), 20px, 0, 0, 0px);
-    -fx-scale-x: 1.03;
-    -fx-scale-y: 1.03;
+    -fx-background-color: -fx-color-blue-dark;
+    -fx-effect: -fx-shadow-lg;
+    -fx-scale-x: 1.02;
+    -fx-scale-y: 1.02;
 }
 
 .favorite-button {

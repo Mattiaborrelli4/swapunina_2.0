@@ -1,279 +1,499 @@
-/* carello.css - Stile per il carrello JavaFX con selezione persistente */
+/* ============================================
+   CARRELLO - AMAZON STYLE LIGHT THEME
+   Design pulito con palette bianco/grigia/blu
+   ============================================ */
 
-/* Container principale */
-.container {
-    -fx-background-color: #f5f5f5;
-    -fx-padding: 20px;
+/* ============================================
+   DIALOG PANE - Container principale
+   ============================================ */
+
+.dialog-pane {
+    -fx-background-color: #F5F7FA;
 }
 
-.cart-container {
-    -fx-spacing: 10px;
-    -fx-padding: 15px;
+.dialog-pane > .content {
     -fx-background-color: transparent;
 }
 
-/* Tabella carrello */
-.cart-table {
-    -fx-min-height: 400px;
-    -fx-max-height: infinity;
-    -fx-border-color: #ddd;
+.dialog-pane > .content.label {
+    -fx-text-fill: #2D3748;
+    -fx-font-family: "Segoe UI", "Inter", sans-serif;
+    -fx-font-size: 20px;
+    -fx-font-weight: 700;
+}
+
+.dialog-pane > .button-bar {
+    -fx-background-color: #FFFFFF;
+    -fx-padding: 20 24 20 24;
+    -fx-border-color: #E2E8F0;
+    -fx-border-width: 2px 0 0 0;
+}
+
+/* ============================================
+   CAMPI INPUT - Fields bianchi
+   ============================================ */
+
+.text-input,
+.text-area {
+    -fx-background-color: #FFFFFF;
+    -fx-background-radius: 8px;
+    -fx-border-color: #CBD5E0;
     -fx-border-width: 1px;
-    -fx-background-color: white;
+    -fx-border-radius: 8px;
+    -fx-text-fill: #2D3748;
+    -fx-font-family: "Segoe UI", sans-serif;
+    -fx-font-size: 14px;
+    -fx-prompt-text-fill: #718096;
+    -fx-padding: 12 16;
 }
 
-.cart-row {
-    -fx-border-color: #e0e0e0;
-    -fx-border-width: 0 0 1 0;
+.text-input:focused,
+.text-area:focused {
+    -fx-background-color: #FFFFFF;
+    -fx-border-color: #4A6FA5;
+    -fx-border-width: 2px;
 }
 
-.cart-row:selected {
-    -fx-background-color: #f0f8ff;
-    -fx-border-color: #007bff;
-    -fx-border-width: 0 0 0 3px;
+/* ============================================
+   TABLE VIEW - Carrello Amazon style
+   ============================================ */
+
+.table-view {
+    -fx-background-color: #FFFFFF;
+    -fx-border-color: #E2E8F0;
+    -fx-border-width: 1px;
+    -fx-border-radius: 12px;
+    -fx-background-radius: 12px;
 }
 
-.cart-row:hover {
-    -fx-background-color: #f8f9fa;
+.table-row-cell {
+    -fx-background-color: #FFFFFF;
+    -fx-text-fill: #4A5568;
+    -fx-font-family: "Segoe UI", sans-serif;
+    -fx-font-size: 14px;
+    -fx-padding: 16;
 }
 
-/* Colonne della tabella */
-.item-column {
-    -fx-alignment: center-left;
+.table-row-cell:selected {
+    -fx-background-color: rgba(74, 111, 165, 0.1);
+    -fx-text-fill: #2D3748;
 }
 
-.price-column, .subtotal-column {
-    -fx-alignment: center-right;
+.table-row-cell:hover {
+    -fx-background-color: rgba(139, 92, 246, 0.2);
 }
 
-.quantity-column {
-    -fx-alignment: center;
+.table-column {
+    -fx-background-color: #F7FAFC;
+    -fx-text-fill: #2D3748;
+    -fx-font-family: "Segoe UI", sans-serif;
+    -fx-font-size: 13px;
+    -fx-font-weight: 700;
+    -fx-padding: 12 16;
+    -fx-background-radius: 8px 8px 0 0;
 }
 
-.actions-column {
-    -fx-alignment: center;
+.table-view .column-header-background {
+    -fx-background-color: rgba(45, 27, 78, 0.3);
 }
 
-.price-cell, .subtotal-cell {
-    -fx-font-weight: bold;
-    -fx-text-fill: #2c3e50;
+/* ============================================
+   BOTTONI - Gradient viola premium
+   ============================================ */
+
+.dialog-pane .button {
+    -fx-background-color: #4A6FA5;
+    -fx-text-fill: #ffffff;
+    -fx-font-family: "Segoe UI", sans-serif;
+    -fx-font-size: 14px;
+    -fx-font-weight: 600;
+    -fx-background-radius: 8px;
+    -fx-padding: 12 28;
+    -fx-cursor: hand;
+    -fx-border-width: 0;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 8px, 0, 0, 4px);
 }
 
-/* ✅ SISTEMA DI SELEZIONE MIGLIORATO */
+.dialog-pane .button:hover {
+    -fx-background-color: #3D5A80;
+    -fx-scale-x: 1.02;
+    -fx-scale-y: 1.02;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.15), 12px, 0, 0, 6px);
+}
+
+.dialog-pane .button:pressed {
+    -fx-scale-x: 0.97;
+    -fx-scale-y: 0.97;
+}
+
+.dialog-pane .button.cancel {
+    -fx-background-color: rgba(91, 33, 182, 0.4);
+    -fx-text-fill: #c4b5fd;
+    -fx-border-color: rgba(139, 92, 246, 0.5);
+    -fx-border-width: 1.5px;
+    -fx-border-radius: 20px;
+}
+
+.dialog-pane .button.cancel:hover {
+    -fx-background-color: rgba(109, 40, 217, 0.5);
+    -fx-text-fill: #e9d5ff;
+    -fx-border-color: #a78bfa;
+}
+
+/* ============================================
+   PULSANTI AZIONE CARRELLO
+   ============================================ */
+
+.select-all-button {
+    -fx-background-color: linear-gradient(to right, #10b981, #059669);
+    -fx-text-fill: white;
+    -fx-padding: 10px 18px;
+    -fx-font-weight: 700;
+    -fx-cursor: hand;
+    -fx-background-radius: 20px;
+    -fx-border-radius: 20px;
+    -fx-effect: dropshadow(gaussian, rgba(16, 185, 129, 0.4), 10, 0.2, 0, 2);
+}
+
+.select-all-button:hover {
+    -fx-background-color: linear-gradient(to right, #059669, #047857);
+    -fx-scale-x: 1.03;
+    -fx-scale-y: 1.03;
+}
+
+.deselect-all-button {
+    -fx-background-color: rgba(91, 33, 182, 0.4);
+    -fx-text-fill: #c4b5fd;
+    -fx-padding: 10px 18px;
+    -fx-font-weight: 700;
+    -fx-cursor: hand;
+    -fx-background-radius: 20px;
+    -fx-border-radius: 20px;
+    -fx-border-color: rgba(139, 92, 246, 0.5);
+    -fx-border-width: 1.5px;
+}
+
+.deselect-all-button:hover {
+    -fx-background-color: rgba(109, 40, 217, 0.5);
+    -fx-border-color: #a78bfa;
+}
+
+.remove-selected-button {
+    -fx-background-color: linear-gradient(to right, #f59e0b, #d97706);
+    -fx-text-fill: white;
+    -fx-padding: 10px 18px;
+    -fx-font-weight: 700;
+    -fx-cursor: hand;
+    -fx-background-radius: 20px;
+    -fx-border-radius: 20px;
+    -fx-effect: dropshadow(gaussian, rgba(251, 191, 36, 0.4), 10, 0.2, 0, 2);
+}
+
+.remove-selected-button:hover {
+    -fx-background-color: linear-gradient(to right, #d97706, #b45309);
+    -fx-scale-x: 1.03;
+    -fx-scale-y: 1.03;
+}
+
+.remove-button {
+    -fx-background-color: linear-gradient(to right, #ef4444, #dc2626);
+    -fx-text-fill: white;
+    -fx-font-size: 12px;
+    -fx-padding: 6px 12px;
+    -fx-font-weight: 700;
+    -fx-cursor: hand;
+    -fx-background-radius: 16px;
+    -fx-border-radius: 16px;
+    -fx-effect: dropshadow(gaussian, rgba(239, 68, 68, 0.3), 8, 0.2, 0, 2);
+}
+
+.remove-button:hover {
+    -fx-background-color: linear-gradient(to right, #dc2626, #b91c1c);
+    -fx-scale-x: 1.05;
+    -fx-scale-y: 1.05;
+}
+
+/* ============================================
+   CHECKBOX - Selezione premium
+   ============================================ */
+
 .selection-container {
-    -fx-pref-width: 24px;
-    -fx-pref-height: 24px;
+    -fx-pref-width: 26px;
+    -fx-pref-height: 26px;
     -fx-alignment: center;
     -fx-cursor: hand;
     -fx-padding: 3px;
 }
 
 .selection-box {
-    -fx-width: 18px;
-    -fx-height: 18px;
-    -fx-arc-width: 4px;
-    -fx-arc-height: 4px;
-    -fx-stroke: #adb5bd;
+    -fx-width: 20px;
+    -fx-height: 20px;
+    -fx-arc-width: 6px;
+    -fx-arc-height: 6px;
+    -fx-stroke: #a78bfa;
     -fx-stroke-width: 2px;
-    -fx-fill: white; /* ✅ Default bianco */
+    -fx-fill: transparent;
 }
 
-/* ✅ IMPORTANTE: Queste classi vengono applicate dal codice Java */
 .selection-container-selected .selection-box {
-    -fx-fill: #007bff !important;
-    -fx-stroke: #0056b3 !important;
+    -fx-fill: #8b5cf6 !important;
+    -fx-stroke: #7c3aed !important;
 }
 
 .selection-container-unselected .selection-box {
-    -fx-fill: white !important;
-    -fx-stroke: #adb5bd !important;
-}
-
-.check-mark {
-    -fx-font-weight: bold;
-    -fx-text-fill: white;
-    -fx-font-size: 12px;
-    -fx-visible: false;
-}
-
-.selection-container-selected .check-mark {
-    -fx-visible: true;
-}
-
-/* Pulsanti azione */
-.actions-box {
-    -fx-spacing: 10px;
-    -fx-padding: 10 0 10 0;
-    -fx-alignment: center-left;
-}
-
-.select-all-button {
-    -fx-background-color: #28a745;
-    -fx-text-fill: white;
-    -fx-padding: 8px 15px;
-    -fx-font-weight: bold;
-    -fx-cursor: hand;
-    -fx-border-radius: 4px;
-}
-
-.deselect-all-button {
-    -fx-background-color: #6c757d;
-    -fx-text-fill: white;
-    -fx-padding: 8px 15px;
-    -fx-font-weight: bold;
-    -fx-cursor: hand;
-    -fx-border-radius: 4px;
-}
-
-.remove-selected-button {
-    -fx-background-color: #ffc107;
-    -fx-text-fill: black;
-    -fx-padding: 8px 15px;
-    -fx-font-weight: bold;
-    -fx-cursor: hand;
-    -fx-border-radius: 4px;
-}
-
-.remove-button {
-    -fx-background-color: #dc3545;
-    -fx-text-fill: white;
-    -fx-font-size: 11px;
-    -fx-padding: 5px 10px;
-    -fx-cursor: hand;
-    -fx-border-radius: 3px;
-}
-
-/* Riepilogo */
-.summary-box {
-    -fx-spacing: 20px;
-    -fx-padding: 15px;
-    -fx-alignment: center-left;
-}
-
-.summary-container {
-    -fx-border-color: #dee2e6;
-    -fx-border-width: 1px;
-    -fx-background-color: #f8f9fa;
-    -fx-padding: 15px;
-    -fx-spacing: 20px;
-    -fx-alignment: center-left;
-    -fx-border-radius: 5px;
-}
-
-.total-label, .balance-label {
-    -fx-font-weight: bold;
-    -fx-font-size: 14px;
-}
-
-.total-value {
-    -fx-font-weight: bold;
-    -fx-font-size: 18px;
-    -fx-text-fill: #dc3545;
-}
-
-.balance-value {
-    -fx-font-size: 12px;
-    -fx-text-fill: #28a745;
-}
-
-/* Checkout */
-.checkout-box {
-    -fx-padding: 15 0 0 0;
-    -fx-alignment: center-right;
-}
-
-.checkout-button {
-    -fx-padding: 12px 24px;
-    -fx-font-weight: bold;
-    -fx-font-size: 14px;
-    -fx-cursor: hand;
-    -fx-border-radius: 25px;
-}
-
-.checkout-button-enabled {
-    -fx-background-color: #28a745;
-    -fx-text-fill: white;
-}
-
-.checkout-button-disabled {
-    -fx-background-color: #6c757d;
-    -fx-text-fill: white;
-}
-
-/* Messaggi */
-.alert {
-    -fx-border-color: #ddd;
-    -fx-border-width: 1px;
-}
-
-.alert.confirmation {
-    -fx-background-color: #d4edda;
-    -fx-text-fill: #155724;
-}
-
-.alert.error {
-    -fx-background-color: #f8d7da;
-    -fx-text-fill: #721c24;
-}
-
-/* Placeholder tabella vuota */
-.table-view .placeholder .label {
-    -fx-text-fill: #6c757d;
-    -fx-font-style: italic;
-}
-
-/* Hover effects */
-.button:hover {
-    -fx-scale-x: 1.02;
-    -fx-scale-y: 1.02;
-}
-
-.remove-button:hover {
-    -fx-background-color: #c82333;
-}
-
-.select-all-button:hover {
-    -fx-background-color: #218838;
-}
-
-.deselect-all-button:hover {
-    -fx-background-color: #5a6268;
-}
-
-.remove-selected-button:hover {
-    -fx-background-color: #e0a800;
-}
-
-.checkout-button-enabled:hover {
-    -fx-background-color: #218838;
+    -fx-fill: transparent !important;
+    -fx-stroke: #a78bfa !important;
 }
 
 .selection-container:hover .selection-box {
-    -fx-stroke: #007bff;
+    -fx-stroke: #c4b5fd;
     -fx-scale-x: 1.1;
     -fx-scale-y: 1.1;
 }
 
-/* Header della tabella */
-.table-view .column-header {
-    -fx-background-color: #f8f9fa;
-    -fx-border-color: #dee2e6;
-    -fx-border-width: 0 0 1 0;
+/* ============================================
+   RIEPILOGO CARRELLO
+   ============================================ */
+
+.summary-container {
+    -fx-background-color: #FFFFFF;
+    -fx-background-radius: 12px;
+    -fx-border-color: #E2E8F0;
+    -fx-border-width: 1px;
+    -fx-border-radius: 12px;
+    -fx-padding: 24px;
+    -fx-spacing: 20;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.08), 10px, 0, 0, 4px);
 }
 
-.table-view .column-header .label {
-    -fx-text-fill: #495057;
-    -fx-font-weight: bold;
+.total-label,
+.balance-label {
+    -fx-text-fill: #4A5568;
+    -fx-font-weight: 600;
+    -fx-font-size: 15px;
 }
 
-/* Scrollbar */
-.table-view .scroll-bar:vertical {
-    -fx-background-color: #f8f9fa;
+.total-value {
+    -fx-text-fill: #4A6FA5;
+    -fx-font-weight: 700;
+    -fx-font-size: 26px;
 }
 
-.table-view .scroll-bar:vertical .thumb {
-    -fx-background-color: #adb5bd;
+.balance-value {
+    -fx-font-size: 14px;
+    -fx-text-fill: #4ade80;
+    -fx-font-weight: 600;
 }
 
-.table-view .scroll-bar:vertical .thumb:hover {
-    -fx-background-color: #6c757d;
+/* ============================================
+   CHECKOUT BUTTON
+   ============================================ */
+
+.checkout-button {
+    -fx-padding: 14px 32px;
+    -fx-font-weight: 700;
+    -fx-font-size: 15px;
+    -fx-cursor: hand;
+    -fx-background-radius: 25px;
+    -fx-border-radius: 25px;
+}
+
+.checkout-button-enabled {
+    -fx-background-color: linear-gradient(to right, #10b981, #059669);
+    -fx-text-fill: white;
+    -fx-effect: dropshadow(gaussian, rgba(16, 185, 129, 0.5), 15, 0.3, 0, 4);
+}
+
+.checkout-button-enabled:hover {
+    -fx-background-color: linear-gradient(to right, #059669, #047857);
+    -fx-scale-x: 1.03;
+    -fx-scale-y: 1.03;
+    -fx-effect: dropshadow(gaussian, rgba(16, 185, 129, 0.7), 20, 0.4, 0, 6);
+}
+
+.checkout-button-disabled {
+    -fx-background-color: rgba(91, 33, 182, 0.3);
+    -fx-text-fill: #a78bfa;
+    -fx-cursor: default;
+}
+
+/* ============================================
+   ALERT MESSAGES
+   ============================================ */
+
+.alert {
+    -fx-border-width: 0;
+    -fx-background-radius: 12px;
+    -fx-border-radius: 12px;
+    -fx-padding: 15px 20px;
+}
+
+.alert.confirmation {
+    -fx-background-color: rgba(16, 185, 129, 0.2);
+    -fx-text-fill: #4ade80;
+    -fx-border-color: rgba(16, 185, 129, 0.4);
+    -fx-border-width: 1px;
+}
+
+.alert.error {
+    -fx-background-color: rgba(239, 68, 68, 0.2);
+    -fx-text-fill: #f87171;
+    -fx-border-color: rgba(239, 68, 68, 0.4);
+    -fx-border-width: 1px;
+}
+
+/* ============================================
+   LABEL
+   ============================================ */
+
+.label {
+    -fx-text-fill: #c4b5fd;
+    -fx-font-family: "Segoe UI", sans-serif;
+}
+
+.label-header {
+    -fx-text-fill: #e9d5ff;
+    -fx-font-size: 16px;
+    -fx-font-weight: 700;
+}
+
+.label-info {
+    -fx-text-fill: #a78bfa;
+    -fx-font-size: 13px;
+}
+
+.label-error {
+    -fx-text-fill: #f87171;
+    -fx-font-size: 12px;
+    -fx-font-weight: 600;
+}
+
+.label-success {
+    -fx-text-fill: #4ade80;
+    -fx-font-size: 12px;
+    -fx-font-weight: 600;
+}
+
+/* ============================================
+   SCROLL BAR - Purple custom
+   ============================================ */
+
+.scroll-bar {
+    -fx-background-color: transparent;
+}
+
+.scroll-bar .thumb {
+    -fx-background-color: linear-gradient(to bottom, #8b5cf6, #6d28d9);
+    -fx-background-radius: 10px;
+}
+
+.scroll-bar .thumb:hover {
+    -fx-background-color: linear-gradient(to bottom, #a78bfa, #8b5cf6);
+}
+
+.scroll-bar .track {
+    -fx-background-color: transparent;
+}
+
+/* ============================================
+   SCROLL PANE
+   ============================================ */
+
+.scroll-pane {
+    -fx-background-color: transparent;
+}
+
+.scroll-pane > .viewport {
+    -fx-background-color: transparent;
+}
+
+/* ============================================
+   LIST VIEW - Per chat e carrello
+   ============================================ */
+
+.list-view {
+    -fx-background-color: rgba(45, 27, 78, 0.2);
+    -fx-border-color: rgba(124, 58, 237, 0.4);
+    -fx-border-width: 2px;
+    -fx-border-radius: 16px;
+    -fx-background-radius: 16px;
+}
+
+.list-cell {
+    -fx-background-color: transparent;
+    -fx-text-fill: #ddd6fe;
+    -fx-font-family: "Segoe UI", sans-serif;
+    -fx-font-size: 14px;
+    -fx-padding: 12 15;
+}
+
+.list-cell:filled:selected,
+.list-cell:filled:hover {
+    -fx-background-color: rgba(139, 92, 246, 0.3);
+    -fx-text-fill: #ffffff;
+}
+
+.list-cell:odd {
+    -fx-background-color: rgba(45, 27, 78, 0.15);
+}
+
+/* ============================================
+   COMBO BOX - Dropdown viola
+   ============================================ */
+
+.combo-box {
+    -fx-background-color: rgba(45, 27, 78, 0.4);
+    -fx-background-radius: 18px;
+    -fx-border-color: #7c3aed;
+    -fx-border-width: 2px;
+    -fx-border-radius: 18px;
+}
+
+.combo-box .list-cell {
+    -fx-text-fill: #e9d5ff;
+    -fx-font-family: "Segoe UI", sans-serif;
+    -fx-font-size: 14px;
+}
+
+.combo-box:list-cell {
+    -fx-background-color: rgba(45, 27, 78, 0.3);
+}
+
+.combo-box:list-cell:filled:selected,
+.combo-box:list-cell:filled:hover {
+    -fx-background-color: rgba(139, 92, 246, 0.4);
+    -fx-text-fill: #ffffff;
+}
+
+.combo-box-popup .list-view {
+    -fx-background-color: linear-gradient(to bottom, #1a0a2e, #2d1b4e);
+    -fx-border-color: #7c3aed;
+    -fx-border-width: 2px;
+    -fx-border-radius: 16px;
+}
+
+.combo-box-popup .list-view .list-cell {
+    -fx-background-color: transparent;
+}
+
+/* ============================================
+   ANIMAZIONI SOTtili
+   ============================================ */
+
+.dialog-pane .button,
+.select-all-button,
+.deselect-all-button,
+.remove-selected-button,
+.remove-button,
+.checkout-button-enabled {
+    -fx-transition: all 0.3s ease-in-out;
+}
+
+.text-input,
+.text-area {
+    -fx-transition: all 0.2s ease-in-out;
+}
+
+.combo-box {
+    -fx-transition: all 0.2s ease-in-out;
 }

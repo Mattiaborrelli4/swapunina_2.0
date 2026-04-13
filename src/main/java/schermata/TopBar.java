@@ -850,31 +850,34 @@ public class TopBar {
 
             Image image;
 
-            // Dimensione per l'immagine account (42x42)
-            double accountImageSize = 42;
-
             // Verifica se è un URL Cloudinary o un percorso locale valido
             if (imageUrl.contains("cloudinary.com") || imageUrl.startsWith("http")) {
-                // URL Cloudinary
                 LoggerUtil.debug("TopBar - Caricamento da Cloudinary");
-                image = new Image(imageUrl, accountImageSize, accountImageSize, true, true, true);
+                image = new Image(imageUrl, true);
             } else {
-                // Percorso locale - converti in URL file
                 LoggerUtil.debug("TopBar - Caricamento da file locale: " + imageUrl);
                 File file = new File(imageUrl);
                 if (file.exists()) {
-                    image = new Image(file.toURI().toString(), accountImageSize, accountImageSize, true, true, true);
+                    image = new Image(file.toURI().toString(), true);
                 } else {
                     throw new Exception("File locale non trovato: " + imageUrl);
                 }
             }
 
             if (!image.isError()) {
-                accountImageView.setImage(image);
-                accountButton.setGraphic(accountImageView);
-                accountButton.setText(""); // Rimuovi emoji se c'è immagine
-                // Rimuovi sfondo dal bottone quando c'è l'immagine profilo
-                accountButton.setStyle("-fx-background-color: transparent; -fx-background-radius: 0;");
+                // Aspetta che l'immagine sia caricata, poi applica cover
+                image.progressProperty().addListener((observable, oldValue, newValue) -> {
+                    if (newValue.doubleValue() >= 1.0) {
+                        javafx.application.Platform.runLater(() -> {
+                            accountImageView.setImage(image);
+                            applyObjectFitCoverToAvatar(accountImageView, image, 42);
+
+                            accountButton.setGraphic(accountImageView);
+                            accountButton.setText("");
+                            accountButton.setStyle("-fx-background-color: transparent; -fx-background-radius: 0;");
+                        });
+                    }
+                });
                 LoggerUtil.success("TopBar - Immagine profilo caricata");
             } else {
                 throw new Exception("Errore nel caricamento immagine");
@@ -892,16 +895,13 @@ public class TopBar {
     }
     
 
-    // Metodo per rendere l'immagine circolare senza bordi (dimensione account 42x42)
+    // Metodo per rendere l'immagine circolare con "object-fit: cover" (stile LinkedIn/Twitter)
     private void makeImageCircular(ImageView imageView) {
-        // Dimensione per il bottone account (42x42)
         double accountImageSize = 42;
 
-        imageView.setFitWidth(accountImageSize);
-        imageView.setFitHeight(accountImageSize);
-        imageView.setPreserveRatio(false); // NON mantenere il ratio per coprire tutto
+        imageView.setSmooth(true);
 
-        // Crea un clip circolare che copre tutto il bottone
+        // Crea un clip circolare
         javafx.scene.shape.Circle clip = new javafx.scene.shape.Circle(
             accountImageSize / 2.0,
             accountImageSize / 2.0,
@@ -909,8 +909,48 @@ public class TopBar {
         );
         imageView.setClip(clip);
 
-        // Nessun bordo - l'immagine deve coprire tutto
-        imageView.setStyle("");
+        // Se c'è già un'immagine, applica cover
+        if (imageView.getImage() != null && !imageView.getImage().isError()) {
+            applyObjectFitCoverToAvatar(imageView, imageView.getImage(), accountImageSize);
+        }
+    }
+
+    /**
+     * Applica "object-fit: cover" all'avatar circolare
+     */
+    private void applyObjectFitCoverToAvatar(ImageView imageView, Image image, double size) {
+        if (image.isError() || image.getWidth() == 0 || image.getHeight() == 0) {
+            // Fallback semplice
+            imageView.setFitWidth(size);
+            imageView.setFitHeight(size);
+            imageView.setPreserveRatio(true);
+            return;
+        }
+
+        imageView.setSmooth(true);
+
+        double imageRatio = image.getWidth() / image.getHeight();
+        double sizeRatio = 1.0;
+
+        double fitWidth, fitHeight, x, y;
+
+        if (imageRatio > sizeRatio) {
+            fitHeight = size;
+            fitWidth = fitHeight * imageRatio;
+            x = (size - fitWidth) / 2;
+            y = 0;
+        } else {
+            fitWidth = size;
+            fitHeight = fitWidth / imageRatio;
+            x = 0;
+            y = (size - fitHeight) / 2;
+        }
+
+        imageView.setFitWidth(fitWidth);
+        imageView.setFitHeight(fitHeight);
+        imageView.setX(x);
+        imageView.setY(y);
+        imageView.setPreserveRatio(false);
     }
 
     // Metodo per impostare l'immagine profilo

@@ -43,7 +43,7 @@ public class InserisciAnnuncioDialog extends Dialog<Annuncio> {
     private ComboBox<String> origineCombo;
     private TextField prezzoField;
     private ComboBox<String> consegnaCombo;
-    private File imageFile;
+    private List<File> imageFiles = new ArrayList<>();  // Supporto multi-immagine (max 8)
     
     // Sistema di gestione errori
     private final List<Label> errorLabels = new ArrayList<>();
@@ -60,7 +60,6 @@ public class InserisciAnnuncioDialog extends Dialog<Annuncio> {
     private Button selezioneImmagineButton;
     private ImageView anteprimaImageView;
     private Label nomeFileLabel;
-    private File fileImmagineSelezionato;
     private String cloudinaryImageUrl;
     
     // Servizio Cloudinary per il caricamento immagini
@@ -69,6 +68,7 @@ public class InserisciAnnuncioDialog extends Dialog<Annuncio> {
     // Costanti per configurazione
     private static final int MAX_TITOLO_LENGTH = 100;
     private static final int MAX_DESCRIZIONE_LENGTH = 500;
+    private static final int MAX_IMAGES = 8;  // Massimo 8 immagini
     private static final String[] ALLOWED_IMAGE_EXTENSIONS = {"*.png", "*.jpg", "*.jpeg", "*.gif", "*.bmp"};
 
     /**
@@ -78,7 +78,7 @@ public class InserisciAnnuncioDialog extends Dialog<Annuncio> {
     public InserisciAnnuncioDialog(int venditoreId) {
         this.venditoreId = venditoreId;
         this.cloudinaryImageService = new CloudinaryImageService();
-        this.imageFile = null;
+        this.imageFiles = new ArrayList<>();
 
         initializeDialog();
         setupUIComponents();
@@ -94,7 +94,10 @@ public class InserisciAnnuncioDialog extends Dialog<Annuncio> {
     public InserisciAnnuncioDialog(int venditoreId, File selectedFile) {
         this.venditoreId = venditoreId;
         this.cloudinaryImageService = new CloudinaryImageService();
-        this.imageFile = selectedFile;
+        this.imageFiles = new ArrayList<>();
+        if (selectedFile != null) {
+            this.imageFiles.add(selectedFile);
+        }
 
         initializeDialog();
         setupUIComponents();
@@ -564,51 +567,68 @@ public class InserisciAnnuncioDialog extends Dialog<Annuncio> {
     }
 
     /**
-     * Gestisce la selezione dell'immagine tramite file chooser
+     * Gestisce la selezione delle immagini tramite file chooser
      */
     private void handleImageSelection() {
-        File selectedFile = showImageFileChooser();
-        if (selectedFile != null) {
-            processSelectedImage(selectedFile);
+        List<File> selectedFiles = showImageFileChooser();
+        if (selectedFiles != null && !selectedFiles.isEmpty()) {
+            processSelectedImages(selectedFiles);
         }
     }
 
     /**
-     * Mostra il file chooser per la selezione immagini
+     * Mostra il file chooser per la selezione multipla immagini
      */
-    private File showImageFileChooser() {
+    private List<File> showImageFileChooser() {
         FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle("Seleziona Immagine Annuncio");
+        fileChooser.setTitle("Seleziona fino a 8 Immagini");
         fileChooser.getExtensionFilters().add(
             new FileChooser.ExtensionFilter("Immagini", ALLOWED_IMAGE_EXTENSIONS)
         );
-        return fileChooser.showOpenDialog(new Stage());
+        return fileChooser.showOpenMultipleDialog(new Stage());
     }
 
     /**
-     * Processa l'immagine selezionata dall'utente e carica su Cloudinary
+     * Processa le immagini selezionate dall'utente con limite di 8
      */
-    private void processSelectedImage(File selectedFile) {
+    private void processSelectedImages(List<File> selectedFiles) {
         try {
-            // Verifica dimensione file (max 10MB)
-            long fileSizeMB = selectedFile.length() / (1024 * 1024);
-            if (fileSizeMB > 10) {
-                showError(erroreImmagine, "L'immagine è troppo grande (" + fileSizeMB + "MB). Max 10MB consentiti.");
-                resetImageSelection();
+            // Verifica limite di 8 immagini totali
+            int totalImages = imageFiles.size() + selectedFiles.size();
+            if (totalImages > MAX_IMAGES) {
+                showError(erroreImmagine, "Puoi selezionare massimo " + MAX_IMAGES + " immagini. Ne hai già " + imageFiles.size() + ".");
                 return;
             }
 
-            // Mostra anteprima
-            showImagePreview(selectedFile);
-            
-            // Salva riferimento al file
-            fileImmagineSelezionato = selectedFile;
+            // Verifica dimensione di ogni file (max 10MB)
+            for (File file : selectedFiles) {
+                long fileSizeMB = file.length() / (1024 * 1024);
+                if (fileSizeMB > 10) {
+                    showError(erroreImmagine, "L'immagine " + file.getName() + " è troppo grande (" + fileSizeMB + "MB). Max 10MB consentiti.");
+                    return;
+                }
+            }
+
+            // Aggiungi i nuovi file alla lista
+            imageFiles.addAll(selectedFiles);
+
+            // Mostra anteprima della prima immagine o aggiorna il contatore
+            updateImagePreview();
+
             clearError(erroreImmagine);
-            
+            System.out.println("✅ Selezionate " + selectedFiles.size() + " immagini. Totale: " + imageFiles.size() + " / " + MAX_IMAGES);
+
         } catch (Exception ex) {
-            showError(erroreImmagine, "Errore nel caricamento dell'anteprima: " + ex.getMessage());
+            showError(erroreImmagine, "Errore nel caricamento delle anteprime: " + ex.getMessage());
             ex.printStackTrace();
         }
+    }
+
+    /**
+     * Processa l'immagine selezionata dall'utente e carica su Cloudinary (METODO LEGACY PER COMPATIBILITÀ)
+     */
+    private void processSelectedImage(File selectedFile) {
+        processSelectedImages(List.of(selectedFile));
     }
 
     /**
@@ -625,10 +645,35 @@ public class InserisciAnnuncioDialog extends Dialog<Annuncio> {
     }
 
     /**
-     * Resetta la selezione dell'immagine
+     * Aggiorna l'anteprima delle immagini mostrando la prima immagine e il conteggio totale
+     */
+    private void updateImagePreview() {
+        if (imageFiles.isEmpty()) {
+            anteprimaImageView.setImage(null);
+            nomeFileLabel.setText("Nessun file selezionato (opzionale)");
+        } else {
+            // Mostra la prima immagine come anteprima
+            try {
+                Image image = new Image(imageFiles.get(0).toURI().toString());
+                anteprimaImageView.setImage(image);
+
+                // Aggiorna la label con il conteggio
+                if (imageFiles.size() == 1) {
+                    nomeFileLabel.setText("1 immagine selezionata su " + MAX_IMAGES + " - " + imageFiles.get(0).getName());
+                } else {
+                    nomeFileLabel.setText(imageFiles.size() + " immagini selezionate su " + MAX_IMAGES);
+                }
+            } catch (Exception e) {
+                showError(erroreImmagine, "Errore nel caricamento dell'anteprima: " + e.getMessage());
+            }
+        }
+    }
+
+    /**
+     * Resetta la selezione delle immagini
      */
     private void resetImageSelection() {
-        fileImmagineSelezionato = null;
+        imageFiles.clear();
         cloudinaryImageUrl = null;
         anteprimaImageView.setImage(null);
         nomeFileLabel.setText("Nessun file selezionato (opzionale)");
@@ -905,10 +950,10 @@ public class InserisciAnnuncioDialog extends Dialog<Annuncio> {
      * Crea un annuncio a partire dai dati del form validati
      */
     private Annuncio createAnnuncioFromForm() {
-        // 1. Gestione immagine
+        // 1. Gestione immagine (usa la prima immagine come principale)
         String imageUrl = "";
-        if (fileImmagineSelezionato != null) {
-            imageUrl = uploadImageToCloudinary(fileImmagineSelezionato);
+        if (!imageFiles.isEmpty()) {
+            imageUrl = uploadImageToCloudinary(imageFiles.get(0));
             if (imageUrl == null || imageUrl.isEmpty()) {
                 showAlert("Errore Caricamento Immagine", "Impossibile caricare l'immagine. Riprova.");
                 return null;
@@ -972,6 +1017,9 @@ public class InserisciAnnuncioDialog extends Dialog<Annuncio> {
         Categoria categoria = parseCategoria(categoriaSelezionata);
         OrigineOggetto origine = parseOrigine(origineSelezionata);
 
+        // Ottieni la prima immagine (usata per retrocompatibilità)
+        File primaImmagine = imageFiles.isEmpty() ? null : imageFiles.get(0);
+
         // Crea oggetto temporaneo senza ID
         Oggetto oggettoTemporaneo = new Oggetto(
             0,
@@ -979,7 +1027,7 @@ public class InserisciAnnuncioDialog extends Dialog<Annuncio> {
             descrizioneArea.getText().trim(),
             categoria,
             imageUrl,
-            fileImmagineSelezionato,
+            primaImmagine,
             origine
         );
 
@@ -998,7 +1046,7 @@ if (oggettoId == -1) {
             descrizioneArea.getText().trim(),
             categoria,
             imageUrl,
-            fileImmagineSelezionato,
+            primaImmagine,
             origine
         );
 
@@ -1126,7 +1174,7 @@ if (oggettoId == -1) {
         System.out.println("   Tipologia: " + annuncio.getTipologia());
         System.out.println("   Consegna: " + annuncio.getModalitaConsegna());
         System.out.println("   Venditore ID: " + annuncio.getVenditoreId());
-        System.out.println("   Immagine Cloudinary: " + (fileImmagineSelezionato != null ? "Sì" : "No"));
+        System.out.println("   Immagini selezionate: " + imageFiles.size() + " / " + MAX_IMAGES);
     }
 
     /**
