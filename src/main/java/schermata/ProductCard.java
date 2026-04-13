@@ -91,6 +91,7 @@ public class ProductCard extends VBox {
         applyStyles();
         setupTooltips();
         setupPriceDisplay();
+        setupHoverEffects();
 
         checkStatoAnnuncio();
     }
@@ -113,6 +114,21 @@ public class ProductCard extends VBox {
         getStyleClass().add("product-card");
         // Inline style rimosso - gestito da CSS
         setPrefWidth(340);
+    }
+
+    /**
+     * Setup hover effects with shadow and scale
+     */
+    private void setupHoverEffects() {
+        this.setOnMouseEntered(e -> {
+            this.setStyle(this.getStyle() +
+                "-fx-effect: dropshadow(gaussian, rgba(74, 111, 165, 0.25), 20px, 0, 0, 10px);");
+        });
+
+        this.setOnMouseExited(e -> {
+            // Remove hover effects, restore base styles
+            applyStyles();
+        });
     }
 
     /**

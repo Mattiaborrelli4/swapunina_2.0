@@ -640,10 +640,8 @@
 
 /* Effetto hover smooth stile web */
 .product-card:hover {
-    -fx-effect: dropshadow(gaussian, rgba(74, 111, 165, 0.18), 16px, 0, 0, 8px);
-    -fx-border-color: #4A6FA5;
-    -fx-background-color: #FAFBFF;
-    /* Simulato translate-y con transform (JavaFX non supporta direttamente) */
+    -fx-effect: dropshadow(gaussian, rgba(74, 111, 165, 0.25), 20px, 0, 0, 10px);
+    -fx-cursor: hand;
 }
 
 /* ===== Product Image ===== */
