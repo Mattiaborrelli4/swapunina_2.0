@@ -47,9 +47,9 @@ public class ProductCard extends VBox {
     // Costanti per configurazione
     private static final int IMAGE_WIDTH = 280;
     private static final int IMAGE_HEIGHT = 200;
-    private static final int CARD_PADDING = 12;
-    private static final int CONTENT_PADDING = 20;
-    private static final int IMAGE_CONTAINER_PADDING = 10;
+    private static final int CARD_PADDING = 8;
+    private static final int CONTENT_PADDING = 8;
+    private static final int IMAGE_CONTAINER_PADDING = 8;
 
     // Componenti UI
     private final ImageView productImage = new ImageView();

@@ -35,9 +35,9 @@ public class ProductGrid {
     private Consumer<Annuncio> onAnnuncioModificato;
 
     // Costanti per configurazione
-    private static final int GRID_PADDING = 20;
-    private static final int GRID_HGAP = 24;
-    private static final int GRID_VGAP = 24;
+    private static final int GRID_PADDING = 8;
+    private static final int GRID_HGAP = 8;
+    private static final int GRID_VGAP = 8;
     private static final int GRID_PREF_COLUMNS = 3;
     private static final int LOADING_PADDING = 40;
     private static final int EMPTY_PADDING = 30;
