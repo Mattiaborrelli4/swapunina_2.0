@@ -47,9 +47,9 @@ public class ProductCard extends VBox {
     // Costanti per configurazione
     private static final int IMAGE_WIDTH = 280;
     private static final int IMAGE_HEIGHT = 200;
-    private static final int CARD_PADDING = 12;
-    private static final int CONTENT_PADDING = 20;
-    private static final int IMAGE_CONTAINER_PADDING = 10;
+    private static final int CARD_PADDING = 8;
+    private static final int CONTENT_PADDING = 8;
+    private static final int IMAGE_CONTAINER_PADDING = 8;
 
     // Componenti UI
     private final ImageView productImage = new ImageView();
@@ -83,14 +83,17 @@ public class ProductCard extends VBox {
     public ProductCard(Annuncio annuncio) {
         super(10);
         this.annuncio = annuncio;
-        
+
         initializeCard();
         setupImageSection();
         setupContentSection();
         setupEventHandlers();
         applyStyles();
         setupTooltips();
-        
+        setupPriceDisplay();
+        setupHoverEffects();
+        setupEmptyStates();
+
         checkStatoAnnuncio();
     }
 
@@ -112,6 +115,21 @@ public class ProductCard extends VBox {
         getStyleClass().add("product-card");
         // Inline style rimosso - gestito da CSS
         setPrefWidth(340);
+    }
+
+    /**
+     * Setup hover effects with shadow and scale
+     */
+    private void setupHoverEffects() {
+        this.setOnMouseEntered(e -> {
+            this.setStyle(this.getStyle() +
+                "-fx-effect: dropshadow(gaussian, rgba(74, 111, 165, 0.25), 20px, 0, 0, 10px);");
+        });
+
+        this.setOnMouseExited(e -> {
+            // Remove hover effects, restore base styles
+            applyStyles();
+        });
     }
 
     /**
@@ -653,6 +671,38 @@ public class ProductCard extends VBox {
         price.setText(formattedPrice);
         price.getStyleClass().add("product-price");
         // Inline style rimosso - gestito da CSS
+    }
+
+    /**
+     * Configure price display with mandatory validation
+     * Shows price prominently in black, or placeholder if missing
+     */
+    private void setupPriceDisplay() {
+        double prezzo = annuncio.getPrezzo();
+
+        if (prezzo <= 0) {
+            // Missing price: show placeholder
+            price.setText("€ --");
+            price.setStyle("-fx-fill: #9CA3AF; -fx-font-size: 22px; -fx-font-weight: 700;");
+        } else {
+            // Valid price: show prominently in black
+            price.setText(String.format("€ %.2f", prezzo));
+            price.setStyle("-fx-fill: #000000; -fx-font-size: 22px; -fx-font-weight: 700;");
+        }
+    }
+
+    /**
+     * Hide empty fields to reduce visual noise
+     */
+    private void setupEmptyStates() {
+        // Hide title if empty
+        if (annuncio.getTitolo() == null || annuncio.getTitolo().trim().isEmpty()) {
+            title.setVisible(false);
+            title.setManaged(false);
+        }
+
+        // Hide price if zero or negative (already shows placeholder)
+        // Optional: could hide price entirely
     }
 
     /**
@@ -1381,7 +1431,7 @@ public class ProductCard extends VBox {
     private String getBadgeStyle(OrigineOggetto origine) {
         if (origine == null) return "badge-vendita";
         switch (origine) {
-            case USATO: return "badge-vendita";  
+            case USATO: return "badge-usato";
             case SCAMBIO: return "badge-scambio";
             case REGALO:  return "badge-regalo";
             default:      return "badge-vendita";

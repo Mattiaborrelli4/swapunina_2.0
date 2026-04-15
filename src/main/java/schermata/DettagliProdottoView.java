@@ -65,6 +65,11 @@ public class DettagliProdottoView {
     private final Text testoPrezzoProdotto = new Text();
     private final Text testoDescrizioneProdotto = new Text();
     private final Button pulsanteAzione = new Button();
+
+    /** Layout containers for responsive switching */
+    private javafx.scene.layout.Pane contenutoResponsive;
+    private VBox sezioneImmagine;
+    private VBox sezioneInformazioni;
     
     /**
      * Costruttore principale della vista dettagli prodotto
@@ -76,10 +81,12 @@ public class DettagliProdottoView {
         if (annuncio == null) {
             throw new IllegalArgumentException("L'annuncio non può essere null");
         }
-        
+
         this.annuncio = annuncio;
         inizializzaStage();
         configuraInterfacciaUtente();
+        setupDialogImageCover();
+        setupResponsiveDialog();
     }
     
     /**
@@ -113,13 +120,13 @@ public class DettagliProdottoView {
         layoutPrincipale.setFillWidth(true);
 
         // Contenitore responsive per immagine + info
-        HBox contenutoResponsive = new HBox(8); // Spazio minimo 8
-        contenutoResponsive.setAlignment(Pos.TOP_LEFT); // Allineato a sinistra
+        contenutoResponsive = new HBox(8); // Spazio minimo 8
+        ((HBox)contenutoResponsive).setAlignment(Pos.TOP_LEFT); // Allineato a sinistra
         contenutoResponsive.getStyleClass().add("responsive-content");
         contenutoResponsive.setMaxWidth(Double.MAX_VALUE);
 
-        VBox sezioneImmagine = creaSezioneImmagine();
-        VBox sezioneInformazioni = creaSezioneInformazioni();
+        sezioneImmagine = creaSezioneImmagine();
+        sezioneInformazioni = creaSezioneInformazioni();
 
         contenutoResponsive.getChildren().addAll(sezioneImmagine, sezioneInformazioni);
 
@@ -270,8 +277,8 @@ public class DettagliProdottoView {
         visualizzatoreImmagine.setFitHeight(ALTEZZA_IMMAGINE);
         visualizzatoreImmagine.setPreserveRatio(true);
         visualizzatoreImmagine.getStyleClass().add("product-detail-image");
-        
-        caricaImmagineProdotto();
+
+        // Image loading handled by setupDialogImageCover() in constructor
     }
     
     /**
@@ -471,20 +478,27 @@ public class DettagliProdottoView {
     
     /**
      * Carica un'immagine da URL con supporto per diversi formati
-     * 
+     *
      * @param urlImmagine L'URL o percorso dell'immagine
      */
     private void caricaImmagineDaUrl(String urlImmagine) {
         try {
+            Image image;
             if (urlImmagine.startsWith("file:")) {
                 // URL file system diretto
-                visualizzatoreImmagine.setImage(new Image(urlImmagine));
+                image = new Image(urlImmagine);
             } else if (urlImmagine.startsWith("/")) {
                 // Percorso assoluto file system
-                visualizzatoreImmagine.setImage(new Image("file:" + urlImmagine));
+                image = new Image("file:" + urlImmagine);
             } else {
                 // Tentativo come risorsa interna
-                visualizzatoreImmagine.setImage(new Image(getClass().getResourceAsStream(urlImmagine)));
+                image = new Image(getClass().getResourceAsStream(urlImmagine));
+            }
+
+            if (!image.isError()) {
+                applyObjectFitCover(visualizzatoreImmagine, image, LARGHEZZA_IMMAGINE, ALTEZZA_IMMAGINE);
+            } else {
+                usaImmagineDefault();
             }
         } catch (Exception e) {
             System.err.println("Errore nel caricamento immagine da URL: " + urlImmagine);
@@ -497,9 +511,85 @@ public class DettagliProdottoView {
      */
     private void usaImmagineDefault() {
         try {
-            visualizzatoreImmagine.setImage(new Image(getClass().getResourceAsStream(PERCORSO_IMMAGINE_DEFAULT)));
+            Image defaultImage = new Image(getClass().getResourceAsStream(PERCORSO_IMMAGINE_DEFAULT));
+            applyObjectFitCover(visualizzatoreImmagine, defaultImage, LARGHEZZA_IMMAGINE, ALTEZZA_IMMAGINE);
         } catch (Exception e) {
             System.err.println("Errore critico: impossibile caricare l'immagine default");
+        }
+    }
+
+    /**
+     * Apply object-fit: cover effect to dialog image
+     * Ensures image covers entire container without distortion
+     */
+    private void applyObjectFitCover(javafx.scene.image.ImageView imageView, Image image, double containerWidth, double containerHeight) {
+        if (image.isError() || image.getWidth() == 0 || image.getHeight() == 0) {
+            imageView.setImage(image);
+            imageView.setFitWidth(containerWidth);
+            imageView.setFitHeight(containerHeight);
+            imageView.setPreserveRatio(true);
+            imageView.setSmooth(true);
+            return;
+        }
+
+        imageView.setImage(image);
+        imageView.setSmooth(true);
+
+        double imageRatio = image.getWidth() / image.getHeight();
+        double containerRatio = containerWidth / containerHeight;
+
+        if (imageRatio > containerRatio) {
+            imageView.setFitHeight(containerHeight);
+            double scaledWidth = containerHeight * imageRatio;
+            imageView.setFitWidth(scaledWidth);
+            double x = (containerWidth - scaledWidth) / 2;
+            imageView.setX(x);
+            imageView.setY(0);
+        } else {
+            imageView.setFitWidth(containerWidth);
+            double scaledHeight = containerWidth / imageRatio;
+            imageView.setFitHeight(scaledHeight);
+            double y = (containerHeight - scaledHeight) / 2;
+            imageView.setX(0);
+            imageView.setY(y);
+        }
+
+        imageView.setPreserveRatio(false);
+
+        javafx.scene.shape.Rectangle clip = new javafx.scene.shape.Rectangle(containerWidth, containerHeight);
+        clip.setArcWidth(16);
+        clip.setArcHeight(16);
+        imageView.setClip(clip);
+    }
+
+    /**
+     * Setup dialog image with object-fit: cover
+     * Ensures large product image covers entire area
+     */
+    private void setupDialogImageCover() {
+        String urlImmagine = annuncio.getImageUrlSafe();
+
+        if (urlImmagine != null && !urlImmagine.isEmpty() && !urlImmagine.equals("null")) {
+            try {
+                Image image;
+                if (urlImmagine.startsWith("file:")) {
+                    image = new Image(urlImmagine);
+                } else if (urlImmagine.startsWith("/")) {
+                    image = new Image("file:" + urlImmagine);
+                } else {
+                    image = new Image(getClass().getResourceAsStream(urlImmagine));
+                }
+
+                if (!image.isError()) {
+                    applyObjectFitCover(visualizzatoreImmagine, image, LARGHEZZA_IMMAGINE, ALTEZZA_IMMAGINE);
+                } else {
+                    usaImmagineDefault();
+                }
+            } catch (Exception e) {
+                usaImmagineDefault();
+            }
+        } else {
+            usaImmagineDefault();
         }
     }
     
@@ -656,11 +746,65 @@ public class DettagliProdottoView {
     
     /**
      * Restituisce l'annuncio associato a questa vista
-     * 
+     *
      * @return L'annuncio visualizzato
      */
     public Annuncio getAnnuncio() {
         return annuncio;
+    }
+
+    /**
+     * Setup responsive dialog layout based on window width
+     * Mobile (<768px): vertical stack, Desktop (≥768px): horizontal
+     */
+    private void setupResponsiveDialog() {
+        stage.widthProperty().addListener((observable, oldWidth, newWidth) -> {
+            double width = newWidth.doubleValue();
+
+            if (width < 768 && !(contenutoResponsive instanceof VBox)) {
+                // Mobile: switch to vertical layout
+                switchToVerticalLayout();
+            } else if (width >= 768 && !(contenutoResponsive instanceof HBox)) {
+                // Desktop: switch to horizontal layout
+                switchToHorizontalLayout();
+            }
+        });
+    }
+
+    /**
+     * Switch to vertical layout for mobile
+     */
+    private void switchToVerticalLayout() {
+        VBox parent = (VBox) contenutoResponsive.getParent();
+        int index = parent.getChildren().indexOf(contenutoResponsive);
+
+        VBox verticalLayout = new VBox(16);
+        verticalLayout.setAlignment(Pos.TOP_LEFT);
+        verticalLayout.getStyleClass().add("responsive-content");
+        verticalLayout.setMaxWidth(Double.MAX_VALUE);
+
+        verticalLayout.getChildren().addAll(sezioneImmagine, sezioneInformazioni);
+
+        parent.getChildren().set(index, verticalLayout);
+        contenutoResponsive = verticalLayout;
+    }
+
+    /**
+     * Switch to horizontal layout for desktop
+     */
+    private void switchToHorizontalLayout() {
+        VBox parent = (VBox) contenutoResponsive.getParent();
+        int index = parent.getChildren().indexOf(contenutoResponsive);
+
+        HBox horizontalLayout = new HBox(8);
+        horizontalLayout.setAlignment(Pos.TOP_LEFT);
+        horizontalLayout.getStyleClass().add("responsive-content");
+        horizontalLayout.setMaxWidth(Double.MAX_VALUE);
+
+        horizontalLayout.getChildren().addAll(sezioneImmagine, sezioneInformazioni);
+
+        parent.getChildren().set(index, horizontalLayout);
+        contenutoResponsive = horizontalLayout;
     }
     
     /**
