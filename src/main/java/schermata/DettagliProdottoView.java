@@ -65,6 +65,11 @@ public class DettagliProdottoView {
     private final Text testoPrezzoProdotto = new Text();
     private final Text testoDescrizioneProdotto = new Text();
     private final Button pulsanteAzione = new Button();
+
+    /** Layout containers for responsive switching */
+    private javafx.scene.layout.Pane contenutoResponsive;
+    private VBox sezioneImmagine;
+    private VBox sezioneInformazioni;
     
     /**
      * Costruttore principale della vista dettagli prodotto
@@ -81,6 +86,7 @@ public class DettagliProdottoView {
         inizializzaStage();
         configuraInterfacciaUtente();
         setupDialogImageCover();
+        setupResponsiveDialog();
     }
     
     /**
@@ -114,13 +120,13 @@ public class DettagliProdottoView {
         layoutPrincipale.setFillWidth(true);
 
         // Contenitore responsive per immagine + info
-        HBox contenutoResponsive = new HBox(8); // Spazio minimo 8
-        contenutoResponsive.setAlignment(Pos.TOP_LEFT); // Allineato a sinistra
+        contenutoResponsive = new HBox(8); // Spazio minimo 8
+        ((HBox)contenutoResponsive).setAlignment(Pos.TOP_LEFT); // Allineato a sinistra
         contenutoResponsive.getStyleClass().add("responsive-content");
         contenutoResponsive.setMaxWidth(Double.MAX_VALUE);
 
-        VBox sezioneImmagine = creaSezioneImmagine();
-        VBox sezioneInformazioni = creaSezioneInformazioni();
+        sezioneImmagine = creaSezioneImmagine();
+        sezioneInformazioni = creaSezioneInformazioni();
 
         contenutoResponsive.getChildren().addAll(sezioneImmagine, sezioneInformazioni);
 
@@ -740,11 +746,65 @@ public class DettagliProdottoView {
     
     /**
      * Restituisce l'annuncio associato a questa vista
-     * 
+     *
      * @return L'annuncio visualizzato
      */
     public Annuncio getAnnuncio() {
         return annuncio;
+    }
+
+    /**
+     * Setup responsive dialog layout based on window width
+     * Mobile (<768px): vertical stack, Desktop (≥768px): horizontal
+     */
+    private void setupResponsiveDialog() {
+        stage.widthProperty().addListener((observable, oldWidth, newWidth) -> {
+            double width = newWidth.doubleValue();
+
+            if (width < 768 && !(contenutoResponsive instanceof VBox)) {
+                // Mobile: switch to vertical layout
+                switchToVerticalLayout();
+            } else if (width >= 768 && !(contenutoResponsive instanceof HBox)) {
+                // Desktop: switch to horizontal layout
+                switchToHorizontalLayout();
+            }
+        });
+    }
+
+    /**
+     * Switch to vertical layout for mobile
+     */
+    private void switchToVerticalLayout() {
+        VBox parent = (VBox) contenutoResponsive.getParent();
+        int index = parent.getChildren().indexOf(contenutoResponsive);
+
+        VBox verticalLayout = new VBox(16);
+        verticalLayout.setAlignment(Pos.TOP_LEFT);
+        verticalLayout.getStyleClass().add("responsive-content");
+        verticalLayout.setMaxWidth(Double.MAX_VALUE);
+
+        verticalLayout.getChildren().addAll(sezioneImmagine, sezioneInformazioni);
+
+        parent.getChildren().set(index, verticalLayout);
+        contenutoResponsive = verticalLayout;
+    }
+
+    /**
+     * Switch to horizontal layout for desktop
+     */
+    private void switchToHorizontalLayout() {
+        VBox parent = (VBox) contenutoResponsive.getParent();
+        int index = parent.getChildren().indexOf(contenutoResponsive);
+
+        HBox horizontalLayout = new HBox(8);
+        horizontalLayout.setAlignment(Pos.TOP_LEFT);
+        horizontalLayout.getStyleClass().add("responsive-content");
+        horizontalLayout.setMaxWidth(Double.MAX_VALUE);
+
+        horizontalLayout.getChildren().addAll(sezioneImmagine, sezioneInformazioni);
+
+        parent.getChildren().set(index, horizontalLayout);
+        contenutoResponsive = horizontalLayout;
     }
     
     /**
