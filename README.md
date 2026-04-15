@@ -338,7 +338,6 @@ Per domande, suggerimenti o segnalazioni bug:
 
 <div align="center">
 
-**Costruito con ❤️ per studenti universitari**
 
 [⬆ Torna su](#-swapunina-20---marketplace-universitario)
 
