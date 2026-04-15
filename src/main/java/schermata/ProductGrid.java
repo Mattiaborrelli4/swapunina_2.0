@@ -75,6 +75,34 @@ public class ProductGrid {
         productGrid.setVgap(GRID_VGAP);
         productGrid.setPrefColumns(GRID_PREF_COLUMNS);
         productGrid.setId("productTilePane");
+
+        setupResponsiveGrid();
+    }
+
+    /**
+     * Setup responsive grid behavior based on width breakpoints
+     * Mobile: <768px (1 column), Tablet: 768-1023px (2 columns), Desktop: >=1024px (3 columns)
+     */
+    private void setupResponsiveGrid() {
+        container.widthProperty().addListener((observable, oldWidth, newWidth) -> {
+            int columns = calculateColumns(newWidth.doubleValue());
+            productGrid.setPrefColumns(columns);
+        });
+    }
+
+    /**
+     * Calculate number of grid columns based on container width
+     * @param width Current container width in pixels
+     * @return Number of columns for optimal layout
+     */
+    private int calculateColumns(double width) {
+        if (width < 768) {
+            return 1; // Mobile: single column
+        } else if (width < 1024) {
+            return 2; // Tablet: two columns
+        } else {
+            return 3; // Desktop: three columns
+        }
     }
 
     /**
