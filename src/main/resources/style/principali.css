@@ -751,7 +751,7 @@
 }
 
 .product-title {
-    -fx-text-fill: -fx-color-gray-800;
+    -fx-text-fill: #1F2937;
     -fx-font-size: 17px;
     -fx-font-weight: 700;
     -fx-wrap-text: true;
@@ -770,8 +770,9 @@ Text.product-price {
 }
 
 .product-description {
-    -fx-text-fill: -fx-color-text-tertiary;
-    -fx-font-size: 13px;
+    -fx-text-fill: #6B7280;
+    -fx-font-size: 14px;
+    -fx-font-weight: 400;
     -fx-wrap-text: true;
     -fx-max-width: 300px;
     -fx-max-height: 65px;
@@ -829,7 +830,7 @@ Text.product-price {
 }
 
 .meta-text {
-    -fx-text-fill: -fx-color-text-tertiary;
+    -fx-text-fill: #9CA3AF;
     -fx-font-size: 13px;
     -fx-font-weight: 500;
 }
