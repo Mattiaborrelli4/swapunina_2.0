@@ -76,7 +76,7 @@
 .product-detail-title {
     -fx-fill: #ffffff;
     -fx-font-family: "Segoe UI", "SF Pro Display", -apple-system, sans-serif;
-    -fx-font-size: 24px;
+    -fx-font-size: 26px;
     -fx-font-weight: 800;
     -fx-wrap-text: true;
     -fx-text-alignment: LEFT;
@@ -93,7 +93,7 @@
 .product-detail-description {
     -fx-fill: #e2e8f0;
     -fx-font-family: "Segoe UI", sans-serif;
-    -fx-font-size: 14px;
+    -fx-font-size: 15px;
     -fx-line-spacing: 6;
     -fx-wrap-text: true;
     -fx-text-alignment: LEFT;
