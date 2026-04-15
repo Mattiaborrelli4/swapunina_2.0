@@ -363,7 +363,7 @@
 .account-button {
     -fx-background-color: #4A6FA5;
     -fx-text-fill: white;
-    -fx-background-radius: 24px;
+    -fx-background-radius: 12px;
     -fx-padding: 10px 16px;
     -fx-cursor: hand;
     -fx-spacing: 10px;
@@ -939,8 +939,8 @@ Text.product-price {
 
 /* Additional action buttons */
 .cart-button, .contact-button-action {
-    -fx-background-radius: 24px;
-    -fx-border-radius: 24px;
+    -fx-background-radius: 12px;
+    -fx-border-radius: 12px;
     -fx-pref-width: 140px;
     -fx-min-width: 140px;
     -fx-max-width: 140px;
@@ -1506,7 +1506,7 @@ Text.product-price {
     -fx-background-color: rgba(15, 23, 42, 0.98);
     -fx-border-color: rgba(99, 102, 241, 0.6);
     -fx-border-width: 2px;
-    -fx-border-radius: 24px;
+    -fx-border-radius: 12px;
     -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.6), 40px, 0, 0, 20px);
 }
 
