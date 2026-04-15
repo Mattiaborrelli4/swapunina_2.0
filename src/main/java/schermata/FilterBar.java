@@ -25,6 +25,7 @@ public class FilterBar {
     private final ComboBox<String> typeCombo = new ComboBox<>();
     private final ComboBox<String> sortCombo = new ComboBox<>();
     private final Text countText = new Text("0 prodotti");
+    private HBox sortSection; // Track for responsive hiding
     
     // Callbacks - utilizzati per notificare i cambiamenti
     private Consumer<Tipologia> typeHandler;
@@ -40,6 +41,7 @@ public class FilterBar {
         setupSortFilter();
         applyStyles();
         setupTooltips();
+        setupResponsiveFilters();
     }
     
     /**
@@ -82,7 +84,7 @@ public class FilterBar {
      * @return HBox configurata con testo conteggio e combobox ordinamento
      */
     private HBox createSortSection() {
-        HBox sortSection = new HBox(12);
+        sortSection = new HBox(12);
         sortSection.setAlignment(Pos.CENTER_RIGHT);
         sortSection.getChildren().addAll(
             // countText rimosso - non mostrare più il conteggio
@@ -178,6 +180,26 @@ public class FilterBar {
     private void setupTooltips() {
         Tooltip.install(typeCombo, new Tooltip("Filtra per tipologia di annuncio"));
         Tooltip.install(sortCombo, new Tooltip("Ordina i risultati"));
+    }
+
+    /**
+     * Setup responsive filter bar based on width
+     * Mobile: hide sort, Tablet: show type+sort, Desktop: show all
+     */
+    private void setupResponsiveFilters() {
+        root.widthProperty().addListener((observable, oldWidth, newWidth) -> {
+            double width = newWidth.doubleValue();
+
+            if (width < 768) {
+                // Mobile: hide sort section
+                sortSection.setVisible(false);
+                sortSection.setManaged(false);
+            } else {
+                // Tablet/Desktop: show sort section
+                sortSection.setVisible(true);
+                sortSection.setManaged(true);
+            }
+        });
     }
     
     // API PUBBLICA
