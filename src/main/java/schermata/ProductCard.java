@@ -92,6 +92,7 @@ public class ProductCard extends VBox {
         setupTooltips();
         setupPriceDisplay();
         setupHoverEffects();
+        setupEmptyStates();
 
         checkStatoAnnuncio();
     }
@@ -688,6 +689,20 @@ public class ProductCard extends VBox {
             price.setText(String.format("€ %.2f", prezzo));
             price.setStyle("-fx-fill: #000000; -fx-font-size: 22px; -fx-font-weight: 700;");
         }
+    }
+
+    /**
+     * Hide empty fields to reduce visual noise
+     */
+    private void setupEmptyStates() {
+        // Hide title if empty
+        if (annuncio.getTitolo() == null || annuncio.getTitolo().trim().isEmpty()) {
+            title.setVisible(false);
+            title.setManaged(false);
+        }
+
+        // Hide price if zero or negative (already shows placeholder)
+        // Optional: could hide price entirely
     }
 
     /**
