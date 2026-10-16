@@ -2,10 +2,12 @@ package application.DB;
 
 import application.Classe.utente;
 import java.sql.*;
+import org.mindrot.jbcrypt.BCrypt;
 
 /**
  * Gestisce le operazioni di accesso ai dati per gli utenti
  * Fornisce metodi per recupero e gestione degli utenti nel database
+ * Password hashate con BCrypt per sicurezza
  */
 public class UserDAO {
     
@@ -91,17 +93,19 @@ public class UserDAO {
      * @return l'oggetto utente se le credenziali sono valide, null altrimenti
      */
     public utente login(String email, String password) {
-        String sql = "SELECT id, nome, cognome, email, matricola FROM utente WHERE email = ? AND password = ?";
+        String sql = "SELECT id, nome, cognome, email, matricola FROM utente WHERE email = ?";
         
         try (Connection conn = ConnessioneDB.getConnessione();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             
             stmt.setString(1, email);
-            stmt.setString(2, password); // Nota: in produzione usare hash delle password
             
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
-                    return mapResultSetToUtente(rs);
+                    String storedHash = rs.getString("password");
+                    if (storedHash != null && BCrypt.checkpw(password, storedHash)) {
+                        return mapResultSetToUtente(rs);
+                    }
                 }
             }
         } catch (SQLException e) {
@@ -125,7 +129,7 @@ public class UserDAO {
             stmt.setString(1, user.getNome());
             stmt.setString(2, user.getCognome());
             stmt.setString(3, user.getEmail());
-            stmt.setString(4, user.getPassword()); // Nota: in produzione usare hash
+            stmt.setString(4, BCrypt.hashpw(user.getPassword(), BCrypt.gensalt(12))); // Hash BCrypt per sicurezza
             stmt.setString(5, user.getMatricola());
             
             return stmt.executeUpdate() > 0;
@@ -233,7 +237,7 @@ public class UserDAO {
         try (Connection conn = ConnessioneDB.getConnessione();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             
-            stmt.setString(1, newPassword); // Nota: in produzione usare hash
+            stmt.setString(1, BCrypt.hashpw(newPassword, BCrypt.gensalt(12))); // Hash BCrypt per sicurezza
             stmt.setInt(2, userId);
             
             return stmt.executeUpdate() > 0;

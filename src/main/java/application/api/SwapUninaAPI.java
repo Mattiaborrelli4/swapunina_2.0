@@ -91,7 +91,7 @@ public class SwapUninaAPI {
 
         before((request, response) -> {
             response.type("application/json");
-            response.header("Access-Control-Allow-Origin", "*");
+            response.header("Access-Control-Allow-Origin", "http://localhost:8081");
             response.header("Access-Control-Allow-Credentials", "true");
             response.header("Content-Type", "application/json; charset=utf-8");
         });
