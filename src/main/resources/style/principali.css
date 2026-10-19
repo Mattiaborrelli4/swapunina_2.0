@@ -9,25 +9,23 @@
    1. DESIGN TOKENS - MODERN DARK PALETTE
    ============================================================================== */
 
+/* ==============================================================================
+   SWAPUNINA - UI PALETTE
+   Required palette:
+   - Blu principale: #1769AA
+   - Nero grafite: #111827
+   - Azzurro chiaro: #EAF4FF
+   - Bianco: #FFFFFF
+   - Grigio secondario: #64748B
+   ============================================================================== */
+
 .root {
-    /* ===== TYPOGRAPHY - Professional Font Stack ===== */
-    -fx-font-family: "Inter", "Segoe UI", "SF Pro Display", "Roboto", "Helvetica Neue", "Arial", sans-serif;
-    -fx-font-size: 14px;
-    -fx-font-smoothing-type: gray;
-
-    /* ===== COLORS - Blue Primary System (LIGHT THEME) ===== */
-    -fx-color-blue-primary: #4A6FA5;
-    -fx-color-blue-dark: #3D5A80;
-    -fx-color-blue-light: #5B8BB8;
-    -fx-color-blue-faint: rgba(74, 111, 165, 0.1);
-
-    /* ===== COLORS - Gray System ===== */
-    -fx-color-bg-primary: #FFFFFF;
-    -fx-color-bg-secondary: #F5F7FA;
-    -fx-color-gray-100: #F0F2F5;
-    -fx-color-gray-300: #9AA5B4;
-    -fx-color-gray-600: #4A5568;
-    -fx-color-gray-800: #2D3748;
+    /* ===== COLORS - RequiredPalette ===== */
+    -fx-color-blue-primary: #1769AA;
+    -fx-color-grafite-black: #111827;
+    -fx-color-azzurro-chiaro: #EAF4FF;
+    -fx-color-bianco: #FFFFFF;
+    -fx-color-grigio-secondario: #64748B;
 
     /* ===== COLORS - Semantic ===== */
     -fx-color-success: #10B981;

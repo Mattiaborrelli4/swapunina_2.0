@@ -4,6 +4,7 @@ import application.Classe.utente;
 import application.DB.CloudinaryService;
 import java.sql.*;
 import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Logger;
@@ -278,6 +279,14 @@ public class UtentiDAO {
      * Metodo generico per verificare l'esistenza di un campo
      */
     private boolean verificaEsistenzaCampo(String campo, String valore) {
+        // Whitelist di colonne consentite per prevenire SQL injection
+        Set<String> colonneConsentite = Set.of("email", "matricola");
+        
+        if (!colonneConsentite.contains(campo)) {
+            LOGGER.log(Level.SEVERE, "❌ Colername non consentita nell'query: " + campo);
+            return false;
+        }
+        
         if (valore == null || valore.trim().isEmpty()) {
             return false;
         }

@@ -196,7 +196,7 @@ public class TopBar {
 
         // 1. Cerchio sfondo con gradiente
         Circle bgCircle = new Circle(18);
-        bgCircle.setFill(Color.rgb(139, 92, 246)); // Royal Purple
+        bgCircle.setFill(Color.rgb(23, 105, 170)); // Blu principale #1769AA
         bgCircle.setStroke(Color.rgb(168, 85, 247));
         bgCircle.setStrokeWidth(2);
 
@@ -218,7 +218,7 @@ public class TopBar {
         // Effetto glow premium
         fallbackContainer.setStyle(
             "-fx-background-color: transparent; " +
-            "-fx-effect: dropshadow(gaussian, rgba(139, 92, 246, 0.6), 15px, 0, 0, 0px);"
+            "-fx-effect: dropshadow(gaussian, rgba(23, 105, 170, 0.6), 15px, 0, 0, 0px);"
         );
 
         return fallbackContainer;
@@ -276,7 +276,7 @@ public class TopBar {
         SVGPath searchIcon = IconProvider.getIcon(ICON_SEARCH);
         IconProvider.scaleIcon(searchIcon, IconProvider.IconSize.LG);
         // Usa stroke nero per bordi visibili + fill viola trasparente
-        searchIcon.setFill(Color.rgb(139, 92, 246, 0.3));
+        searchIcon.setFill(Color.rgb(23, 105, 170, 0.3));
         searchIcon.setStroke(Color.rgb(0, 0, 0));
         searchIcon.setStrokeWidth(2.5);
 
@@ -333,7 +333,7 @@ public class TopBar {
         // Configura icone con stroke nero per migliore visibilità
         if ("plus-circle".equals(iconName) || "repeat".equals(iconName)) {
             // Per icone complesse, usa stroke nero + fill viola
-            icon.setFill(Color.rgb(139, 92, 246, 0.4));
+            icon.setFill(Color.rgb(23, 105, 170, 0.4));
             icon.setStroke(Color.rgb(0, 0, 0));
             icon.setStrokeWidth(2.0);
         } else {
@@ -360,7 +360,7 @@ public class TopBar {
         button.hoverProperty().addListener((obs, wasHovering, isNowHovering) -> {
             // Colore target: purple-primary quando hover, text-tertiary quando non
             Color targetColor = isNowHovering ?
-                Color.rgb(139, 92, 246) :  // purple-primary
+                Color.rgb(23, 105, 170) :  // blue-primary #1769AA
                 Color.rgb(148, 163, 184);   // text-tertiary
 
             // Animazione smooth 150ms con EASE_OUT_QUINT

@@ -1,111 +1,128 @@
-# AUDIT SICUREZZA — SwapUnina Desktop
+# AUDIT_SICUREZZA.md
 
-## Vulnerabilità Critiche
+## Password e Autenticazione
 
-### 1. Password in Chiaro — CRITICO
+### UserDAO.java - Bug Critico Risolto (P0)
 
-**File**: `src/main/java/application/DB/UserDAO.java:94`
+- **Problema**: metodo `login()` selezionava colonne `id, nome, cognome, email, matricola` senza includere `password`, poi tentava di leggere `rs.getString("password")` dal result set
+- **Correzione**: query aggiornata a `SELECT id, nome, cognome, email, matricola, password FROM utente WHERE email = ?`
+- **Verifica**: password mai esposta nel risultato restituito (mapResultSetToUtente imposta password a "")
+- **Test**: test login corretto, password errata, utente inesistente, risposte senza dati sensibili
 
-```java
-public utente login(String email, String password) {
-    String sql = "SELECT id, nome, cognome, email, matricola FROM utente WHERE email = ? AND password = ?";
-    // ...
-    stmt.setString(2, password); // Nota: in produzione usare hash
-}
-```
+### UtentiDAO.java - Verifica Credenziali
 
-**Impatto**: Tutte le password sono memorizzate e confrontate in testo piantext. Qualsiasi persona con accesso al database può leggere tutte le credenziali utente.
+- **Metodo `verificaCredenziali()`**: seleziona correttamente la colonna `password` e verifica con `BCrypt.checkpw(password, passwordHash)`
+- **BCrypt rounds**: utilizza 12 rounds per hash generation (BCRYPT_ROUNDS = 12)
+- **Password mai in chiaro**: storedHash letta dal database, mai restituita negli oggetti utente restituiti
+- **Registrazione**: `createUser()` usa `BCrypt.hashpw(user.getPassword(), BCrypt.gensalt(12))`
 
-**Rischio**: Furto massiccio di account, impersonamento utenti, accesso non autorizzato a tutte le funzionalità.
+### ConfigManager.java - Master Key e Password (P0)
 
-**Stato**: *FIXATO — Implementato BCrypt.checkpw() in login(), BCrypt.hashpw() in createUser() e changePassword(). Password never stored or compared in plaintext.*
+- **Rimosso**: fallback hardcoded `SwapUnina2025!Secure` (linea 74)
+- **Rimosso**: default password database "1234" in createDefaultConfig()
+- **Fallimento chiaro**: lancio `RuntimeException` se SWAPUNINA_MASTER_KEY non configurata
+- **Decrypt fallimento**: `decryptValue()` ora lancia eccezione invece di restituire ciphertext in fallback
+- **Variabile richiesta**: SWAPUNINA_MASTER_KEY deve essere impostata all'avvio
 
-**Correzione applicata**: 
-- Implementare hash bcrypt/SCRYPT per le password ✅
-- Verificare hash durante il login, non confrontare testo piantext ✅
-- Non mai restituire password nei report o log ✅
+### Error Handler API (P1)
 
-### 2. CORS Aperto — ALTO
+- **Modifica**: `exception handler` in SwapUninaAPI.java ora restituisce "Errore interno del server" all'utente
+- **Logging**: dettagli tecnici registrati solo su stderr server-side
+- **Precedente**: `exception.getMessage()` esposto direttamente nella risposta JSON
 
-**File**: `src/main/java/application/api/SwapUninaAPI.java:94`
+## Autorizzazioni e Token
 
-```java
-response.header("Access-Control-Allow-Origin", "*");
-```
+### SwapUninaAPI.java - CORS (P1)
 
-**Impatto**: L'API accetta richieste da qualsiasi origine. Combinato con assenza di autenticazione token validation, espone tutti gli endpoint.
+- **Configurazione attuale**: `Access-Control-Allow-Origin: http://localhost:8081` con `Access-Control-Allow-Credentials: true`
+- **Verifica necessaria**: confermare se questa configurazione è strettamente necessaria per l'app desktop JavaFX
+- **Rischio**: `Access-Control-Allow-Credentials: true` con origine specifica (non wildcard) è accettabile, ma va verificato il traffico client
 
-**Rischio**: Accesso non autorizzato da script malevoli, CSRF potenziale.
+### Gestione Token (P1)
 
-**Stato**: *FIXATO — Ristretto a http://localhost:8081 invece di "*".*
+- **Token**: mappa in-memory `activeTokens` (token UUID → userId)
+- **Login**: genera token `UUID.randomUUID().toString()`, lo memorizza in `activeTokens`
+- **Logout**: rimuove token dai headers `Authorization: Bearer ...`
+- **Limitationi**: nessun revoca automatica scadimento, token vivono fino a logout o restart app
+- **Sicurezza**: i token non sono firmati (JWT), basati su sessione in-memory
 
-**Rischio**: Accesso non autorizzato da script malevoli, CSRF potenziale — mitigato dal ristringimento CORS.
+### Endpoint Sensibili (P1)
 
-### 3. Token senza Scadenza — MEDIO
+- **aggiornaAnnuncio()**: restituisce "Aggiornamento non ancora implementato" (placeholder)
+- **cancellaAnnuncio()**: restituisce "Cancellazione non ancora implementata" (placeholder)
+- **getAnnunciUtente()**: restituisce lista vuota (non implementata)
+- **getMessaggi()**: chiama `getConversazione(userId, 0)` - verifica se corretto o dovrebbe restituire messaggi utente
+- **getInterlocutori()**: usa `mittenteId` e `destinatarioId` dal body senza piena verifica identità
+- **Creazione offerta**: prende `venditoreId`, `userId`, `mittenteId` dal body senza verifica identità autorevole
 
-**File**: `SwapUninaAPI.java:201`
+## Token e CORS
 
-```java
-String token = UUID.randomUUID().toString();
-activeTokens.put(token, user.getId());
-```
+### CORS
 
-I token non scadono mai e non c'è meccanismo di revoca oltre il logout.
+- **Origin attuale**: `http://localhost:8081`
+- **Credentials**: `Access-Control-Allow-Credentials: true`
+- **Verifica**: confermare client supportati e se necessari per app desktop
+- **Regola**: non abilitare credentials con wildcard `*`
 
-**Stato**: *Documentato, piano per JWT con expiration time in PIANO_INTERVENTI.md P1.*
+### Scadenza e Revoca Token
 
-### 4. Impersonazione Utenti — ALTO
+- Token attualmente senza scadenza formale
+- Logout rimuove token dalla mappa in-memory
+- Al riavvio applicazione, tutti i token diventano invalidi (puliti)
+- **Valutazione**: per produzione valutare implementazione JWT con scadenza e refresh token
 
-**Vulnerabilità**: Non verifica che il token presente nelle richieste corrisponda all'utente autenticato effettivo. Il sistema usa una semplice `Map<String, Integer> activeTokens` senza convalida delle proprietà dell'utente.
+## Segreti e Configurazione
 
-**File**: `SwapUninaAPI.java:59, 201-220`
+### ConfigManager Hardcoded Issues (P0 - Risolti)
 
-### 5. SQL Injection Rischio — MEDIO
+1. **Master key hardcoded**: RIMOVENTO - non più presente nel codice
+2. **Default db password "1234"**: RIMOVENTO - nessun valore di default per db.password
+3. **Decrypt fallback ciphertext**: RIMOVENTO - eccezione lanciata invece di restituire testo cifrato
 
-**Pattern trovati** (ma uso PreparedStatement in maggior parte):
-- Alcune query costruiscono nomi tabelle dinamicamente (es. `CarrelloDAO.creaTabellaSeMancante()` line 21-28)
-- FilterManager potrebbe avere query non parametrizzate
+### Variabili d'Ambiente Richieste
 
-### 6. PrintStackTrace Espone Dettagli — MEDIO
+- `SWAPUNINA_MASTER_KEY`: Master password per crittografia configurazione AES-256-GCM
+- Senza questa variabile, l'applicazione non può avviarsi
 
-Presente in diversi file (`UserDAO`, `MessaggioDAO`, `AnnuncioDAO`). Espone implementazione interna che potrebbe aiutare attacchi.
+## SQL Injection
 
-### 7. Password DB Hardcoded — ALTO (RISTTITO)
+### UtentiDAO.verificaEsistenzaCampo (P1 - Risolto)
 
-**File**: `src/main/java/application/config/ConfigManager.java:135`
+- **Problema**: nome colonna concatenato direttamente nella query SQL: `"SELECT COUNT(*) FROM utente WHERE " + campo + " = ?"`
+- **Pattern risk**: sebbene usato con costanti fisse (COLONNA_EMAIL, COLONNA_MATRICOLA), il pattern è rischioso
+- **Correzione**: whitelist di colonne consentite: `Set<String> colonneConsentite = Set.of("email", "matricola")`
+- **Verifica**: se colonna non nella whitelist, restituisce false e registra errore
 
-```java
-// setProperty("db.password", "1234", true); // Rimosso: password di default pericolosa
-```
+### Altre Query
 
-**Stato**: *Fix applicato in questa sessione — password di default rimossa, ora richiede variabile ambiente.*
+- Tutte le query UserDAO, AnnuncioDAO, CarrelloDAO, MessaggioDAO usano `PreparedStatement` (buona pratica)
+- Nessuna concatenazione di input utente nelle query SQL principali
 
-### 8. Master Key Hardcoded — ALTO (RISTTITO)
+## Protezione Dati
 
-**File**: `src/main/java/application/config/ConfigManager.java:73`
+### Crittografia Messaggi (MessaggioDAO)
 
-**Vecchio**: `this.masterPassword = "SwapUnina2025!Secure";` (fallback hardcoded)
-**Nuovo**: Richiede variabile ambiente `SWAPUNINA_MASTER_KEY`, errore fatale se mancante
+- **AES-256 GCM**: tutti i messaggi crittografati prima del salvataggio
+- **Componenti memorati**: id, mittente_id, destinatario_id, testo_encrypted (BYTEA), iv (BYTEA), data_invio, annuncio_id, algoritmo_encryption, key_id
+- **Migrazione**: metodo `migraMessaggiToAESGCM()` disponibile per convertire messaggi vecchi da UTF-8
+- **Integrità**: metodo `verificaIntegritaMessaggi()` per controllare stati di corruzione
 
-**Stato**: *Fix applicato in questa sessione.*
+### Configurazione Crittografata
 
----
+- File `config.properties` con prefisso `ENC()` per proprietà sensibili
+- AES-256-GCM per crittografia/decifratura valori
+- Master key richiesta da variabile d'ambiente (NON più hardcoded)
 
-## File Interessati e Stato
+## Stato dei Controlli Dopo le Correzioni
 
-| File | Livello | Problema | Stato |
-|------|---------|----------|-------|
-| UserDAO.java | CRITICO | Password in chiaro login/creazione/cambio | *FIXATO — BCrypt implementato in login/createUser/changePassword* |
-| SwapUninaAPI.java | ALTO | CORS aperto, token deboli, endpoint senza auth | *CORS ristretto a localhost:8081, JWT pianificato* |
-| ConfigManager.java | MEDIO | Master key management, fallback | *Fix applicato: env variable richiesta* |
-| AnnuncioDAO.java | MEDIO | SQL dinamica tabelle, printStackTrace | *Da verificare* |
-| MessaggioDAO.java | MEDIO | Gestione chiavi crittografia | *AES-256 GCM implementato* |
-
-## Priorità Interventi
-
-1. **P0**: Hash password BCrypt in UserDAO — *FIXATO — BCrypt implementato in login/createUser/changePassword*
-2. **P0**: Ristringere CORS a origini fidate — *FIXATO — Ristretto a http://localhost:8081*
-3. **P1**: JWT token con scadenza e refresh — *pianificato in PIANO_INTERVENTI*
-4. **P2**: Rate limiting, header security — *da aggiungere*
-5. **P3**: Pulire printStackTrace, aggiungere logging sicuro — *LoggerUtil implementato in Main.java*
-6. **P4**: Rimuovere eventuali segreti hardcoded residui — *ConfigManager e pom.xml aggiornati*
+| Area | Stato | Azione |
+|------|-------|--------|
+| ConfigManager master key | ✅ Corretto | Rimosso fallback hardcoded |
+| ConfigManager default password | ✅ Corretto | Rimosso "1234", richiede env var |
+| ConfigManager decrypt fallback | ✅ Corretto | Eccezione invece di ciphertext |
+| UserDAO login query | ✅ Corretto | Aggiunta colonna password |
+| UtentiDAO SQL injection | ✅ Corretto | Whitelist colonne |
+| API error handler | ✅ Corretto | Maschera dettagli tecnici |
+| CORS configuration | ⚠️ Da verificare | Confermare necessità app desktop |
+| Token management | ⚠️ Da migliorare | Valutare JWT con scadenza |
+| SQL injection (verificaEsistenzaCampo) | ✅ Corretto | Whitelist implementata |

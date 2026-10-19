@@ -1,43 +1,67 @@
-# RIPRESA LAVORI — SwapUnina Desktop
+# RIPRESA_LAVORI.md
 
-## Stato Attuale del Repository
+## Stato Git Iniziale
 
-- **Percorso**: `C:\Users\matti\Desktop\SwapUnina`
-- **Branch**: main (up to date with origin/main)
-- **Ultimo commit**: 6935858 Merge branch 'main' of https://github.com/Mattiaborrelli4/swapunina_2.0
-- **Modifiche locali non committate**:
-  - `pom.xml` - master key ora usa variabile ambiente SWAPUNINA_MASTER_KEY
-  - `src/main/java/application/Main.java` - sostituito printStackTrace con LoggerUtil
-  - `src/main/java/application/config/ConfigManager.java` - rimosso hardcoded db password, richiede variabile ambiente
-  - `src/main/resources/style/button.css` - palette colori SwapUnina applicata
-  - `src/main/resources/style/typography.css` - palette colori integrata
+- **Branch**: main
+- **Remote**: origin https://github.com/Mattiaborrelli4/swapunina_2.0.git (fetch/push)
+- **Commit Current**: db41d04 Miglioramenti sulla sicurezza
+- **Last 5 Commits**:
+  - db41d04 miglioramenti sulla sicurezza
+  - 6935858 Merge branch 'main' of https://github.com/Mattiaborrelli4/swapunina_2.0
+  - e852c9f Merge branch 'feature/marketplace-layout-improvements'
+  - 9240db6 test(finale): all layouts compiled successfully
+  - 5025e9d style(typography): standardize font sizes to scale
+- **Git Status**: Clean (nessuna modifica locale non commitata)
 
-## Attività da Riprendere
+## Struttura del Progetto
 
-1. **Sicurezza P0**: 
-   - Risolvere stored password in chiaro in UserDAO — *FIXATO — BCrypt implementato in login/createUser/changePassword* ✅
-   - Verificare e correggere eventuali segreti hardcoded — *in corso (ConfigManager fix applicato)*
-   - Implementare autenticazione token-based corretta — *da pianificare*
+- **Cartella locale**: C:\Users\matti\Desktop\SwapUnina
+- **Tecnologie**: Java 24, Maven 3.9.11, JavaFX 24
+- **Architettura a 5 livelli**:
+  1. UI Layer: JavaFX schermate e CSS
+  2. Application Layer: Controllori e gestione flussi
+  3. API Layer: SwapUninaAPI (Spark Java, port 8080)
+  4. DAO Layer: Database access object (UserDAO, UtentiDAO, AnnuncioDAO, MessaggioDAO, CarrelloDAO)
+  5. Database Layer: PostgreSQL con HikariCP connection pooling
 
-2. **Funzionalità P1**:
-   - Implementare `aggiornaAnnuncio` e `cancellaAnnuncio` in SwapUninaAPI — *documentato in CHANGELOG, codice verificato* ✅
-   - Completare `getAnnunciUtente` — *documentato in CHANGELOG, implementato* ✅
-   - Implementare ricerca funzionante in Main.java — *in progress*
+## Tecnologie e Dipendenze Principali
 
-3. **Stabilità P2**:
-   - Verificare thread JavaFX — *LoggerUtil fix applicato in Main.java*
-   - Risolvere risorse non chiuse — *da verificare nei DAO*
-   - Aggiungere test unitari — *nessun test esistente, da aggiungere*
+- **BCrypt** (0.4): Hashing password
+- **Cloudinary** (1.38.0): Gestione immagini
+- **Gson** (2.10.1): JSON processing
+- **Spark Java** (2.9.4): REST API framework
+- **PostgreSQL** (42.6.0): Database driver
+- **HikariCP** (5.1.0): Connection pool
+- **JavaFX** (24.0.1): Desktop UI framework
+- **Maven Surefire**: Testing framework
 
-4. **UI/UX P3**:
-   - Uniformare palette colori (Blu: `#1769AA`, Grigio: `#111827`, Azzurro: `#EAF4FF`, Bianco: `#FFFFFF`, Grigio secondario: `#64748B`) — *CSS button.css e typography.css aggiornati*
-   - Verificare coerenza interfaccia — *da completare su tutte le schermate*
-   - Migliorare reattività finestre — *da verificare*
+## Lavoro Già Presentato
 
-## Report Generati
+- Project compiles successfully with `./mvnw compile`
+- Standalone tests available: `TestFunzionalita.java`, `TestSicurezzaStandalone.java`
+- AES-256-GCM encryption implemented in ConfigManager and MessaggioDAO
+- HikariCP pool configured with connection validation
+- BCrypt hashing with 12 rounds for passwords
+- CSS styling system with multiple themes (Royal Purple, WhatsApp, Amazon, Dark Mode)
 
-- `AUDIT_COMPLETO.md` - Inventario dettagliato
-- `AUDIT_SICUREZZA.md` - Vulnerabilità e correzioni
-- `PIANO_INTERVENTI.md` - Piano prioritizzato
-- `CHANGELOG_AUDIT.md` - Modifiche effettuate
-- `VERIFICA_FINALE.md` - Verifica conclusiva
+## Attività Riprese
+
+- Audit di sicurezza P0: ConfigManager hardcoded key removed, weak default password removed, decryptValue fix implemented
+- Bug fix P0: UserDAO.login() query now includes password column
+- Sicurezza P1: UtentiDAO SQL injection pattern fixed in verificaEsistenzaCampo
+- Stabilità P1: SwapUninaAPI error handler now masks technical details
+- UI/UX P3: Main.java gradient fixed, TopBar fallback logo corrected to blue-primary, FinestraMessaggi green button replaced with blue-primary, message bubble colors corrected
+
+## Problemi di Ambiente
+
+- Variabile d'ambiente SWAPUNINA_MASTER_KEY richiesta per l'avvio (rimossa fallback hardcoded)
+- Database PostgreSQL locale richiede configurazione credenziali esplicita
+- Nessun test JUnit standard rilevato (test sono main-class in src/main/java/)
+- Risorse CSS duplicate: style/ e styles/ directory con file sovrapposti (dettagli-prodotto.css, finestre-utente.css, inserisci-annuncio.css)
+- Alcune risorse immagine potrebbero richiedere Cloudinary service configurato
+
+## Avvertenze
+
+- Non rimuovere la cartella styles/ senza verificare la dipendenza dai file dialogali
+- Le modifiche a ConfigManager richiedono SWAPUNINA_MASTER_KEY variabile d'ambiente
+- Non collegarsi a database produzione senza autorizzazione esplicita

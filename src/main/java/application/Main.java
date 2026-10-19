@@ -181,7 +181,7 @@ public class Main extends Application {
         // Inizializza il layout radice
         layoutRadice = new StackPane();
         layoutRadice.setAlignment(Pos.CENTER);
-        layoutRadice.setStyle("-fx-background-color: linear-gradient(to bottom, #0f1423, #1c2439);");
+        layoutRadice.setStyle("-fx-background-color: #111827;");
     }
     
     /**

@@ -93,7 +93,7 @@ public class UserDAO {
      * @return l'oggetto utente se le credenziali sono valide, null altrimenti
      */
     public utente login(String email, String password) {
-        String sql = "SELECT id, nome, cognome, email, matricola FROM utente WHERE email = ?";
+        String sql = "SELECT id, nome, cognome, email, matricola, password FROM utente WHERE email = ?";
         
         try (Connection conn = ConnessioneDB.getConnessione();
              PreparedStatement stmt = conn.prepareStatement(sql)) {

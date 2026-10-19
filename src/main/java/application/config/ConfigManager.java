@@ -70,9 +70,8 @@ public class ConfigManager {
                 // Fallback 1: cerca nelle system properties (-D flag)
                 this.masterPassword = System.getProperty(MASTER_PASSWORD_ENV);
                 if (this.masterPassword == null || this.masterPassword.isEmpty()) {
-                    // Fallback 2: valore hardcoded per development (DA RIMUOVERE IN PRODUZIONE!)
-                    this.masterPassword = "SwapUnina2025!Secure";
-                    System.err.println("⚠️  ATTENZIONE: Usando MASTER KEY di default per development. Imposta SWAPUNINA_MASTER_KEY in produzione!");
+                    // Fallback 2: nessun valore disponibile - fallisce in modo chiaro
+                    throw new RuntimeException("MASTER KEY non configurata. Imposta la variabile d'ambiente SWAPUNINA_MASTER_KEY all'avvio dell'applicazione.");
                 }
             }
 
@@ -127,12 +126,15 @@ public class ConfigManager {
      * Crea una configurazione di default con valori sicuri
      */
     private void createDefaultConfig() throws IOException {
-        // Configurazione database (valori di default)
+        // Configurazione database (valori di default - password richiede configurazione esplicita)
         setProperty("db.host", "localhost", true);
         setProperty("db.port", "5432", true);
         setProperty("db.name", "postgres", true);
         setProperty("db.user", "postgres", true);
-        setProperty("db.password", "1234", true); // Sarà crittografata
+        // db.password non ha più valore di default - deve essere configurata tramite variabile d'ambiente o config file crittografata
+        // L'applicazione fallirà all'avvio se la password non è impostata correttamente
+
+        // Timeout configurazioni
 
         // Timeout configurazioni
         setProperty("db.timeout.connection", "5", true);
@@ -196,9 +198,7 @@ public class ConfigManager {
         try {
             return encryption.decrypt(encrypted);
         } catch (Exception e) {
-            System.err.println("⚠️  Errore decifratura valore (possibile tampering?): " + e.getMessage());
-            // In caso di errore, ritorna la stringa cifrata come fallback
-            return encrypted;
+            throw new RuntimeException("Errore critico: impossibile decifrare la configurazione. Possibile tampering o chiave master non corrispondente. Ripristina la configurazione originale o fornisci una master key compatibile.");
         }
     }
 

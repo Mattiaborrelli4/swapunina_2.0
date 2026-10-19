@@ -112,7 +112,7 @@ public class FinestraMessaggi {
     private String getDefaultProfileImageUrl() {
         // Crea un'immagine predefinita univoca basata sull'ID
         int uniqueSeed = otherUserId;
-        String[] defaultColors = {"#FF6B6B", "#4ECDC4", "#45B7D1", "#96CEB4", "#FFEAA7", "#DDA0DD", "#98D8C8", "#F7DC6F"};
+        String[] defaultColors = {"#1769AA", "#64748B", "#EAF4FF", "#111827", "#FFFFFF", "#4A6FA5", "#A6C1EE", "#6B90D8"};
         String color = defaultColors[Math.abs(uniqueSeed) % defaultColors.length];
         
         // Potresti generare un'immagine SVG univoca basata sull'ID
@@ -171,7 +171,7 @@ public class FinestraMessaggi {
     private HBox createHeaderBox() {
         HBox headerBox = new HBox(10);
         headerBox.setPadding(new Insets(INPUT_PADDING));
-        headerBox.setStyle("-fx-background-color: #f5f5f5; -fx-border-color: #e0e0e0; -fx-border-width: 0 0 1 0;");
+        headerBox.setStyle("-fx-background-color: #111827; -fx-border-color: #1769AA; -fx-border-width: 0 0 1 0;");
         headerBox.setAlignment(Pos.CENTER_LEFT);
 
         // ImageView per l'immagine profilo
@@ -281,7 +281,7 @@ public class FinestraMessaggi {
     private ListView<Messaggio> createMessagesListView() {
         ListView<Messaggio> listView = new ListView<>();
         listView.setCellFactory(param -> new MessageListCell());
-        listView.setStyle("-fx-background-color: #fafafa;");
+        listView.setStyle("-fx-background-color: #111827;");
         return listView;
     }
 
@@ -300,7 +300,7 @@ public class FinestraMessaggi {
         HBox inputBox = new HBox(10);
         inputBox.setPadding(new Insets(INPUT_PADDING));
         inputBox.setAlignment(Pos.CENTER);
-        inputBox.setStyle("-fx-background-color: #f5f5f5; -fx-border-color: #e0e0e0; -fx-border-width: 1 0 0 0;");
+        inputBox.setStyle("-fx-background-color: #111827; -fx-border-color: #1769AA; -fx-border-width: 1 0 0 0;");
         
         setupMessageField();
         setupSendButton();
@@ -324,7 +324,7 @@ public class FinestraMessaggi {
      */
     private void setupSendButton() {
         sendButton = new Button("Invia");
-        sendButton.setStyle("-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-weight: bold;");
+        sendButton.setStyle("-fx-background-color: #1769AA; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 5;");
         sendButton.setOnAction(e -> sendMessage());
     }
 
@@ -408,9 +408,9 @@ public class FinestraMessaggi {
          * Applica lo stile alla bubble del messaggio
          */
         private void applyMessageBubbleStyle(Label messageLabel, boolean isMyMessage) {
-            String backgroundColor = isMyMessage ? "#DCF8C6" : "#FFFFFF";
-            String textColor = isMyMessage ? "#000000" : "#333333";
-            String borderColor = isMyMessage ? "#B2DFDB" : "#E0E0E0";
+            String backgroundColor = isMyMessage ? "#1769AA" : "#EAF4FF";
+            String textColor = isMyMessage ? "#FFFFFF" : "#111827";
+            String borderColor = isMyMessage ? "#1769AA" : "#EAF4FF";
             
             messageLabel.setStyle(
                 "-fx-background-color: " + backgroundColor + ";" +

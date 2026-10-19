@@ -1,131 +1,179 @@
-# PIANO INTERVENTI — SwapUnina Desktop
+# PIANO_INTERVENTI.md
 
-## Priorità P0 — Sicurezza e Integrità
+## Priorità P0 - Sicurezza Critica
 
-### Problema 1: Password in Chiaro in UserDAO
-- **Percorso**: `src/main/java/application/DB/UserDAO.java`
-- **Stato**: *FIXATO — BCrypt implementato in login/createUser/changePassword. Build e test superati.*
-- **Soluzione**: Implementare bcrypt per hashing password
-  - Modificare `login()` per verificare hash invece di confrontare chiaro ✅
-  - Modificare `createUser()` per hashare prima di salvare ✅
-  - Modificare `changePassword()` per hashare nuova password ✅
-- **Stima**: 2 ore
-- **Test**: Test login con password hashate, test registrazione nuova utenza ✅
+### Attività Completate
 
-### Problema 2: CORS Aperto
-- **Percorso**: `src/main/java/application/api/SwapUninaAPI.java:94`
-- **Stato**: *FIXATO — Ristretto a http://localhost:8081. Build superato.*
-- **Soluzione**: Ristringere a origini fidate
-  ```java
-  response.header("Access-Control-Allow-Origin", "http://localhost:8081");
-  ```
-- **Stima**: 30 minuti
-- **Test**: Test API da origin diverse, verifica blocco richieste non autorizzate ✅
+1. **ConfigManager.java - Master Key Hardcoded**
+   - File: `src/main/java/application/config/ConfigManager.java`
+   - Modifica: Rimosso fallback hardcoded `SwapUnina2025!Secure`
+   - Ora: Richiede variabile d'ambiente `SWAPUNINA_MASTER_KEY`
+   - Risultato: ✅ Compila e passa test standalone
 
-### Problema 3: Token senza Scadenza
-- **Percorso**: `src/main/java/application/api/SwapUninaAPI.java:59-201`
-- **Stato**: *Pianificato per implementazione JWT*
-- **Soluzione**: Implementare JWT con expiration time + refresh token
-- **Stima**: 4 ore
-- **Test**: Token scade dopo T tempo, refresh funziona, logout invalidate token
+2. **ConfigManager.java - Default Password Debole**
+   - File: `src/main/java/application/config/ConfigManager.java`
+   - Modifica: Rimosso `db.password` default "1234"
+   - Ora: Nessun valore di default; applicazione fallisce se non configurata
+   - Risultato: ✅ Compila
 
----
+3. **ConfigManager.java - Decrypt Fallback Ciphertext**
+   - File: `src/main/java/application/config/ConfigManager.java`
+   - Modifica: `decryptValue()` lancia `RuntimeException` invece di restituire ciphertext
+   - Ora: Fallimento chiaro e controllato se manca chiave necessaria
+   - Risultato: ✅ Compila
 
-## Priorità P1 — Funzionalità Fondamentali
+4. **UserDAO.java - Bug Login Password Column**
+   - File: `src/main/java/application/DB/UserDAO.java`
+   - Modifica: Aggiunta colonna `password` alla query SELECT
+   - Query: `SELECT id, nome, cognome, email, matricola, password FROM utente WHERE email = ?`
+   - Risultato: ✅ Compila
 
-### Problema 1: aggiornaAnnuncio e cancellaAnnuncio
-- **Percorso**: `src/main/java/application/api/SwapUninaAPI.java:334-351`
-- **Stato**: *Documentato in CHANGELOG_AUDIT.md, codice da verificare contro git diff*
-- **Soluzione**: Implementare handler completi che chiamino i DAO
-  - `aggiornaAnnuncio`: validare permessi, chiamare `annuncioDAO.aggiornaStatoAnnuncio()`
-  - `cancellaAnnuncio`: validare permessi, chiamare `annuncioDAO.eliminaAnnuncio()`
-- **Stima**: 3 ore
-- **Test**: Creare annuncio, aggiornare stato, cancellare, verificare rimozione
+5. **UtentiDAO.java - SQL Injection Pattern**
+   - File: `src/main/java/application/DB/UtentiDAO.java`
+   - Modifica: Whitelist colonne in `verificaEsistenzaCampo()`
+   - Whitelist: `Set.of("email", "matricola")`
+   - Risultato: ✅ Compila
 
-### Problema 2: getAnnunciUtente Incompleto
-- **Percorso**: `SwapUninaAPI.java:353-357`
-- **Stato**: *Documentato in CHANGELOG_AUDIT.md*
-- **Soluzione**: Query `annuncioDAO.getAnnunciPerVenditore(userId)` con validazione token
-- **Stima**: 2 ore
-- **Test**: Login come utente, recuperare i propri annunci, verificarne il conteggio
+### Attività P0 ancora Aperte
 
-### Problema 3: Search TODO in Main.java
-- **Percorso**: `src/main/java/application/Main.java`
-- **Stato**: *In progress, LoggerUtil fix applicato*
-- **Soluzione**: Collegare barra ricerca con API endpoint `GET /api/annunci?search=...`
-- **Stima**: 3 ore
-- **Test**: Digitare query, vedere risultati filtro in tempo reale
+- [ ] Verificare connessione database PostgreSQL locale
+- [ ] Testare autenticazione end-to-end con credenziali reali
+- [ ] Verificare che nessuna password venga esposta in log o risposte API
 
----
+## Priorità P1 - Funzionalità e Stabilità
 
-## Priorità P2 — Stabilità e Architettura
+### Attività Completate
 
-### Problema 1: Thread JavaFX e Operazioni Lente
-- **Percorso**: Tutte le schermate JavaFX
-- **Stato**: *LoggerUtil sostituito in Main.java, verificare altri file*
-- **Soluzione**: Verificare che operazioni DB siano in background thread, non Application Thread
-- **Stima**: 4 ore
-- **Test**: Aprire schermate, verificare interfaccia non si blocca durante caricamento
+1. **SwapUninaAPI.java - Error Handler Maschera Dettagli**
+   - File: `src/main/java/application/api/SwapUninaAPI.java`
+   - Modifica: `exception handler` ora restituisce "Errore interno del server" all'utente
+   - Logging: dettagli tecnici su stderr solo per sviluppatori
+   - Risultato: ✅ Compila
 
-### Problema 2: Risorse Non Chiuse
-- **Percorso**: DAO files (connessione non close, resultset non close in alcuni casi)
-- **Stato**: *Da verificare*
-- **Soluzione**: Aggiutre try-with-resources completi, verificare ConnessioneDB
-- **Stima**: 2 ore
-- **Test**: Eseguire operazioni prolungate, verificare memory leak assente
+2. **UI/UX Correzioni P3 (incluse in P1)**
+   - Main.java: gradient sostituito con `#111827` (nero grafite)
+   - TopBar.java: fallback logo viola sostituito con blue-primary `#1769AA`
+   - TopBar.java: colori hover icona da purple a `#1769AA`
+   - FinestraMessaggi.java: green button `#4CAF50` sostituito con `#1769AA`
+   - FinestraMessaggi.java: message bubble colors da `#DCF8C6`/#`#FFFFFF` a `#1769AA`/#`#EAF4FF`
+   - FinestraMessaggi.java: header background da `#f5f5f5` a `#111827`
+   - FinestraMessaggi.java: input box background da `#f5f5f5` a `#111827`
+   - FinestraMessaggi.java: message list view background da `#fafafa` a `#111827`
+   - FinestraMessaggi.java: default avatar colors aggiornati palette
 
-### Problema 3: Test Mancanti
-- **Percorso**: Aggiungere test unitari
-- **Soluzione**: Creare classe test per UserDAO, CarrelloDAO, AnnuncioDAO principali
-- **Stima**: 6 ore
-- **Test**: Eseguire mvn test, copertura code minima 80%
+### Attività P1 ancora Aperte
 
----
+- [ ] Implementare handler `aggiornaAnnuncio()` con verifica identità proprietario
+- [ ] Implementare handler `cancellaAnnuncio()` con verifica identità
+- [ ] Implementare handler `getAnnunciUtente()` recupero annunci utente
+- [ ] Verificare e correggere `getMessaggi()` vs `getConversazione(userId, 0)`
+- [ ] Verificare autorizzazione endpoint che usano userId/venditoreId/mitenteId dal client
+- [ ] Confermare configurazione CORS necessaria per app desktop
+- [ ] Valutare implementazione JWT per token con scadenza
 
-## Priorità P3 — Grafica e Usabilità
+## Priorità P2 - Stabilità e Qualità del Codice
 
-### Problema 1: Coerenza Palette Colori
-- **Percorso**: TopBar.java, controller, FXML, CSS
-- **Palette definita**:
-  - Blu primario: `#1769AA`
-  - Nero grafite: `#111827`
-  - Azzurro chiaro: `#EAF4FF`
-  - Bianco: `#FFFFFF`
-  - Grigio secondario: `#64748B`
-- **Stato**: *CSS button.css e typography.css aggiornati con palette completa*
-- **Soluzione**: Uniformare tutti i componenti alla palette
-- **Stima**: 3 ore (residuali su FXML/controller)
-- **Test**: Verificare visivamente tutti i componenti rispettano la palette
+### Attività Completate
 
-### Problema 2: Stati Vuoti e Caricamento
-- **Percorso**: Schermate elenco, carrello, chat
-- **Stato**: *Da verificare*
-- **Soluzione**: Mostrare stato "Nessun dato disponibile" con messaggio amichevole
-- **Stima**: 2 ore
-- **Test**: Interfaccia vuota mostra message appropriato, nessuna eccezione
+- Nessuna attività P2 specifica richiesta oltre le correzioni generali
 
----
+### Attività P2 ancora Aperte
 
-## Cronologia Interventi
+- [ ] Analisi completa eccezioni ignorate o mal gestite
+- [ ] Verificare `printStackTrace()` nelle schermate e servizi (già presenti, valutare logging strutturato)
+- [ ] Controllare `System.exit()` usato impropriamente (presente in Main.java line 666)
+- [ ] Verifica risorse non chiuse all'arresto applicazione
+- [ ] Connessioni database non rilasciate correttamente
+- [ ] Thread bloccanti nell'interfaccia JavaFX
+- [ ] Accessi UI fuori dal JavaFX Application Thread
+- [ ] Operazioni lunghe sul thread grafico
+- [ ] Null pointer checks diffusi
+- [ ] Parsing fragile date e prezzi
+- [ ] Duplicazione di codice identificata
+- [ ] Gestione errata date e prezzi
+- [ ] Import inutilizzati e warning significativi
+- [ ] Dipendenze obsolete o vulnerabili
 
-| ID | Priorità | Problema | File | Stato | Data |
-|----|----------|----------|------|-------|------|
-| P0-1 | P0 | Password chiaro UserDAO | UserDAO.java | *FIXATO — BCrypt implementato* | 2026-10-16 |
-| P0-2 | P0 | CORS aperto | SwapUninaAPI.java | *FIXATO — Ristretto a localhost:8081* | 2026-10-16 |
-| P0-3 | P0 | Token senza scadenza | SwapUninaAPI.java | *Pianificato JWT* | 2026-10-14 |
-| P1-1 | P1 | aggiornaAnnuncio | API.java | *Documentato CHANGELOG* | 2026-10-14 |
-| P1-2 | P1 | getAnnunciUtente | API.java | *Documentato CHANGELOG* | 2026-10-14 |
-| P2-1 | P2 | Thread JavaFX | Main.java | *LoggerUtil fix applicato* | 2026-10-14 |
-| P3-1 | P3 | Palette colori | Tutti CSS | *Button + Typography aggiornati* | 2026-10-14 |
+## Priorità P3 - UI/UX Desktop JavaFX
 
-## Risultati Test Attesi
+### Attività Completate
 
-Dopo completamento interventi:
-- [ ] Build successo `./mvnw compile`
-- [ ] Test unitari passaggio `./mvnw test`
-- [ ] Login sicuro con password hashate
-- [ ] API risponde corretti codici stato
-- [ ] Carrello funziona con autenticazione
-- [ ] Ricerca funziona in interfaccia
-- [ ] Finestre non bloccano JavaFX thread
-- [ ] Tutti i componenti UI rispettano palette colori
+- **Palette applicata coerentemente** su tutte le schermate modificate
+- **Main.java**: background gradient sostituito con `#111827` (nero grafite)
+- **TopBar.java**: fallback logo viola → blue-primary `#1769AA`
+- **TopBar.java**: colori hover icona da purple a `#1769AA`
+- **FinestraMessaggi.java**: green button → `#1769AA` blue-primary
+- **FinestraMessaggi.java**: message bubble sent → `#1769AA` sfondo, `#FFFFFF` testo
+- **FinestraMessaggi.java**: message bubble received → `#EAF4FF` sfondo, `#111827` testo
+- **FinestraMessaggi.java**: header background `#111827` (nero grafite)
+- **FinestraMessaggi.java**: input box background `#111827`
+- **FinestraMessaggi.java**: message list view background `#111827`
+- **FinestraMessaggi.java**: default avatar colors palette-consistent
+- **principali.css**: root palette colors aggiornati alle specifiche richieste
+
+### Attività P3 ancora Aperte
+
+- [ ] Rendere layout responsive alle dimensioni finestra desktop
+- [ ] Verificare nessun overflow o controlli tagliati
+- [ ] Confermare spaziature coerenti su tutte le schermate
+- [ ] Gerarchia visiva chiara in tutte le aree modificate
+- [ ] Bottoni con stati hover, focus, disabilitato e attivo (verificare CSS)
+- [ ] Contrasto leggibile verificato against palette
+- [ ] Navigazione intuitiva verifica flow completi
+- [ ] Indicatori di caricamento per operazioni lunghe
+- [ ] Nessun blocco interfaccia durante chiamate database
+- [ ] Campi input con validazione comprensibile
+- [ ] Accessibilità da tastiera dove possibile
+
+## Dipendenze Tra Attività
+
+```
+P0 (Security Critical)
+  ├── ConfigManager master key removal
+  ├── ConfigManager weak password removal
+  ├── UserDAO login bug fix
+  └── UtentiDAO SQL injection fix
+
+P1 (Features & Stability)
+  ├── API error handler masking
+  ├── User authentication flow verification
+  ├── CORS configuration review
+  ├── UI/UX palette fixes (included)
+  └── Annunci/messaggi/carrello implementation gaps
+
+P2 (Code Quality)
+  ├── Exception handling analysis
+  ├── Resource cleanup verification
+  └── Code duplication review
+
+P3 (UI/UX)
+  ├── Palette consistency (completed)
+  ├── Layout responsiveness (pending)
+  └── Accessibility review (pending)
+```
+
+## Modifiche Effettuate
+
+| # | File | Problema | Modifica | Motivazione |
+|---|------|----------|----------|-------------|
+| 1 | ConfigManager.java | Master key hardcoded | Rimosso fallback, richiede env var | P0 sicurezza |
+| 2 | ConfigManager.java | Default password "1234" | Rimosso, nessun default | P0 sicurezza |
+| 3 | ConfigManager.java | decryptValue fallback | Eccezione invece di ciphertext | P0 sicurezza |
+| 4 | UserDAO.java | Login query missing password | Aggiunta colonna password | P0 bug critico |
+| 5 | UtentiDAO.java | SQL injection column concat | Whitelist colonne consentite | P1 sicurezza |
+| 6 | SwapUninaAPI.java | Error handler exposure | Maschera dettagli tecnici | P1 sicurezza |
+| 7 | Main.java | Dark gradient hardcoded | Sostituito `#111827` | P3 palette |
+| 8 | TopBar.java | Fallback logo viola | Sostituito `#1769AA` | P3 palette |
+| 9 | TopBar.java | Hover purple color | Sostituito `#1769AA` | P3 palette |
+| 10 | FinestraMessaggi.java | Green send button | Sostituito `#1769AA` | P3 palette |
+| 11 | FinestraMessaggi.java | Message bubble colors | Sostituiti palette completa | P3 palette |
+| 12 | FinestraMessaggi.java | Background colors | Sostituiti palette completa | P3 palette |
+| 12 | principali.css | Blue primary color | Sostituito `#1769AA` | P3 palette |
+
+## Rischi e Decisioni che Richiedono Consenso
+
+1. **Migrazione database**: Eventuali modifiche schema richiedono autorizzazione esplicita
+2. **Cambio sistema autenticazione**: Da token in-memory a JWT richiede valutazione rischi
+3. **Rimozione directory styles/**: Potrebbe rompere dialoghi utente (AccountDialog, CarrelloDialog, etc.)
+4. **Cambio porta API**: Porta 8080 corrente, modifica richiede consenso
+5. **Database PostgreSQL accesso**: Solo con autorizzazione esplicita, readonly per audit

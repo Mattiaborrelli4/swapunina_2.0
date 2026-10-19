@@ -159,11 +159,16 @@ public class SwapUninaAPI {
 
         exception(Exception.class, (exception, request, response) -> {
             response.status(500);
-
+            
             JsonObject error = new JsonObject();
-            error.addProperty("error", exception.getMessage());
+            // Mascheriamo i dettagli tecnici per l'utente finale
+            String messaggioUtente = "Errore interno del server";
+            error.addProperty("error", messaggioUtente);
             error.addProperty("timestamp", LocalDateTime.now().toString());
-
+            
+            // Loggiamo il dettaglio completo solo nel server (non nell'output client)
+            System.err.println("Errore API interno: " + exception.getMessage() + " - " + LocalDateTime.now());
+            
             response.body(gson.toJson(error));
         });
 
@@ -335,33 +340,112 @@ public class SwapUninaAPI {
         int id = Integer.parseInt(req.params(":id"));
         JsonObject body = JsonParser.parseString(req.body()).getAsJsonObject();
 
-        // Implementare aggiornamento
-        JsonObject response = new JsonObject();
-        response.addProperty("message", "Aggiornamento non ancora implementato");
-        return gson.toJson(response);
+        String token = req.headers("Authorization");
+        if (token == null || !token.startsWith("Bearer ")) {
+            res.status(401);
+            return gson.toJson(Map.of("error", "Unauthorized"));
+        }
+        token = token.substring(7);
+        Integer userId = activeTokens.get(token);
+        if (userId == null) {
+            res.status(401);
+            return gson.toJson(Map.of("error", "Invalid token"));
+        }
+
+        // Verifica che l'utente sia il proprietario dell'annuncio
+        Annuncio annuncio = annuncioDAO.getAnnuncioById(id);
+        if (annuncio == null) {
+            res.status(404);
+            return gson.toJson(Map.of("error", "Annuncio non trovato"));
+        }
+        if (annuncio.getVenditoreId() != userId) {
+            res.status(403);
+            return gson.toJson(Map.of("error", "Non hai il permesso di modificare questo annuncio"));
+        }
+
+        // Aggiorna l'annuncio
+        try {
+            boolean updated = annuncioDAO.aggiornaAnnuncioCompleto(annuncio);
+            if (updated) {
+                res.status(200);
+                return gson.toJson(Map.of("message", "Annuncio aggiornato con successo"));
+            } else {
+                res.status(500);
+                return gson.toJson(Map.of("error", "Aggiornamento annuncio fallito"));
+            }
+        } catch (Exception e) {
+            res.status(500);
+            return gson.toJson(Map.of("error", "Errore interno del server"));
+        }
     }
 
     private Object cancellaAnnuncio(Request req, Response res) {
         int id = Integer.parseInt(req.params(":id"));
 
-        // Implementare cancellazione
-        JsonObject response = new JsonObject();
-        response.addProperty("message", "Cancellazione non ancora implementata");
-        return gson.toJson(response);
+        String token = req.headers("Authorization");
+        if (token == null || !token.startsWith("Bearer ")) {
+            res.status(401);
+            return gson.toJson(Map.of("error", "Unauthorized"));
+        }
+        token = token.substring(7);
+        Integer userId = activeTokens.get(token);
+        if (userId == null) {
+            res.status(401);
+            return gson.toJson(Map.of("error", "Invalid token"));
+        }
+
+        // Verifica che l'utente sia il proprietario dell'annuncio
+        Annuncio annuncio = annuncioDAO.getAnnuncioById(id);
+        if (annuncio == null) {
+            res.status(404);
+            return gson.toJson(Map.of("error", "Annuncio non trovato"));
+        }
+        if (annuncio.getVenditoreId() != userId) {
+            res.status(403);
+            return gson.toJson(Map.of("error", "Non hai il permesso di cancellare questo annuncio"));
+        }
+
+        try {
+            boolean deleted = annuncioDAO.eliminaAnnuncio(id);
+            if (deleted) {
+                res.status(200);
+                return gson.toJson(Map.of("message", "Annuncio cancellato con successo"));
+            } else {
+                res.status(500);
+                return gson.toJson(Map.of("error", "Cancellazione annuncio fallita"));
+            }
+        } catch (Exception e) {
+            res.status(500);
+            return gson.toJson(Map.of("error", "Errore interno del server"));
+        }
     }
 
     private Object getAnnunciUtente(Request req, Response res) {
         int userId = Integer.parseInt(req.params(":userId"));
-        // Implementare
-        return gson.toJson(Collections.emptyList());
+
+        String token = req.headers("Authorization");
+        if (token != null && token.startsWith("Bearer ")) {
+            token = token.substring(7);
+            Integer authUserId = activeTokens.get(token);
+            // Se c'è un token autenticato, verifica che l'utente possa vedere i propri annunci
+            // o che sia un amministratore. Per ora permettiamo la visualizzazione se l'ID corrisponde al token.
+            if (authUserId != null && authUserId != userId) {
+                res.status(403);
+                return gson.toJson(Map.of("error", "Non hai il permesso di visualizzare gli annunci di questo utente"));
+            }
+        }
+
+        List<Annuncio> annunci = annuncioDAO.getAnnunciPerVenditore(userId);
+        return gson.toJson(annunci);
     }
 
     // ========== HANDLER MESSAGGI ==========
 
     private Object getMessaggi(Request req, Response res) {
         int userId = Integer.parseInt(req.params(":userId"));
-        List<Messaggio> messaggi = messaggioDAO.getConversazione(userId, 0); // Implementare correttamente
-        return gson.toJson(messaggi);
+        // Recupera la lista degli interlocutori per questo utente
+        List<Integer> interlocutori = messaggioDAO.getInterlocutori(userId);
+        return gson.toJson(interlocutori);
     }
 
     private Object getConversazione(Request req, Response res) {
@@ -375,8 +459,27 @@ public class SwapUninaAPI {
     private Object inviaMessaggio(Request req, Response res) {
         JsonObject body = JsonParser.parseString(req.body()).getAsJsonObject();
 
+        String token = req.headers("Authorization");
+        if (token == null || !token.startsWith("Bearer ")) {
+            res.status(401);
+            return gson.toJson(Map.of("error", "Unauthorized"));
+        }
+        token = token.substring(7);
+        Integer userId = activeTokens.get(token);
+        if (userId == null) {
+            res.status(401);
+            return gson.toJson(Map.of("error", "Invalid token"));
+        }
+
         int mittenteId = body.get("mittenteId").getAsInt();
         int destinatarioId = body.get("destinatarioId").getAsInt();
+
+        // Verifica che il mittente corrisponda all'utente autenticato
+        if (mittenteId != userId) {
+            res.status(403);
+            return gson.toJson(Map.of("error", "Non hai il permesso di inviare messaggi come questo mittente"));
+        }
+
         String testo = body.get("testo").getAsString();
         Integer annuncioId = body.has("annuncioId") ? body.get("annuncioId").getAsInt() : null;
 
@@ -502,12 +605,36 @@ public class SwapUninaAPI {
     private Object creaOfferta(Request req, Response res) {
         JsonObject body = JsonParser.parseString(req.body()).getAsJsonObject();
 
+        String token = req.headers("Authorization");
+        if (token == null || !token.startsWith("Bearer ")) {
+            res.status(401);
+            return gson.toJson(Map.of("error", "Unauthorized"));
+        }
+        token = token.substring(7);
+        Integer userId = activeTokens.get(token);
+        if (userId == null) {
+            res.status(401);
+            return gson.toJson(Map.of("error", "Invalid token"));
+        }
+
+        int offerenteId = body.get("offerenteId").getAsInt();
+        int venditoreId = body.get("venditoreId").getAsInt();
+
+        // Verifica che l'offerente corrisponda all'utente autenticato
+        if (offerenteId != userId) {
+            res.status(403);
+            return gson.toJson(Map.of("error", "Non hai il permesso di fare un'offerta come questo utente"));
+        }
+
+        double importo = body.get("importo").getAsDouble();
+        String messaggio = body.has("messaggio") ? body.get("messaggio").getAsString() : null;
+
         OffertaNegoziazione offerta = new OffertaNegoziazione();
         offerta.setAnnuncioId(body.get("annuncioId").getAsInt());
-        offerta.setOfferenteId(body.get("offerenteId").getAsInt());
-        offerta.setVenditoreId(body.get("venditoreId").getAsInt());
-        offerta.setImporto(body.get("importo").getAsDouble());
-        offerta.setMessaggio(body.get("messaggio").getAsString());
+        offerta.setOfferenteId(offerenteId);
+        offerta.setVenditoreId(venditoreId);
+        offerta.setImporto(importo);
+        offerta.setMessaggio(messaggio);
 
         int offertaId = offertaDAO.creaOfferta(offerta);
 
